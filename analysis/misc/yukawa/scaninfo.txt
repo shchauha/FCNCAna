@@ -1,0 +1,120 @@
+[?1034h>>> [!] no card name specified, so using v0.10_Sep22_ytscan/card_tttt_srcr.txt
+>>> Making card
+yukawa 1
+>>> Running combine [combine -M Asymptotic v0.10_Sep22_ytscan/card_tttt_srcr.txt --noFitAsimov  2>&1 | tee v0.10_Sep22_ytscan/card_tttt_srcr.log]
+>>> Running combine for significance [combine -M ProfileLikelihood v0.10_Sep22_ytscan/card_tttt_srcr.txt --significance   2>&1 | tee -a v0.10_Sep22_ytscan/card_tttt_srcr.log]
+>>> Running combine for mu [combine -M MaxLikelihoodFit v0.10_Sep22_ytscan/card_tttt_srcr.txt --robustFit=1 --saveShapes --saveWithUncertainties -n name 2>&1 | tee -a v0.10_Sep22_ytscan/card_tttt_srcr.log]
+------------------------------
+  Obs UL: 46.96 fb
+  Exp UL: 18.76 +10.24 -6.32 fb
+  Sig: 2.006 (p-value: 0.022)
+  Mu: 2.355 (+1.441 -1.261)
+------------------------------
+[?1034h>>> [!] no card name specified, so using v0.10_Sep22_ytscan/card_tttt_srcr.txt
+>>> Making card
+yukawa 4
+>>> Running combine [combine -M Asymptotic v0.10_Sep22_ytscan/card_tttt_srcr.txt --noFitAsimov  2>&1 | tee v0.10_Sep22_ytscan/card_tttt_srcr.log]
+>>> Running combine for significance [combine -M ProfileLikelihood v0.10_Sep22_ytscan/card_tttt_srcr.txt --significance   2>&1 | tee -a v0.10_Sep22_ytscan/card_tttt_srcr.log]
+>>> Running combine for mu [combine -M MaxLikelihoodFit v0.10_Sep22_ytscan/card_tttt_srcr.txt --robustFit=1 --saveShapes --saveWithUncertainties -n name 2>&1 | tee -a v0.10_Sep22_ytscan/card_tttt_srcr.log]
+------------------------------
+  Obs UL: 46.15 fb
+  Exp UL: 19.05 +10.40 -6.42 fb
+  Sig: 1.946 (p-value: 0.026)
+  Mu: 2.279 (+1.433 -1.260)
+------------------------------
+[?1034h>>> [!] no card name specified, so using v0.10_Sep22_ytscan/card_tttt_srcr.txt
+>>> Making card
+yukawa 7
+>>> Running combine [combine -M Asymptotic v0.10_Sep22_ytscan/card_tttt_srcr.txt --noFitAsimov  2>&1 | tee v0.10_Sep22_ytscan/card_tttt_srcr.log]
+>>> Running combine for significance [combine -M ProfileLikelihood v0.10_Sep22_ytscan/card_tttt_srcr.txt --significance   2>&1 | tee -a v0.10_Sep22_ytscan/card_tttt_srcr.log]
+>>> Running combine for mu [combine -M MaxLikelihoodFit v0.10_Sep22_ytscan/card_tttt_srcr.txt --robustFit=1 --saveShapes --saveWithUncertainties -n name 2>&1 | tee -a v0.10_Sep22_ytscan/card_tttt_srcr.log]
+------------------------------
+  Obs UL: 44.35 fb
+  Exp UL: 19.62 +10.87 -6.48 fb
+  Sig: 1.802 (p-value: 0.036)
+  Mu: 2.106 (+1.424 -1.248)
+------------------------------
+[?1034h>>> [!] no card name specified, so using v0.10_Sep22_ytscan/card_tttt_srcr.txt
+>>> Making card
+yukawa 10
+>>> Running combine [combine -M Asymptotic v0.10_Sep22_ytscan/card_tttt_srcr.txt --noFitAsimov  2>&1 | tee v0.10_Sep22_ytscan/card_tttt_srcr.log]
+>>> Running combine for significance [combine -M ProfileLikelihood v0.10_Sep22_ytscan/card_tttt_srcr.txt --significance   2>&1 | tee -a v0.10_Sep22_ytscan/card_tttt_srcr.log]
+>>> Running combine for mu [combine -M MaxLikelihoodFit v0.10_Sep22_ytscan/card_tttt_srcr.txt --robustFit=1 --saveShapes --saveWithUncertainties -n name 2>&1 | tee -a v0.10_Sep22_ytscan/card_tttt_srcr.log]
+------------------------------
+  Obs UL: 41.70 fb
+  Exp UL: 20.77 +11.18 -6.92 fb
+  Sig: 1.560 (p-value: 0.059)
+  Mu: 1.827 (+1.420 -1.224)
+------------------------------
+[?1034h>>> [!] no card name specified, so using v0.10_Sep22_ytscan/card_tttt_srcr.txt
+>>> Making card
+yukawa 13
+>>> Running combine [combine -M Asymptotic v0.10_Sep22_ytscan/card_tttt_srcr.txt --noFitAsimov  2>&1 | tee v0.10_Sep22_ytscan/card_tttt_srcr.log]
+>>> Running combine for significance [combine -M ProfileLikelihood v0.10_Sep22_ytscan/card_tttt_srcr.txt --significance   2>&1 | tee -a v0.10_Sep22_ytscan/card_tttt_srcr.log]
+>>> Running combine for mu [combine -M MaxLikelihoodFit v0.10_Sep22_ytscan/card_tttt_srcr.txt --robustFit=1 --saveShapes --saveWithUncertainties -n name 2>&1 | tee -a v0.10_Sep22_ytscan/card_tttt_srcr.log]
+------------------------------
+  Obs UL: 38.65 fb
+  Exp UL: 22.21 +11.77 -7.37 fb
+  Sig: 1.248 (p-value: 0.106)
+  Mu: 1.490 (+1.391 -1.214)
+------------------------------
+[?1034h>>> [!] no card name specified, so using v0.10_Sep22_ytscan/card_tttt_srcr.txt
+>>> Making card
+yukawa 16
+>>> Running combine [combine -M Asymptotic v0.10_Sep22_ytscan/card_tttt_srcr.txt --noFitAsimov  2>&1 | tee v0.10_Sep22_ytscan/card_tttt_srcr.log]
+>>> Running combine for significance [combine -M ProfileLikelihood v0.10_Sep22_ytscan/card_tttt_srcr.txt --significance   2>&1 | tee -a v0.10_Sep22_ytscan/card_tttt_srcr.log]
+>>> Running combine for mu [combine -M MaxLikelihoodFit v0.10_Sep22_ytscan/card_tttt_srcr.txt --robustFit=1 --saveShapes --saveWithUncertainties -n name 2>&1 | tee -a v0.10_Sep22_ytscan/card_tttt_srcr.log]
+------------------------------
+  Obs UL: 35.88 fb
+  Exp UL: 23.93 +12.69 -7.89 fb
+  Sig: 0.947 (p-value: 0.172)
+  Mu: 1.158 (+1.375 -1.158)
+------------------------------
+[?1034h>>> [!] no card name specified, so using v0.10_Sep22_ytscan/card_tttt_srcr.txt
+>>> Making card
+yukawa 19
+>>> Running combine [combine -M Asymptotic v0.10_Sep22_ytscan/card_tttt_srcr.txt --noFitAsimov  2>&1 | tee v0.10_Sep22_ytscan/card_tttt_srcr.log]
+>>> Running combine for significance [combine -M ProfileLikelihood v0.10_Sep22_ytscan/card_tttt_srcr.txt --significance   2>&1 | tee -a v0.10_Sep22_ytscan/card_tttt_srcr.log]
+>>> Running combine for mu [combine -M MaxLikelihoodFit v0.10_Sep22_ytscan/card_tttt_srcr.txt --robustFit=1 --saveShapes --saveWithUncertainties -n name 2>&1 | tee -a v0.10_Sep22_ytscan/card_tttt_srcr.log]
+------------------------------
+  Obs UL: 33.70 fb
+  Exp UL: 25.80 +13.47 -8.40 fb
+  Sig: 0.700 (p-value: 0.242)
+  Mu: 0.864 (+1.356 -0.864)
+------------------------------
+[?1034h>>> [!] no card name specified, so using v0.10_Sep22_ytscan/card_tttt_srcr.txt
+>>> Making card
+yukawa 22
+>>> Running combine [combine -M Asymptotic v0.10_Sep22_ytscan/card_tttt_srcr.txt --noFitAsimov  2>&1 | tee v0.10_Sep22_ytscan/card_tttt_srcr.log]
+>>> Running combine for significance [combine -M ProfileLikelihood v0.10_Sep22_ytscan/card_tttt_srcr.txt --significance   2>&1 | tee -a v0.10_Sep22_ytscan/card_tttt_srcr.log]
+>>> Running combine for mu [combine -M MaxLikelihoodFit v0.10_Sep22_ytscan/card_tttt_srcr.txt --robustFit=1 --saveShapes --saveWithUncertainties -n name 2>&1 | tee -a v0.10_Sep22_ytscan/card_tttt_srcr.log]
+------------------------------
+  Obs UL: 32.35 fb
+  Exp UL: 27.82 +14.52 -9.10 fb
+  Sig: 0.503 (p-value: 0.307)
+  Mu: 0.626 (+1.336 -0.626)
+------------------------------
+[?1034h>>> [!] no card name specified, so using v0.10_Sep22_ytscan/card_tttt_srcr.txt
+>>> Making card
+yukawa 25
+>>> Running combine [combine -M Asymptotic v0.10_Sep22_ytscan/card_tttt_srcr.txt --noFitAsimov  2>&1 | tee v0.10_Sep22_ytscan/card_tttt_srcr.log]
+>>> Running combine for significance [combine -M ProfileLikelihood v0.10_Sep22_ytscan/card_tttt_srcr.txt --significance   2>&1 | tee -a v0.10_Sep22_ytscan/card_tttt_srcr.log]
+>>> Running combine for mu [combine -M MaxLikelihoodFit v0.10_Sep22_ytscan/card_tttt_srcr.txt --robustFit=1 --saveShapes --saveWithUncertainties -n name 2>&1 | tee -a v0.10_Sep22_ytscan/card_tttt_srcr.log]
+------------------------------
+  Obs UL: 31.34 fb
+  Exp UL: 29.76 +15.54 -9.61 fb
+  Sig: 0.343 (p-value: 0.366)
+  Mu: 0.437 (+1.322 -0.437)
+------------------------------
+[?1034h>>> [!] no card name specified, so using v0.10_Sep22_ytscan/card_tttt_srcr.txt
+>>> Making card
+yukawa 28
+>>> Running combine [combine -M Asymptotic v0.10_Sep22_ytscan/card_tttt_srcr.txt --noFitAsimov  2>&1 | tee v0.10_Sep22_ytscan/card_tttt_srcr.log]
+>>> Running combine for significance [combine -M ProfileLikelihood v0.10_Sep22_ytscan/card_tttt_srcr.txt --significance   2>&1 | tee -a v0.10_Sep22_ytscan/card_tttt_srcr.log]
+>>> Running combine for mu [combine -M MaxLikelihoodFit v0.10_Sep22_ytscan/card_tttt_srcr.txt --robustFit=1 --saveShapes --saveWithUncertainties -n name 2>&1 | tee -a v0.10_Sep22_ytscan/card_tttt_srcr.log]
+------------------------------
+  Obs UL: 30.77 fb
+  Exp UL: 31.77 +16.59 -10.18 fb
+  Sig: 0.190 (p-value: 0.425)
+  Mu: 0.262 (+1.318 -0.262)
+------------------------------
