@@ -108,6 +108,9 @@
     // ch_fcnc.Add("/nfs-7/userdata/namin/tupler_babies/merged/FT/v3.24/output/year_2016/FCNC_hut_antitop.root");
     // ScanChain(&ch_fcnc, options, outputdir);
 
-
+    // TChain ch_ttsl("t", "ttsl");
+    // ch_ttsl.Add(basedir_mc+"TTSLtop.root");
+    // ch_ttsl.Add(basedir_mc+"TTSLtopbar.root");
+    // ScanChain(&ch_ttsl, options, outputdir);
 }
 
