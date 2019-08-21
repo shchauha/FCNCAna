@@ -43,14 +43,15 @@ export LANG=en_US.UTF-8
     make -j10 >&/dev/null &
     cd -;
 }
-[[ -d ${FTBASE}/common/${therelease}/src/HiggsAnalysis/CombinedLimit/ ]] || {
-    pushd ${FTBASE}/
-    cd $CMSSW_BASE/src
-    cmsenv
-    git clone https://github.com/cms-analysis/HiggsAnalysis-CombinedLimit.git HiggsAnalysis/CombinedLimit
-    cd HiggsAnalysis/CombinedLimit
-    git checkout 94x
-    scramv1 b vclean
-    scramv1 b -j 15
-    popd
-}
+#[[ -d ${FTBASE}/common/${therelease}/src/HiggsAnalysis/CombinedLimit/ ]] || {
+#    pushd ${FTBASE}/
+#    cd $CMSSW_BASE/src
+#    cmsenv
+#    git clone https://github.com/cms-analysis/HiggsAnalysis-CombinedLimit.git HiggsAnalysis/CombinedLimit
+#    cd HiggsAnalysis/CombinedLimit
+#    git checkout 94x
+#    scramv1 b vclean
+#    scramv1 b -j 15
+#    popd
+#}
+
