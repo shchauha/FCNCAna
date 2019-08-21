@@ -13,17 +13,15 @@
 #include "Math/VectorUtil.h"
 #include "TVector2.h"
 #include "TMVA/Reader.h"
-
 #include <signal.h>
 #include <stdlib.h>
 #include <stdio.h>
-
 #include "../misc/class_files/v8.02/SS.h"
 #include "../../common/CORE/Tools/dorky/dorky.h"
 #include "../../common/CORE/Tools/utils.h"
 #include "../misc/common_utils.h"
 #include "../misc/bdt.h"
-
+#include "../misc/signal_regions.h"
 #include "../misc/tqdm.h"
 
 using namespace std;
@@ -424,7 +422,8 @@ int ScanChain(TChain *ch, TString options="", TString outputdir="outputs"){
             nmiss2 = ss::lep2_el_exp_innerlayers();	   
 	    lep1ptratio = ss::lep1_ptratio();
 	    lep2ptratio = ss::lep2_ptratio();
-            
+            bool isClass6 = ss::hyp_class() == 6;
+
             if (doSS) {
                 nleps = (lep3good) ? ((ss::lep4_passes_id() and (ss::lep4_p4().pt() > (abs(ss::lep4_id())==11 ? 15 : 10))) ? 4 : 3) : 2;
             } else {
@@ -639,17 +638,16 @@ int ScanChain(TChain *ch, TString options="", TString outputdir="outputs"){
 	    
 	    };
 
-            bool BR_lite = ht > 300       and njets >= 2 and
-                           nbtags >= 2    and met >= 50;
+	    float mtnonz = ss::mtmin();
+            bool BR_lite = ht > 300  and njets >= 2 and  nbtags >= 2 and met >= 50;
             bool BR = BR_lite and hyp_class == 3;
             if (BR) fill_region("br", weight);            
-            if (hyp_class == 3 and njets >= 2 and met > 50
-                    and lep1ccpt > 25 and lep2ccpt > 25
-                    ) {
-                fill_region("sshh", weight);
+	    SR = signal_region_ss(ss::njets(), ss::nbtags(), ss::met(), ss::ht(), ss::mtmin(), lep1id, lep2id, lep1ccpt, lep2ccpt, lep3ccpt, nleps, isClass6, mtnonz); 
+            if (hyp_class == 3 and nleps==2 and njets >= 2 and met > 50 and lep1ccpt > 25 and lep2ccpt > 25 ) {	      
+	      if(nbtags==0 and ss::mtmin()<120 and met<200 and njets <= 4 and ht > 300 and ht<1125){
+		fill_region("sshh", weight);
+	      }
             }
-
-
         }//event loop
         delete file;
     }//file loop

@@ -3,10 +3,6 @@
     gROOT->ProcessLine(".L ../../common/CORE/Tools/dorky/dorky.cc+");
     gROOT->ProcessLine(".L ScanChain.C+");
 
-    TString tag_data = "v1.00_80x_baseline_full_v4";
-    TString tag_mc = "v1.00_80x_baseline_full_v4";
-
-    //TString basedir_data = Form("/nfs-7/userdata/namin/tupler_babies/merged/FT/%s/output/", tag_data.Data());
     TString basedir_data = "/home/users/namin/2018/fourtop/all/FTAnalysis/analysis/yields/local/year_2016/";
     TString basedir_mc = basedir_data;
 
@@ -17,7 +13,7 @@
      *     zeroMissingInnerHits: Require exactly zero missing inner hits
      *     evaluateBDT: calculates event BDT, other event_bdt==0
      */
-    TString options = "useInclusiveSFs Data2016";
+    TString options = "useInclusiveSFs Data2016 ";
     TString outputdir = "outputs2016";
 
     gSystem->Exec(Form("rm -rf %s", outputdir.Data()));
@@ -27,19 +23,19 @@
     // gSystem->Exec(Form("git diff >> %s/git.diff", outputdir.Data()));
 
     // Data
-    TChain ch_data("t", "data");
-    ch_data.Add(basedir_data+"Data*.root");
-    ScanChain(&ch_data, options, outputdir);
+    // TChain ch_data("t", "data");
+    // ch_data.Add(basedir_data+"Data*.root");
+    // ScanChain(&ch_data, options, outputdir);
 
     // // Data-Driven Fakes
     // TChain ch_fakes("t", "fakes");
     // ch_fakes.Add(basedir_data+"Data*.root");
     // ScanChain(&ch_fakes, options + "doFakes", outputdir);
 
-    // // Data-Driven Flips
-    // TChain ch_flips("t", "flips");
-    // ch_flips.Add(basedir_data+"Data*.root");
-    // ScanChain(&ch_flips, options + "doFlips", outputdir);
+    // Data-Driven Flips
+    TChain ch_flips("t", "flips");
+    ch_flips.Add(basedir_data+"Data*.root");
+    ScanChain(&ch_flips, options + "doFlips", outputdir);
 
     // // Monte-Carlo Backgrounds
     // TChain ch_ttw("t", "ttw");
