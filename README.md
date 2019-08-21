@@ -1,10 +1,13 @@
 # FCNCAna
 
-This is a rep for FCNC analysis. 
+This is a repo for FCNC analysis. 
 
 # setup 
+
 git clone https://github.com/shchauha/FCNCAna
+
 cd FCNCAna
+
 source setup.sh
 
 cd analysis/yields
