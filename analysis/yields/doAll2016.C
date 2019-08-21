@@ -23,9 +23,9 @@
     // gSystem->Exec(Form("git diff >> %s/git.diff", outputdir.Data()));
 
     // Data
-    // TChain ch_data("t", "data");
-    // ch_data.Add(basedir_data+"Data*.root");
-    // ScanChain(&ch_data, options, outputdir);
+    TChain ch_data("t", "data");
+    ch_data.Add(basedir_data+"Data*.root");
+    ScanChain(&ch_data, options, outputdir);
 
     // // Data-Driven Fakes
     // TChain ch_fakes("t", "fakes");

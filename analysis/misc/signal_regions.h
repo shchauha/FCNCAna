@@ -197,7 +197,7 @@ int signal_region_ss(int njets, int nbtags, float met, float ht, float mt_min, i
         if (ht < 300) {
 	  if (nbtags == 0 && mt_min < 120 && met < 200 && njets <= 4) return 1; 
 	  if (nbtags == 0){ 
-	    cout<< "nb "<<nbtags<<" mt "<<mt_min<<" met "<<met<<" njets "<<njets<<" ht "<<ht<<" l1pt "<<lep1pt<<" l2pt "<<lep2pt<<endl;	      
+	    //cout<< "nb "<<nbtags<<" mt "<<mt_min<<" met "<<met<<" njets "<<njets<<" ht "<<ht<<" l1pt "<<lep1pt<<" l2pt "<<lep2pt<<endl;	      
 	    return 3;
 	  } 
 	  if (nbtags == 1 && mt_min < 120 && met < 200 && njets <= 4) return 11;
