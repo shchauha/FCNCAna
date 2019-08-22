@@ -389,6 +389,7 @@ int ScanChain(TChain *ch, TString options="", TString outputdir="outputs"){
   HistCol h_ml1j1       (regions, "ml1j1"      , 30, 0   , 300 , &registry);
   HistCol h_matchtype   (regions, "matchtype"  , 4 , -0.5, 3.5 , &registry);
   HistCol h_sr          (regions, "sr"         , 60 , -0.5, 59.5, &registry);
+  HistCol h_bdt         (regions, "bdt"        , 10 , -1., 1., &registry);
 
   HistCol2D h_ptabsetae       (regions, "ptetae"      , 40,0,400,30,0.,3., &registry2D);
   HistCol2D h_ptabsetam       (regions, "ptetam"      , 40,0,400,30,0.,3., &registry2D);
@@ -428,11 +429,26 @@ int ScanChain(TChain *ch, TString options="", TString outputdir="outputs"){
   float tree_nbtags = -1;
   float tree_njets = -1;
   float tree_met = -1;
+  float tree_weight = -1;
 
+  TFile *  f1 = new TFile(Form("%s/histos_%s.root", outputdir.Data(), ch->GetTitle()), "RECREATE");
+  f1->cd();
   TTree* out_tree = new TTree("t","fortraining");  
   out_tree->Branch("nbtags", &tree_nbtags);
   out_tree->Branch("njets", &tree_njets);
   out_tree->Branch("met", &tree_met);
+  out_tree->Branch("weight", &tree_weight);
+
+
+  TMVA::Reader *reader = new TMVA::Reader( "!Color:!Silent" );
+  //reader->AddVariable("njets", &tree_njets);
+  reader->AddVariable("nbtags", &tree_nbtags);
+  reader->AddVariable("njets", &tree_nbtags);
+  reader->AddVariable("met", &tree_met);
+  //reader->AddVariable("weight", &tree_weight);
+  reader->BookMVA("BDTG method","../misc/bdt_xml/Classification_BDTG.weights.xml");
+
+
 
 
   TFile *currentFile = 0;
@@ -599,9 +615,6 @@ int ScanChain(TChain *ch, TString options="", TString outputdir="outputs"){
       	}
       }
 
-
-
-
       if (doFlips) {
 	if (hyp_class == 4) hyp_class = 3; // we've flipped an OS to a SS
 	// else if (hyp_class == 6) class6Fake = true;
@@ -717,6 +730,7 @@ int ScanChain(TChain *ch, TString options="", TString outputdir="outputs"){
 	}
 	do_fill(h_nvtx,   ss::nGoodVertices());
 	do_fill(h_sr,   SR);
+	do_fill(h_bdt,  reader->EvaluateMVA("BDTG method"));
 	    
       };
 
@@ -733,22 +747,24 @@ int ScanChain(TChain *ch, TString options="", TString outputdir="outputs"){
 	tree_met = met;
 	tree_nbtags = nbtags;
 	tree_njets = njets;
-	out_tree->Fill();
-	
-	
+	tree_weight = weight;	
+	out_tree->Fill();	
+	//cout<<" bdt value"<<reader->EvaluateMVA("BDTG method")<<endl;
       }
       if (hyp_class == 3 and nleps == 2 and njets >= 2 and nbtags == 1 and met > 50 and lep1ccpt > 25 and lep2ccpt > 20 ) fill_region("ss1b2j", weight); 
-      if (hyp_class == 3 and nleps == 2 and njets >= 2 and nbtags == 1 and met > 50 and lep1ccpt > 25 and lep2ccpt > 20 ) fill_region("ss2b2j", weight); 
+      if (hyp_class == 3 and nleps == 2 and njets >= 2 and nbtags  > 1 and met > 50 and lep1ccpt > 25 and lep2ccpt > 20 ) fill_region("ss2b2j", weight); 
       
     }//event loop
+    //delete tree;
     delete file;
   }//file loop
 
-  TFile f1(Form("%s/histos_%s.root", outputdir.Data(), ch->GetTitle()), "RECREATE");
+
+  f1->cd();
   for (HistCol* coll : registry) coll->Write();
   for (HistCol2D* coll : registry2D) coll->Write();
   out_tree->Write();
-  f1.Close();
+  f1->Close();
   if (!quiet) cout << "\n Done!" << endl;
   return 0;
 }

@@ -23,19 +23,19 @@
     // gSystem->Exec(Form("git diff >> %s/git.diff", outputdir.Data()));
 
     // Data
-    TChain ch_data("t", "data");
-    ch_data.Add(basedir_data+"Data*.root");
-    ScanChain(&ch_data, options, outputdir);
+    // TChain ch_data("t", "data");
+    // ch_data.Add(basedir_data+"Data*.root");
+    // ScanChain(&ch_data, options, outputdir);
 
-    // // // Data-Driven Fakes
-    // TChain ch_fakes("t", "fakes");
-    // ch_fakes.Add(basedir_data+"Data*.root");
-    // ScanChain(&ch_fakes, options + "doFakes", outputdir);
+    // // Data-Driven Fakes
+    TChain ch_fakes("t", "fakes");
+    ch_fakes.Add(basedir_data+"Data*.root");
+    ScanChain(&ch_fakes, options + "doFakes", outputdir);
 
-    // // Data-Driven Flips
-    // TChain ch_flips("t", "flips");
-    // ch_flips.Add(basedir_data+"Data*.root");
-    // ScanChain(&ch_flips, options + "doFlips", outputdir);
+    // Data-Driven Flips
+    TChain ch_flips("t", "flips");
+    ch_flips.Add(basedir_data+"Data*.root");
+    ScanChain(&ch_flips, options + "doFlips", outputdir);
 
     // // Monte-Carlo Backgrounds
     // TChain ch_ttw("t", "ttw");
@@ -103,14 +103,14 @@
     // ch_ttdl.Add(basedir_mc+"TTDL.root");
     // ScanChain(&ch_ttdl, options, outputdir);
 
-    // TChain ch_fcnc("t", "fcnc");
-    // ch_fcnc.Add("/nfs-7/userdata/namin/tupler_babies/merged/FT/v3.24/output/year_2016/FCNC_hut_top.root");
-    // ch_fcnc.Add("/nfs-7/userdata/namin/tupler_babies/merged/FT/v3.24/output/year_2016/FCNC_hut_antitop.root");
-    // ScanChain(&ch_fcnc, options, outputdir);
+    TChain ch_fcnc("t", "fcnc");
+    ch_fcnc.Add("/nfs-7/userdata/namin/tupler_babies/merged/FT/v3.24/output/year_2016/FCNC_hut_top.root");
+    ch_fcnc.Add("/nfs-7/userdata/namin/tupler_babies/merged/FT/v3.24/output/year_2016/FCNC_hut_antitop.root");
+    ScanChain(&ch_fcnc, options, outputdir);
 
-    // TChain ch_ttsl("t", "ttsl");
-    // ch_ttsl.Add(basedir_mc+"TTSLtop.root");
-    // ch_ttsl.Add(basedir_mc+"TTSLtopbar.root");
-    // ScanChain(&ch_ttsl, options, outputdir);
+    TChain ch_ttsl("t", "ttsl");
+    ch_ttsl.Add(basedir_mc+"TTSLtop.root");
+    ch_ttsl.Add(basedir_mc+"TTSLtopbar.root");
+    ScanChain(&ch_ttsl, options, outputdir);
 }
 
