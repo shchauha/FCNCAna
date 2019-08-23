@@ -15,3 +15,11 @@ cd analysis/yields
 root -l -b doAll2016.C 
 
 will produce histograms for various samples.
+
+# plotting 
+
+use "plot.py" script in yields to make stacked plots. 
+
+run it as: 
+
+python plot.py
