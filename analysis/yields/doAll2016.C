@@ -2,8 +2,9 @@
     gROOT->ProcessLine(".L ../misc/class_files/v8.02/SS.cc+");
     gROOT->ProcessLine(".L ../../common/CORE/Tools/dorky/dorky.cc+");
     gROOT->ProcessLine(".L ScanChain.C+");
-
-    TString basedir_data = "/home/users/namin/2018/fourtop/all/FTAnalysis/analysis/yields/local/year_2016/";
+    
+    //TString basedir_data = "/home/users/namin/2018/fourtop/all/FTAnalysis/analysis/yields/local/year_2016/";
+    TString basedir_data = "/nfs-7/userdata/namin/tupler_babies/merged/FT/v3.24/output/year_2016/";
     TString basedir_mc = basedir_data;
 
     /* Options:
@@ -14,7 +15,8 @@
      *     evaluateBDT: calculates event BDT, other event_bdt==0
      */
     TString options = "useInclusiveSFs Data2016 doSS";
-    TString outputdir = "outputs2016";
+    //TString outputdir = "v4.2_test";
+    TString outputdir = "v3.24_test";
 
     gSystem->Exec(Form("rm -rf %s", outputdir.Data()));
     gSystem->Exec(Form("mkdir -p %s", outputdir.Data()));
@@ -22,25 +24,32 @@
     // gSystem->Exec(Form("git show HEAD > %s/git.diff", outputdir.Data()));
     // gSystem->Exec(Form("git diff >> %s/git.diff", outputdir.Data()));
 
-    // Data
+    // // Data
     // TChain ch_data("t", "data");
     // ch_data.Add(basedir_data+"Data*.root");
     // ScanChain(&ch_data, options, outputdir);
 
-    // // Data-Driven Fakes
-    TChain ch_fakes("t", "fakes");
-    ch_fakes.Add(basedir_data+"Data*.root");
-    ScanChain(&ch_fakes, options + "doFakes", outputdir);
+    // // // Data-Driven Fakes
+    // TChain ch_fakes("t", "fakes");
+    // ch_fakes.Add(basedir_data+"Data*.root");
+    // ScanChain(&ch_fakes, options + "doFakes", outputdir);
 
-    // Data-Driven Flips
-    TChain ch_flips("t", "flips");
-    ch_flips.Add(basedir_data+"Data*.root");
-    ScanChain(&ch_flips, options + "doFlips", outputdir);
+    // // Data-Driven Flips
+    // TChain ch_flips("t", "flips");
+    // ch_flips.Add(basedir_data+"Data*.root");
+    // ScanChain(&ch_flips, options + "doFlips", outputdir);
+
+    
+
+    // TChain ch_fcnc("t", "fcnc");
+    // ch_fcnc.Add("TT_FCNC_hut_top.root");
+    // ScanChain(&ch_fcnc, options, outputdir);
+    
 
     // // Monte-Carlo Backgrounds
-    // TChain ch_ttw("t", "ttw");
-    // ch_ttw.Add(basedir_mc+"TTWnlo.root");
-    // ScanChain(&ch_ttw, options, outputdir);
+    TChain ch_ttw("t", "ttw");
+    ch_ttw.Add(basedir_mc+"TTWnlo.root");
+    ScanChain(&ch_ttw, options, outputdir);
 
     // TChain ch_ttz("t", "ttz");
     // ch_ttz.Add(basedir_mc+"TTZnlo.root");
@@ -55,28 +64,28 @@
     // ch_dy.Add(basedir_mc+"DY_high.root");
     // ScanChain(&ch_dy, options, outputdir);
 
-    // TChain ch_wjets("t", "wjets");
-    // ch_wjets.Add(basedir_mc+"WJets*.root");
-    // ScanChain(&ch_wjets, options, outputdir);
+    // // TChain ch_wjets("t", "wjets");
+    // // ch_wjets.Add(basedir_mc+"WJets*.root");
+    // // ScanChain(&ch_wjets, options, outputdir);
 
-    // TChain ch_tt("t", "tt");
-    // ch_tt.Add(basedir_mc+"TTBAR*.root");
-    // ScanChain(&ch_tt, options, outputdir);
+    // // TChain ch_tt("t", "tt");
+    // // ch_tt.Add(basedir_mc+"TTBAR*.root");
+    // // ScanChain(&ch_tt, options, outputdir);
 
-    // TChain ch_vv("t", "vv");
-    // ch_vv.Add(basedir_mc+"WZ.root");
-    // /* ch_vv.Add(basedir_mc+"WW.root"); */
-    // ch_vv.Add(basedir_mc+"WWDPS.root");
-    // ch_vv.Add(basedir_mc+"ZZ.root");
-    // ScanChain(&ch_vv, options, outputdir);
+    // // TChain ch_vv("t", "vv");
+    // // ch_vv.Add(basedir_mc+"WZ.root");
+    // // /* ch_vv.Add(basedir_mc+"WW.root"); */
+    // // ch_vv.Add(basedir_mc+"WWDPS.root");
+    // // ch_vv.Add(basedir_mc+"ZZ.root");
+    // // ScanChain(&ch_vv, options, outputdir);
 
     // TChain ch_wz("t", "wz");
     // ch_wz.Add(basedir_mc+"WZ.root");
     // ScanChain(&ch_wz, options, outputdir);
 
-    // // TChain ch_ww("t", "ww");
-    // // ch_ww.Add(basedir_mc+"WW.root");
-    // // ScanChain(&ch_ww, options, outputdir);
+    // TChain ch_ww("t", "ww");
+    // ch_ww.Add(basedir_mc+"WW.root");
+    // ScanChain(&ch_ww, options, outputdir);
 
     // TChain ch_rares("t", "rares");
     // ch_rares.Add(basedir_mc+"WZG.root");
@@ -103,14 +112,14 @@
     // ch_ttdl.Add(basedir_mc+"TTDL.root");
     // ScanChain(&ch_ttdl, options, outputdir);
 
-    TChain ch_fcnc("t", "fcnc");
-    ch_fcnc.Add("/nfs-7/userdata/namin/tupler_babies/merged/FT/v3.24/output/year_2016/FCNC_hut_top.root");
-    ch_fcnc.Add("/nfs-7/userdata/namin/tupler_babies/merged/FT/v3.24/output/year_2016/FCNC_hut_antitop.root");
-    ScanChain(&ch_fcnc, options, outputdir);
+    // TChain ch_fcnc("t", "fcnc");
+    // ch_fcnc.Add("/nfs-7/userdata/namin/tupler_babies/merged/FT/v3.24/output/year_2016/FCNC_hut_top.root");
+    // ch_fcnc.Add("/nfs-7/userdata/namin/tupler_babies/merged/FT/v3.24/output/year_2016/FCNC_hut_antitop.root");
+    // ScanChain(&ch_fcnc, options, outputdir);
 
-    TChain ch_ttsl("t", "ttsl");
-    ch_ttsl.Add(basedir_mc+"TTSLtop.root");
-    ch_ttsl.Add(basedir_mc+"TTSLtopbar.root");
-    ScanChain(&ch_ttsl, options, outputdir);
+    // TChain ch_ttsl("t", "ttsl");
+    // ch_ttsl.Add(basedir_mc+"TTSLtop.root");
+    // ch_ttsl.Add(basedir_mc+"TTSLtopbar.root");
+    // ScanChain(&ch_ttsl, options, outputdir);
 }
 

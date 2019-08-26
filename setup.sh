@@ -12,8 +12,7 @@ cd -
 
 export FTBASE="$( cd "$(dirname "$BASH_SOURCE")" ; pwd -P )"
 
-export LD_LIBRARY_PATH=${FTBASE}/babymaking/batch/:$LD_LIBRARY_PATH
-
+#export LD_LIBRARY_PATH=${FTBASE}/babymaking/batch/:$LD_LIBRARY_PATH
 export PYTHONPATH=${FTBASE}/:$PYTHONPATH
 export PYTHONPATH=${FTBASE}/common/matplottery:$PYTHONPATH
 
