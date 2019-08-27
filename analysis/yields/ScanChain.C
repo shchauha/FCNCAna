@@ -274,11 +274,12 @@ int ScanChain(TChain *ch, TString options="", TString outputdir="outputs"){
 
     //"sshh",                        // HH SS
     "ssbr",
+    "ss0b2j",
     "ss1b2j",
     "ss2b2j",
     //"ssonz",
-    "ss1b2j_s",
-    "ss1b2j_s_met50",
+    //"ss1b2j_s",
+    //"ss1b2j_s_met50",
     
       
   };
@@ -351,6 +352,13 @@ int ScanChain(TChain *ch, TString options="", TString outputdir="outputs"){
   HistCol h_ptj7        (regions, "ptj7"       , 30, 0   , 300 , &registry);
   HistCol h_ptj8        (regions, "ptj8"       , 30, 0   , 300 , &registry);
 
+  
+  HistCol h_ptbt1        (regions, "ptbt1"       , 50, 0   , 500 , &registry);
+  HistCol h_ptbt2        (regions, "ptbt2"       , 50, 0   , 500 , &registry);
+  HistCol h_ptbt3        (regions, "ptbt3"       , 50, 0   , 500 , &registry);
+  HistCol h_ptbt4        (regions, "ptbt4"       , 50, 0   , 500 , &registry);
+
+  
   HistCol h_nforwardjets20 (regions    , "nforwardjets20"     , 10, 0 , 10 , &registry);
   HistCol h_sr          (regions, "sr"         , 60 , -0.5, 59.5, &registry);
   HistCol h_bdt         (regions, "bdt"        , 10 , -1., 1., &registry);
@@ -377,6 +385,7 @@ int ScanChain(TChain *ch, TString options="", TString outputdir="outputs"){
   int matchtype;
   int nlb40, ntb40, nisrjets, nisrmatch;
   float ptj1, ptj2, ptj3, ptj4, ptj5, ptj6, ptj7, ptj8;
+  float ptbt1, ptbt2, ptbt3, ptbt4;
   float jet1phi;
 
   int SR;
@@ -497,9 +506,10 @@ int ScanChain(TChain *ch, TString options="", TString outputdir="outputs"){
        */
       int hyp_class = ss::hyp_class();
       //Calculate weight
-      lumiAG=140;
+      //lumiAG=140;
       weight = ss::is_real_data() ? 1 : ss::scale1fb()*lumiAG;
-      if(proc.Contains("fcnc")) weight =  ss::scale1fb()*lumiAG*2.519*0.5;
+      if(proc.Contains("fcnc")) weight =  ss::scale1fb()*lumiAG*2.519*0.5/9.6000003;
+      
       //cout<<"weight "<<weight<<endl;
       
       if (!ss::is_real_data()) {
@@ -593,11 +603,28 @@ int ScanChain(TChain *ch, TString options="", TString outputdir="outputs"){
 	    
       // jet pt 
 
-      ptj1 = (njets >= 1) ? ss::jets()[0].pt()*ss::jets_undoJEC()[0]*ss::jets_JEC()[0] : 0;
-      ptj2 = (njets >= 2) ? ss::jets()[1].pt()*ss::jets_undoJEC()[1]*ss::jets_JEC()[1] : 0;
-      ptj3 = (njets >= 3) ? ss::jets()[2].pt()*ss::jets_undoJEC()[2]*ss::jets_JEC()[2] : 0;
-      ptj4 = (njets >= 4) ? ss::jets()[3].pt()*ss::jets_undoJEC()[3]*ss::jets_JEC()[3] : 0;
+      // ptj1 = (njets >= 1) ? ss::jets()[0].pt()*ss::jets_undoJEC()[0]*ss::jets_JEC()[0] : 0;
+      // ptj2 = (njets >= 2) ? ss::jets()[1].pt()*ss::jets_undoJEC()[1]*ss::jets_JEC()[1] : 0;
+      // ptj3 = (njets >= 3) ? ss::jets()[2].pt()*ss::jets_undoJEC()[2]*ss::jets_JEC()[2] : 0;
+      // ptj4 = (njets >= 4) ? ss::jets()[3].pt()*ss::jets_undoJEC()[3]*ss::jets_JEC()[3] : 0;
 
+      // ptbt1 = (nbtags >= 1) ? ss::btags()[0].pt()*ss::btags_undoJEC()[0]*ss::btags_JEC()[0] : 0;
+      // ptbt2 = (nbtags >= 2) ? ss::btags()[1].pt()*ss::btags_undoJEC()[1]*ss::btags_JEC()[1] : 0;
+      // ptbt3 = (nbtags >= 3) ? ss::btags()[2].pt()*ss::btags_undoJEC()[2]*ss::btags_JEC()[2] : 0;
+      // ptbt4 = (nbtags >= 4) ? ss::btags()[3].pt()*ss::btags_undoJEC()[3]*ss::btags_JEC()[3] : 0;
+
+      
+      ptj1 = (njets >= 1) ? ss::jets()[0].pt() : 0;
+      ptj2 = (njets >= 2) ? ss::jets()[1].pt() : 0;
+      ptj3 = (njets >= 3) ? ss::jets()[2].pt() : 0;
+      ptj4 = (njets >= 4) ? ss::jets()[3].pt() : 0;
+
+      ptbt1 = (nbtags >= 1) ? ss::btags()[0].pt() : 0;
+      ptbt2 = (nbtags >= 2) ? ss::btags()[1].pt() : 0;
+      ptbt3 = (nbtags >= 3) ? ss::btags()[2].pt() : 0;
+      ptbt4 = (nbtags >= 4) ? ss::btags()[3].pt() : 0;
+
+      
       // float ht_new  = 0;
       // for(int i =0; i<njets;i++){
       // 	ht_new  = ht_new + ss::jets()[i].pt();
@@ -634,6 +661,8 @@ int ScanChain(TChain *ch, TString options="", TString outputdir="outputs"){
 	do_fill(h_mtmin, ss::mtmin());
 	do_fill(h_dphil1met, calcDeltaPhi(lep1phi,metphi));
 	do_fill(h_dphil2met, calcDeltaPhi(lep2phi,metphi));
+	if(njets>0)do_fill(h_dphimetj1, calcDeltaPhi(ss::jets()[0].phi(),metphi));
+	do_fill(h_dphil1l2, calcDeltaPhi(lep1phi,lep2phi));	
 	do_fill(h_njets, njets);
 	do_fill(h_nisrjets, nisrjets);
 	do_fill(h_nisrmatch, nisrmatch);	        
@@ -668,6 +697,9 @@ int ScanChain(TChain *ch, TString options="", TString outputdir="outputs"){
 
 	do_fill(h_ptratio1, lep1ptratio);
 	do_fill(h_ptratio2, lep2ptratio);
+	do_fill(h_miniiso1, lep1miniiso);
+	do_fill(h_miniiso1, lep1miniiso);
+	
 	int type = ss::hyp_type();
 	do_fill(h_type,   type>1 ? type-1 : type);
 	//do_fill(h_q1,   lep1id>0 ? -1 : 1);
@@ -684,6 +716,10 @@ int ScanChain(TChain *ch, TString options="", TString outputdir="outputs"){
 	do_fill(h_ptj2,   ptj2);
 	do_fill(h_ptj3,   ptj3);
 	do_fill(h_ptj4,   ptj4);
+	do_fill(h_ptbt1,   ptbt1);
+	do_fill(h_ptbt2,   ptbt2);
+	do_fill(h_ptbt3,   ptbt3);
+	do_fill(h_ptbt4,   ptbt4);
 	    
       };
 
@@ -693,7 +729,7 @@ int ScanChain(TChain *ch, TString options="", TString outputdir="outputs"){
       if (hyp_class == 3 and nleps == 2 and njets >= 2 and met > 50 and lep1ccpt > 25 and lep2ccpt > 25 ) {	      	
 	fill_region("sshh", weight);
       }
-      if (hyp_class == 3 and nleps == 2 and njets >= 2 and nbtags > 0 and met > 50 and lep1ccpt > 25 and lep2ccpt > 20 ){ 
+      if (hyp_class == 3 and nleps == 2 and njets >= 2 and lep1ccpt > 25 and lep2ccpt > 20 ){ 
 
 	fill_region("ssbr", weight); 
 	//fill the tree variables
@@ -704,11 +740,12 @@ int ScanChain(TChain *ch, TString options="", TString outputdir="outputs"){
 	out_tree->Fill();	
 	//cout<<" bdt value"<<reader->EvaluateMVA("BDTG method")<<endl;
       }
-      if (hyp_class == 3 and nleps == 2 and njets >= 2 and nbtags == 1 and met > 50 and lep1ccpt > 25 and lep2ccpt > 20 ) fill_region("ss1b2j", weight); 
-      if (hyp_class == 3 and nleps == 2 and njets >= 2 and nbtags  > 1 and met > 50 and lep1ccpt > 25 and lep2ccpt > 20 ) fill_region("ss2b2j", weight); 
+      
+      
+      if (hyp_class == 3 and nleps == 2 and njets >= 2 and nbtags == 0  and lep1ccpt > 25 and lep2ccpt > 20 ) fill_region("ss0b2j", weight); 
+      if (hyp_class == 3 and nleps == 2 and njets >= 2 and nbtags == 1  and lep1ccpt > 25 and lep2ccpt > 20 ) fill_region("ss1b2j", weight); 
+      if (hyp_class == 3 and nleps == 2 and njets >= 2 and nbtags  > 1  and lep1ccpt > 25 and lep2ccpt > 20 ) fill_region("ss2b2j", weight); 
       if (hyp_class == 3 and nleps == 2 and met < 50 and lep1ccpt > 25 and lep2ccpt > 20 and abs(lep1id) == 11 and abs(lep1id) == 11 and abs(m12-91.2) <15. ) fill_region("ssonz", weight); 
-      if (lep1good and lep2good and !lep3good and lep1id*lep2id>0 and njets >= 2 and nbtags == 1 and lep1ccpt > 25 and lep2ccpt > 20 ) fill_region("ss1b2j_s", weight); 
-      if (lep1good and lep2good and !lep3good and lep1id*lep2id>0 and njets >= 2 and nbtags == 1 and met > 50 and lep1ccpt > 25 and lep2ccpt > 20 ) fill_region("ss1b2j_s_met50", weight); 
       
     }//event loop
     //delete tree;

@@ -1,17 +1,19 @@
-therelease=CMSSW_9_4_9
-export SCRAM_ARCH=slc6_amd64_gcc630
-mkdir -p common
-if [ ! -d common/$therelease ]; then 
-    cd common/ ;
-    cmsrel $therelease;
-    cd ~-
-fi
-cd common/$therelease/src
-eval `scram ru -sh`
-cd -
+#therelease=CMSSW_9_4_9
+#export SCRAM_ARCH=slc6_amd64_gcc630
+#mkdir -p common
+#if [ ! -d common/$therelease ]; then 
+#    cd common/ ;
+#    cmsrel $therelease;
+#    cd ~-
+#fi
+#cd common/$therelease/src
+#eval `scram ru -sh`
+#cd -
+#
 
 export FTBASE="$( cd "$(dirname "$BASH_SOURCE")" ; pwd -P )"
 
+echo $FTBASE
 #export LD_LIBRARY_PATH=${FTBASE}/babymaking/batch/:$LD_LIBRARY_PATH
 export PYTHONPATH=${FTBASE}/:$PYTHONPATH
 export PYTHONPATH=${FTBASE}/common/matplottery:$PYTHONPATH

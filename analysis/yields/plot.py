@@ -13,7 +13,10 @@ from matplottery.utils import Hist1D, MET_LATEX, binomial_obs_z
 
 #dirname = "cutandcountmc"
 #dirname = "outputs2016"
-dirname = "v3.24_samples"
+#dirname = "v3.24_test"
+#dirname = "v4.2"
+dirname = "v4.2_data"
+
 
 signalname = "fcnc"
 files = []
@@ -25,9 +28,8 @@ for r, d, f in os.walk(dirname):
 print files
 log_scale =[False, True]
 log_string =""
-regions = ["ssbr","ss1b2j","ss2b2j","ss1b2j_s","ss1b2j_s_met50"]
+regions = ["ssbr","ss0b2j","ss1b2j","ss2b2j"]
 #regions = ["ss1b2j_s_met50"]
-
 
 for region in regions:
     print "working on ",region
@@ -36,8 +38,29 @@ for region in regions:
         [region+"_njets_in","No of jets"],
         [region+"_nbtags_in","No of b jets"],
         [region+"_met_in","MET"],
+        [region+"_ht_in","HT"],
+        [region+"_mtmin_in","MTmin"],
         [region+"_mll_in","M_{ll} [GeV]"],
-    
+        [region+"_dphil1met_in","dphil1met"],
+        [region+"_dphil2met_in","dphil2met"],
+        [region+"_dphimetj1_in","dphimetj1"],
+        [region+"_ptrel1_in","ptrel1"],
+        [region+"_ptrel2_in","ptrel2"],
+        [region+"_ptratio1_in","ptratio1"],
+        [region+"_ptratio2_in","ptratio2"],
+        [region+"_miniiso1_in","miniiso1"],
+        [region+"_miniiso2_in","miniiso2"],
+        [region+"_dphil1l2_in","dphil1l2"],
+        [region+"_bdt_in","bdt"],
+        [region+"_ptj1_in","1st jet pt"],
+        [region+"_ptj2_in","2nd jet pt"],
+        [region+"_ptj3_in","3rd jet pt"],
+        [region+"_ptj4_in","4th jet pt"],
+        [region+"_ptbt1_in","1st bjet pt"],
+        [region+"_ptbt2_in","2nd bjet pt"],
+        [region+"_ptbt3_in","3rd bjet pt"],
+        [region+"_ptbt4_in","4th bjet pt"],
+
         ]    
     for plot in range(len(plotname)):
         #print plotname[plot][0]            
@@ -67,7 +90,8 @@ for region in regions:
                        ylabel="Events", 
                        filename=dirname+"/"+plotname[plot][0]+log_string+".png",
                        cms_type = "Preliminary",
-                       lumi = 140,
+                       #lumi = 140,
+                       lumi = 35.9,
                        #ratio = data[0].divide(sum(bgs)),
                        ratio = sum(sigs).divide(sum(bgs)),
                        ratio_range=[0,2],
