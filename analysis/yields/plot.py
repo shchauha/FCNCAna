@@ -15,8 +15,8 @@ from matplottery.utils import Hist1D, MET_LATEX, binomial_obs_z
 #dirname = "outputs2016"
 #dirname = "v3.24_test"
 #dirname = "v4.2"
-dirname = "v4.2_data"
-
+dirname = "v4.2_nonskim"
+#dirname = "v4.2_data"
 
 signalname = "fcnc"
 files = []
@@ -28,8 +28,9 @@ for r, d, f in os.walk(dirname):
 print files
 log_scale =[False, True]
 log_string =""
-regions = ["ssbr","ss0b2j","ss1b2j","ss2b2j"]
+regions = ["ssbr","ss0b2j","ss1b2j","ss2b2j","lowmetonzor0b","ssbr2","ss1b2j2","ss2b2j2"]
 #regions = ["ss1b2j_s_met50"]
+#regions = ["ssbr"]
 
 for region in regions:
     print "working on ",region

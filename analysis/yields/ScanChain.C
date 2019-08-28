@@ -25,7 +25,6 @@
 using namespace std;
 typedef ROOT::Math::LorentzVector<ROOT::Math::PxPyPzE4D<float>> Vec4;
 // using namespace tas;
-
 // float lumiAG = getLumi();
 bool STOP_REQUESTED = false;
 // float lumiAG = 36.3;
@@ -277,6 +276,11 @@ int ScanChain(TChain *ch, TString options="", TString outputdir="outputs"){
     "ss0b2j",
     "ss1b2j",
     "ss2b2j",
+    "lowmetonzor0b",
+    "ssbr2",
+    "ss1b2j2",
+    "ss2b2j2",
+    
     //"ssonz",
     //"ss1b2j_s",
     //"ss1b2j_s_met50",
@@ -698,7 +702,7 @@ int ScanChain(TChain *ch, TString options="", TString outputdir="outputs"){
 	do_fill(h_ptratio1, lep1ptratio);
 	do_fill(h_ptratio2, lep2ptratio);
 	do_fill(h_miniiso1, lep1miniiso);
-	do_fill(h_miniiso1, lep1miniiso);
+	do_fill(h_miniiso2, lep2miniiso);
 	
 	int type = ss::hyp_type();
 	do_fill(h_type,   type>1 ? type-1 : type);
@@ -729,8 +733,11 @@ int ScanChain(TChain *ch, TString options="", TString outputdir="outputs"){
       if (hyp_class == 3 and nleps == 2 and njets >= 2 and met > 50 and lep1ccpt > 25 and lep2ccpt > 25 ) {	      	
 	fill_region("sshh", weight);
       }
-      if (hyp_class == 3 and nleps == 2 and njets >= 2 and lep1ccpt > 25 and lep2ccpt > 20 ){ 
+      bool OnZ = abs(m12-91.2) <15.;
+      bool LowMetOnZor0b = (met<50&&OnZ)||nbtags==0;
 
+      
+      if (hyp_class == 3 and nleps == 2 and njets >= 2 and lep1ccpt > 25 and lep2ccpt > 20 ){ 
 	fill_region("ssbr", weight); 
 	//fill the tree variables
 	tree_met = met;
@@ -740,11 +747,16 @@ int ScanChain(TChain *ch, TString options="", TString outputdir="outputs"){
 	out_tree->Fill();	
 	//cout<<" bdt value"<<reader->EvaluateMVA("BDTG method")<<endl;
       }
-      
-      
+
+      if (hyp_class == 3 and LowMetOnZor0b and lep1ccpt > 25 and lep2ccpt > 20 )  fill_region("lowmetonzor0b", weight);	      
       if (hyp_class == 3 and nleps == 2 and njets >= 2 and nbtags == 0  and lep1ccpt > 25 and lep2ccpt > 20 ) fill_region("ss0b2j", weight); 
       if (hyp_class == 3 and nleps == 2 and njets >= 2 and nbtags == 1  and lep1ccpt > 25 and lep2ccpt > 20 ) fill_region("ss1b2j", weight); 
-      if (hyp_class == 3 and nleps == 2 and njets >= 2 and nbtags  > 1  and lep1ccpt > 25 and lep2ccpt > 20 ) fill_region("ss2b2j", weight); 
+      if (hyp_class == 3 and nleps == 2 and njets >= 2 and nbtags  > 1  and lep1ccpt > 25 and lep2ccpt > 20 ) fill_region("ss2b2j", weight);
+      
+      if (hyp_class == 3 and nleps == 2 and njets >= 2 and lep1ccpt > 25 and lep2ccpt > 20 and !LowMetOnZor0b ) fill_region("ssbr2", weight); 
+      if (hyp_class == 3 and nleps == 2 and njets >= 2 and nbtags == 1   and lep1ccpt > 25 and lep2ccpt > 20 and !LowMetOnZor0b ) fill_region("ss1b2j2", weight); 
+      if (hyp_class == 3 and nleps == 2 and njets >= 2 and nbtags  > 1   and lep1ccpt > 25 and lep2ccpt > 20 and !LowMetOnZor0b ) fill_region("ss2b2j2", weight);
+      
       if (hyp_class == 3 and nleps == 2 and met < 50 and lep1ccpt > 25 and lep2ccpt > 20 and abs(lep1id) == 11 and abs(lep1id) == 11 and abs(m12-91.2) <15. ) fill_region("ssonz", weight); 
       
     }//event loop
