@@ -74,7 +74,6 @@ struct HistCol {
 };
 
 int signal_region(int njets, int nbtags, float met, float ht, float mt_min, int id1, int id2, float lep1pt, float lep2pt, float lep3pt, int nleps) {
-
   // remember that sgn(pdgid) != sgn(charge), it's flipped. so mad.
   int mm = (id1 > 0);
   if ( met>300 && ht<300) return -1;
@@ -270,7 +269,7 @@ int ScanChain(TChain *ch, TString options="", TString outputdir="outputs"){
 
   vector<string> regions = {
 
-    //"sshh",                        // HH SS
+    "sshh",                        // HH SS
     "ssbr",
     "ss0b2j",
     "ss1b2j",
@@ -506,9 +505,12 @@ int ScanChain(TChain *ch, TString options="", TString outputdir="outputs"){
       lep2ptratio = ss::lep2_ptratio();
       //nleps = ss::nleps();
 
-      njets40 = 0;
+      njets40 = 0; float ht40 = 0; 
       if(njets>0)for(int i =0; i< njets;i++){
-	if(ss::jets()[i].pt()*ss::jets_undoJEC()[i]*ss::jets_JEC()[i]>40)njets40++;	
+	  if(ss::jets()[i].pt()*ss::jets_undoJEC()[i]*ss::jets_JEC()[i]>40){
+	    njets40++;
+	    ht40 = ht40+ss::jets()[i].pt()*ss::jets_undoJEC()[i]*ss::jets_JEC()[i];
+	  }
       }
       nbtags25 = 0;      nbtagsM = 0;       nbtags25M = 0;
       if(nbtags>0)for(int i=0;i<nbtags;i++){
@@ -525,7 +527,8 @@ int ScanChain(TChain *ch, TString options="", TString outputdir="outputs"){
 
       bool isClass6 = ss::hyp_class() == 6;
       float mtnonz = ss::mtmin();
-      SR = signal_region(ss::njets(), ss::nbtags(), ss::met(), ss::ht(), ss::mtmin(), lep1id, lep2id, lep1ccpt, lep2ccpt, lep3ccpt, nleps); 
+      //SR = signal_region(ss::njets(), ss::nbtags(), ss::met(), ss::ht(), ss::mtmin(), lep1id, lep2id, lep1ccpt, lep2ccpt, lep3ccpt, nleps);
+      SR = signal_region(njets40, nbtags25M, ss::met(), ht40 , ss::mtmin(), lep1id, lep2id, lep1ccpt, lep2ccpt, lep3ccpt, nleps); 
       ht = ss::ht();
       nisrmatch = ss::nisrMatch();      	    
       /* hyp_class
@@ -763,7 +766,8 @@ int ScanChain(TChain *ch, TString options="", TString outputdir="outputs"){
       bool BR_lite = ht > 300  and njets >= 2 and  nbtags >= 2 and met >= 50;
       bool BR = BR_lite and hyp_class == 3;
       //if (BR) fill_region("br", weight);            	    
-      if (hyp_class == 3 and nleps == 2 and njets >= 2 and met > 50 and lep1ccpt > 25 and lep2ccpt > 25 ) {	      	
+      //if (hyp_class == 3 and nleps == 2 and njets >= 2 and met > 50 and lep1ccpt > 25 and lep2ccpt > 25 ) {
+      if (hyp_class == 3 and nleps == 2 and njets40 >= 2 and met > 50 and lep1ccpt > 25 and lep2ccpt > 25 ) {	      	
 	fill_region("sshh", weight);
       }
       bool OnZ = abs(m12-91.2) <15.;
