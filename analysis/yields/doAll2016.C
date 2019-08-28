@@ -5,8 +5,8 @@
     
     //TString basedir_data = "/home/users/namin/2018/fourtop/all/FTAnalysis/analysis/yields/local/year_2016/";
     //TString basedir_data = "/nfs-7/userdata/namin/tupler_babies/merged/FT/v3.24/output/year_2016/";
-    //TString basedir_data = "/home/shchauha/2019/Analysis/Babies/year_2016/skimfix/";
-    TString basedir_data = "/home/shchauha/2019/Analysis/Babies/year_2016/";
+    TString basedir_data = "/home/shchauha/2019/Analysis/Babies/year_2016/skimfix2/";
+    //TString basedir_data = "/home/shchauha/2019/Analysis/Babies/year_2016/";
     TString basedir_mc = basedir_data;
 
     /* Options:
@@ -18,9 +18,8 @@
      */
     TString options = "useInclusiveSFs Data2016 doSS";
     //TString outputdir = "v4.2_data";
-    TString outputdir = "v4.2_nonskim";
+    TString outputdir = "v4.2_skimfix2";
     //TString outputdir = "v";
-
     gSystem->Exec(Form("rm -rf %s", outputdir.Data()));
     gSystem->Exec(Form("mkdir -p %s", outputdir.Data()));
 

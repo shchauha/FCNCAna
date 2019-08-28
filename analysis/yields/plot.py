@@ -15,8 +15,9 @@ from matplottery.utils import Hist1D, MET_LATEX, binomial_obs_z
 #dirname = "outputs2016"
 #dirname = "v3.24_test"
 #dirname = "v4.2"
-dirname = "v4.2_nonskim"
+#dirname = "v4.2_nonskim"
 #dirname = "v4.2_data"
+dirname = "v4.2_skimfix2"
 
 signalname = "fcnc"
 files = []
@@ -28,9 +29,30 @@ for r, d, f in os.walk(dirname):
 print files
 log_scale =[False, True]
 log_string =""
-regions = ["ssbr","ss0b2j","ss1b2j","ss2b2j","lowmetonzor0b","ssbr2","ss1b2j2","ss2b2j2"]
-#regions = ["ss1b2j_s_met50"]
-#regions = ["ssbr"]
+regions = ["ssbr",
+           "ss0b2j",
+           "ss1b2j",
+           "ss2b2j",
+           "lowmetonzor0b",
+           "ssbr2",
+           "ss1b2j2",
+           "ss2b2j2",
+           "ss1b2jbtagM",
+           "ss2b2jbtagM",
+           "ss1b2jbtag25",
+           "ss2b2jbtag25",
+           "ss1b2jbtag25M",
+           "ss2b2jbtag25M",
+           "ss1b2jjet40",
+           "ss2b2jjet40",
+           "ss1b2jjet40btagM",
+           "ss2b2jjet40btagM",
+           "ss1b2jjet40btag25",
+           "ss2b2jjet40btag25",
+           "ss1b2jjet40btag25M",
+           "ss2b2jjet40btag25M",
+           
+]
 
 for region in regions:
     print "working on ",region
@@ -38,6 +60,10 @@ for region in regions:
         #[region+"_sr_in","SR"],
         [region+"_njets_in","No of jets"],
         [region+"_nbtags_in","No of b jets"],
+        [region+"_njets40_in","No of jets pt 40"],
+        [region+"_nbtags25_in","No of bjets pt 25"],
+        [region+"_nbtags25M_in","No of bjets pt 25 medium"],
+        [region+"_nbtagsM_in","No of bjets medium"],
         [region+"_met_in","MET"],
         [region+"_ht_in","HT"],
         [region+"_mtmin_in","MTmin"],

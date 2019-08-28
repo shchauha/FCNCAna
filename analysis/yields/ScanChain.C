@@ -44,7 +44,6 @@ struct HistCol2D {
 struct HistCol {
   map<string, TH1D> in;
 
-
   HistCol(vector<string> regions, const string& name, int nbins, const float* bins, vector<HistCol*>* registry=nullptr) {
     for (string region : regions) {
       string base_name = region + "_" + name;
@@ -280,6 +279,20 @@ int ScanChain(TChain *ch, TString options="", TString outputdir="outputs"){
     "ssbr2",
     "ss1b2j2",
     "ss2b2j2",
+    "ss1b2jbtagM",
+    "ss2b2jbtagM",
+    "ss1b2jbtag25",
+    "ss2b2jbtag25",
+    "ss1b2jbtag25M",
+    "ss2b2jbtag25M",
+    "ss1b2jjet40",
+    "ss2b2jjet40",
+    "ss1b2jjet40btagM",
+    "ss2b2jjet40btagM",
+    "ss1b2jjet40btag25",
+    "ss2b2jjet40btag25",
+    "ss1b2jjet40btag25M",
+    "ss2b2jjet40btag25M",
     
     //"ssonz",
     //"ss1b2j_s",
@@ -307,11 +320,15 @@ int ScanChain(TChain *ch, TString options="", TString outputdir="outputs"){
   HistCol h_metoverptj1      (regions, "metoverptj1"     , 50, 0.,2., &registry);
   HistCol h_nleps       (regions, "nleps"      , 5, -0.5 , 4.5 , &registry);
   HistCol h_njets       (regions, "njets"      , 6 , 0   , 6   , &registry);
+  HistCol h_njets40     (regions, "njets40"    , 6 , 0   , 6   , &registry);
   HistCol h_nisrjets    (regions, "nisrjets"   , 5 , 0   , 5   , &registry);
   HistCol h_nisrmatch   (regions, "nisrmatch"  , 5 , 0   , 5   , &registry);
   HistCol h_nlb40       (regions, "nlb40"      , 5 , 0   , 5   , &registry);
   HistCol h_ntb40       (regions, "ntb40"      , 8 , 0   , 8   , &registry);
   HistCol h_nbtags      (regions, "nbtags"     , 5 , 0   , 5   , &registry);
+  HistCol h_nbtagsM     (regions, "nbtagsM"    , 5 , 0   , 5   , &registry);
+  HistCol h_nbtags25    (regions, "nbtags25"   , 5 , 0   , 5   , &registry);
+  HistCol h_nbtags25M   (regions, "nbtags25M"  , 5 , 0   , 5   , &registry);
   HistCol h_maxmjoverpt (regions, "maxmjoverpt", 50, 0   , 0.35, &registry);
   HistCol h_btagid      (regions, "btagid"     , 100 , 0   , 100   , &registry);
   HistCol h_pt1         (regions, "pt1"        , 30, 0   , 300 , &registry);
@@ -382,7 +399,7 @@ int ScanChain(TChain *ch, TString options="", TString outputdir="outputs"){
   float dphil1l2, detal1l2;
   float nmiss1, nmiss2;
 
-  int nleps, njets, nbtags;
+  int nleps, njets, njets40, nbtags, nbtagsM, nbtags25, nbtags25M ;
   float ht, htb, met, metphi, rawmet, calomet;
 
   float maxmjoverpt, ml1j1;
@@ -460,7 +477,7 @@ int ScanChain(TChain *ch, TString options="", TString outputdir="outputs"){
 	if (duplicate_removal::is_duplicate(id)) continue;
       }
       // Save a bunch of event info for quick reference later
-      njets = ss::njets();
+      njets = ss::njets();                 
       nbtags = ss::nbtags();
       met = ss::met();
       metphi = ss::metPhi();
@@ -489,6 +506,17 @@ int ScanChain(TChain *ch, TString options="", TString outputdir="outputs"){
       lep2ptratio = ss::lep2_ptratio();
       //nleps = ss::nleps();
 
+      njets40 = 0;
+      if(njets>0)for(int i =0; i< njets;i++){
+	if(ss::jets()[i].pt()*ss::jets_undoJEC()[i]*ss::jets_JEC()[i]>40)njets40++;	
+      }
+      nbtags25 = 0;      nbtagsM = 0;       nbtags25M = 0;
+      if(nbtags>0)for(int i=0;i<nbtags;i++){
+	  if(ss::btags()[i].pt()*ss::btags_undoJEC()[i]*ss::btags_JEC()[i]>25) nbtags25++;
+	  if(ss::btags_disc()[i]>0.6324) nbtagsM++;
+	  if(ss::btags()[i].pt()*ss::btags_undoJEC()[i]*ss::btags_JEC()[i]>25&&ss::btags_disc()[i]>0.6324) nbtags25M++;	  	  
+      }
+      
       if (doSS) {
 	nleps = (lep3good) ? ((ss::lep4_passes_id() and (ss::lep4_p4().pt() > (abs(ss::lep4_id())==11 ? 15 : 10))) ? 4 : 3) : 2;
       } else {
@@ -668,10 +696,15 @@ int ScanChain(TChain *ch, TString options="", TString outputdir="outputs"){
 	if(njets>0)do_fill(h_dphimetj1, calcDeltaPhi(ss::jets()[0].phi(),metphi));
 	do_fill(h_dphil1l2, calcDeltaPhi(lep1phi,lep2phi));	
 	do_fill(h_njets, njets);
+	do_fill(h_njets40, njets40);
 	do_fill(h_nisrjets, nisrjets);
 	do_fill(h_nisrmatch, nisrmatch);	        
 	do_fill(h_ntb40, ntb40);
 	do_fill(h_nbtags, nbtags);
+	do_fill(h_nbtags25, nbtags25);
+	do_fill(h_nbtagsM, nbtagsM);
+	do_fill(h_nbtags25M, nbtags25M);
+	
 	//int nbnj = 5*min(nbtags,3)+(max(min(njets,6),2)-2);
 	//do_fill(h_nbnj, nbnj);
 
@@ -747,17 +780,38 @@ int ScanChain(TChain *ch, TString options="", TString outputdir="outputs"){
 	out_tree->Fill();	
 	//cout<<" bdt value"<<reader->EvaluateMVA("BDTG method")<<endl;
       }
+      if (hyp_class == 3 and nleps == 2 and met < 50 and lep1ccpt > 25 and lep2ccpt > 20 and abs(lep1id) == 11 and abs(lep1id) == 11 and abs(m12-91.2) <15. ) fill_region("ssonz", weight);
 
-      if (hyp_class == 3 and LowMetOnZor0b and lep1ccpt > 25 and lep2ccpt > 20 )  fill_region("lowmetonzor0b", weight);	      
+      //if (hyp_class == 3 and nleps == 2 and njets >= 2 and lep1ccpt > 25 and lep2ccpt > 20 ) fill_region("ssbr", weight);
+      
+      
       if (hyp_class == 3 and nleps == 2 and njets >= 2 and nbtags == 0  and lep1ccpt > 25 and lep2ccpt > 20 ) fill_region("ss0b2j", weight); 
+
       if (hyp_class == 3 and nleps == 2 and njets >= 2 and nbtags == 1  and lep1ccpt > 25 and lep2ccpt > 20 ) fill_region("ss1b2j", weight); 
       if (hyp_class == 3 and nleps == 2 and njets >= 2 and nbtags  > 1  and lep1ccpt > 25 and lep2ccpt > 20 ) fill_region("ss2b2j", weight);
-      
+      if (hyp_class == 3 and nleps == 2 and njets >= 2 and nbtagsM == 1  and lep1ccpt > 25 and lep2ccpt > 20 ) fill_region("ss1b2jbtagM", weight); 
+      if (hyp_class == 3 and nleps == 2 and njets >= 2 and nbtagsM  > 1  and lep1ccpt > 25 and lep2ccpt > 20 ) fill_region("ss2b2jbtagM", weight);
+      if (hyp_class == 3 and nleps == 2 and njets >= 2 and nbtags25 == 1  and lep1ccpt > 25 and lep2ccpt > 20 ) fill_region("ss1b2jbtag25", weight); 
+      if (hyp_class == 3 and nleps == 2 and njets >= 2 and nbtags25  > 1  and lep1ccpt > 25 and lep2ccpt > 20 ) fill_region("ss2b2jbtag25", weight);
+      if (hyp_class == 3 and nleps == 2 and njets >= 2 and nbtags25M == 1  and lep1ccpt > 25 and lep2ccpt > 20 ) fill_region("ss1b2jbtag25M", weight); 
+      if (hyp_class == 3 and nleps == 2 and njets >= 2 and nbtags25M  > 1  and lep1ccpt > 25 and lep2ccpt > 20 ) fill_region("ss2b2jbtag25M", weight);
+
+      if (hyp_class == 3 and nleps == 2 and njets40 >= 2 and nbtags == 1  and lep1ccpt > 25 and lep2ccpt > 20 ) fill_region("ss1b2jjet40", weight); 
+      if (hyp_class == 3 and nleps == 2 and njets40 >= 2 and nbtags  > 1  and lep1ccpt > 25 and lep2ccpt > 20 ) fill_region("ss2b2jjet40", weight);
+      if (hyp_class == 3 and nleps == 2 and njets40 >= 2 and nbtagsM == 1  and lep1ccpt > 25 and lep2ccpt > 20 ) fill_region("ss1b2jjet40btagM", weight); 
+      if (hyp_class == 3 and nleps == 2 and njets40 >= 2 and nbtagsM  > 1  and lep1ccpt > 25 and lep2ccpt > 20 ) fill_region("ss2b2jjet40btagM", weight);
+      if (hyp_class == 3 and nleps == 2 and njets40 >= 2 and nbtags25 == 1  and lep1ccpt > 25 and lep2ccpt > 20 ) fill_region("ss1b2jjet40btag25", weight); 
+      if (hyp_class == 3 and nleps == 2 and njets40 >= 2 and nbtags25  > 1  and lep1ccpt > 25 and lep2ccpt > 20 ) fill_region("ss2b2jjet40btag25", weight);
+      if (hyp_class == 3 and nleps == 2 and njets40 >= 2 and nbtags25M == 1  and lep1ccpt > 25 and lep2ccpt > 20 ) fill_region("ss1b2jjet40btag25M", weight); 
+      if (hyp_class == 3 and nleps == 2 and njets40 >= 2 and nbtags25M  > 1  and lep1ccpt > 25 and lep2ccpt > 20 ) fill_region("ss2b2jjet40btag25M", weight);
+           
+      if (hyp_class == 3 and LowMetOnZor0b and lep1ccpt > 25 and lep2ccpt > 20 )  fill_region("lowmetonzor0b", weight);	      
       if (hyp_class == 3 and nleps == 2 and njets >= 2 and lep1ccpt > 25 and lep2ccpt > 20 and !LowMetOnZor0b ) fill_region("ssbr2", weight); 
       if (hyp_class == 3 and nleps == 2 and njets >= 2 and nbtags == 1   and lep1ccpt > 25 and lep2ccpt > 20 and !LowMetOnZor0b ) fill_region("ss1b2j2", weight); 
       if (hyp_class == 3 and nleps == 2 and njets >= 2 and nbtags  > 1   and lep1ccpt > 25 and lep2ccpt > 20 and !LowMetOnZor0b ) fill_region("ss2b2j2", weight);
+
+
       
-      if (hyp_class == 3 and nleps == 2 and met < 50 and lep1ccpt > 25 and lep2ccpt > 20 and abs(lep1id) == 11 and abs(lep1id) == 11 and abs(m12-91.2) <15. ) fill_region("ssonz", weight); 
       
     }//event loop
     //delete tree;
