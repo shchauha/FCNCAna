@@ -11,6 +11,7 @@
 #include "TChain.h"
 #include "Math/VectorUtil.h"
 #include "TVector2.h"
+#include "TLorentzVector.h"
 #include "TMVA/Reader.h"
 #include <signal.h>
 #include <stdlib.h>
@@ -156,7 +157,6 @@ int signal_region(int njets, int nbtags, float met, float ht, float mt_min, int 
  
 }
 
-
 float calcDeltaPhi(float phi1, float phi2){
   float dPhi = phi1 - phi2;
   while (dPhi  >  TMath::Pi()) dPhi -= 2*TMath::Pi();
@@ -164,8 +164,26 @@ float calcDeltaPhi(float phi1, float phi2){
   return fabs(dPhi);
 }
 
+float calcDeltaR(float eta1, float phi1, float eta2, float phi2){
+  return TMath::Sqrt(pow(calcDeltaPhi(phi1, phi2),2)+pow((eta1-eta2),2));
+  
+}
+
 float calcMT(float pt1, float phi1, float pt2, float phi2){
   return sqrt( 2 * pt1 * pt2 * ( 1 - cos( phi1 - phi2 ) ) );
+}
+
+
+float minDR(const Vec4 & lep , const vector<Vec4> & jet)
+{
+  int size = (int)jet.size();
+  //cout<<"jet size "<<size<<endl;
+  float mindr = 999;  
+  if(size)for(int i=0;i<size;i++){
+      float dr = calcDeltaR(lep.eta(), lep.phi(), jet[i].eta(), jet[i].phi());
+    if(dr<mindr) mindr = dr;
+  }
+  return mindr;
 }
 
 
@@ -210,6 +228,9 @@ int ScanChain(TChain *ch, TString options="", TString outputdir="outputs"){
   bool minPtFake18 = options.Contains("minPtFake18");
   bool new2016FRBins = options.Contains("new2016FRBins");
   bool noISRWeights = options.Contains("noISRWeights");
+  bool BDTTraining = options.Contains("BDTTraining");
+  bool BDTApplication = options.Contains("BDTApplication");
+  
   ana_t analysis = FTANA;
   if (doSS) {
     analysis = SSANA;
@@ -414,17 +435,79 @@ int ScanChain(TChain *ch, TString options="", TString outputdir="outputs"){
   int nEventsChain = ch->GetEntries();
 
   //add list of trees
-  float tree_nbtags = -1;
+  float tree_lep1pt = -1;
+  float tree_lep2pt = -1;
+  float tree_lep1eta = -1;
+  float tree_lep2eta = -1;
   float tree_njets = -1;
+  float tree_nbtags = -1;
   float tree_met = -1;
+  float tree_ht = -1;
+  float tree_mll = -1;
+  float tree_nele = -1;
+  float tree_jet1pt = -1;
+  float tree_jet2pt = -1;
+  float tree_btag1pt = -1;
+  float tree_drl1l2 = -1;
+  float tree_mindrl1j = -1;
+  float tree_mindrl2j = -1;
+  float tree_mindrl1bt = -1;
+  float tree_mindrl2bt = -1;
+  float tree_dphil1met = -1;
+  float tree_dphil2met = -1;
+  float tree_mt1 = -1;
+  float tree_mt2 = -1;
+  float tree_dphil1l2 = -1;
+  float tree_l1miniiso = -1;
+  float tree_l2miniiso = -1;
+  float tree_l1dxy = -1;
+  float tree_l1dz = -1;
+  float tree_l2dxy = -1;
+  float tree_l2dz = -1;
+  float tree_l1ptratio = -1;
+  float tree_l1ptrel = -1;
+  float tree_l2ptratio = -1;
+  float tree_l2ptrel = -1;
   float tree_weight = -1;
 
   TFile *  f1 = new TFile(Form("%s/histos_%s.root", outputdir.Data(), ch->GetTitle()), "RECREATE");
   f1->cd();
-  TTree* out_tree = new TTree("t","fortraining");  
-  out_tree->Branch("nbtags", &tree_nbtags);
-  out_tree->Branch("njets", &tree_njets);
-  out_tree->Branch("met", &tree_met);
+  TTree* out_tree = new TTree("t","fortraining");
+
+  out_tree->Branch("lep1pt", &tree_lep1pt );
+  out_tree->Branch("lep2pt", &tree_lep2pt );
+  out_tree->Branch("lep1eta", &tree_lep1eta );
+  out_tree->Branch("lep2eta", &tree_lep2eta );
+  out_tree->Branch("njets", &tree_njets );
+  out_tree->Branch("nbtags", &tree_nbtags );
+  out_tree->Branch("met", &tree_met );
+  out_tree->Branch("ht", &tree_ht );
+  out_tree->Branch("mll", &tree_mll );
+  out_tree->Branch("nele", &tree_nele );
+  out_tree->Branch("jet1pt", &tree_jet1pt );
+  out_tree->Branch("jet2pt", &tree_jet2pt );
+  out_tree->Branch("btag1pt", &tree_btag1pt );
+  out_tree->Branch("drl1l2", &tree_drl1l2 );
+  out_tree->Branch("mindrl1j", &tree_mindrl1j );
+  out_tree->Branch("mindrl2j", &tree_mindrl2j );
+  out_tree->Branch("mindrl1bt", &tree_mindrl1bt );
+  out_tree->Branch("mindrl2bt", &tree_mindrl2bt );
+  out_tree->Branch("dphil1met", &tree_dphil1met );
+  out_tree->Branch("dphil2met", &tree_dphil2met );
+  out_tree->Branch("mt1", &tree_mt1 );
+  out_tree->Branch("mt2", &tree_mt2 );
+  out_tree->Branch("dphil1l2", &tree_dphil1l2 );
+  out_tree->Branch("l1miniiso", &tree_l1miniiso );
+  out_tree->Branch("l2miniiso", &tree_l2miniiso );
+  out_tree->Branch("l1dxy", &tree_l1dxy );
+  out_tree->Branch("l1dz", &tree_l1dz );
+  out_tree->Branch("l2dxy", &tree_l2dxy );
+  out_tree->Branch("l2dz", &tree_l2dz );
+  out_tree->Branch("l1ptratio", &tree_l1ptratio );
+  out_tree->Branch("l1ptrel", &tree_l1ptrel );
+  out_tree->Branch("l2ptratio", &tree_l2ptratio );
+  out_tree->Branch("l2ptrel", &tree_l2ptrel );
+  
   out_tree->Branch("weight", &tree_weight);
 
   TMVA::Reader *reader = new TMVA::Reader( "!Color:!Silent" );
@@ -458,6 +541,19 @@ int ScanChain(TChain *ch, TString options="", TString outputdir="outputs"){
       samesign.GetEntry(event);
       nEventsTotal++;            
       if (!quiet) bar.progress(nEventsTotal, nEventsChain);
+
+      //Calculate weight
+      lumiAG=140;
+      weight = ss::is_real_data() ? 1 : ss::scale1fb()*lumiAG;
+      if(proc.Contains("fcnc")) weight =  ss::scale1fb()*lumiAG*2.519*0.5/9.6000003;
+      //cout<<"weight "<<weight<<endl;
+      
+      // Use odd events for training
+      if(BDTTraining and event %2 == 0) continue ;
+      //Use even events for Application
+      if(BDTApplication and event %2 == 1) continue ;
+      if(BDTTraining or BDTApplication) weight = weight*2;
+      
       // Simple cuts first to speed things up
       lep1ccpt = ss::lep1_coneCorrPt();
       lep2ccpt = ss::lep2_coneCorrPt();
@@ -539,14 +635,7 @@ int ScanChain(TChain *ch, TString options="", TString outputdir="outputs"){
        * 5: SS, inSituFR
        * 6: SS, tight-tight and fails Z-veto (lies! hyp_class==6 != lep1good and lep2good)
        */
-      int hyp_class = ss::hyp_class();
-      //Calculate weight
-      //lumiAG=140;
-      weight = ss::is_real_data() ? 1 : ss::scale1fb()*lumiAG;
-      if(proc.Contains("fcnc")) weight =  ss::scale1fb()*lumiAG*2.519*0.5/9.6000003;
-      
-      //cout<<"weight "<<weight<<endl;
-      
+      int hyp_class = ss::hyp_class();      
       if (!ss::is_real_data()) {
 	weight *= getTruePUw(year, ss::trueNumInt()[0]);
 	if (lep1good) weight *= leptonScaleFactor(year, lep1id, lep1ccpt, lep1eta, ht);
@@ -774,12 +863,43 @@ int ScanChain(TChain *ch, TString options="", TString outputdir="outputs"){
       bool LowMetOnZor0b = (met<50&&OnZ)||nbtags==0;
 
       
-      if (hyp_class == 3 and nleps == 2 and njets >= 2 and lep1ccpt > 25 and lep2ccpt > 20 ){ 
+      if (hyp_class == 3 and nleps == 2 and njets >= 2 and nbtags > 0 and lep1ccpt > 25 and lep2ccpt > 20 ){ 
 	fill_region("ssbr", weight); 
+
 	//fill the tree variables
-	tree_met = met;
-	tree_nbtags = nbtags;
+	tree_lep1pt = lep1pt;
+	tree_lep2pt = lep2pt;
+	tree_lep1eta = lep1eta;
+	tree_lep2eta = lep2eta;
 	tree_njets = njets;
+	tree_nbtags = nbtags;
+	tree_met = met;
+	tree_ht = ht;
+	tree_mll = m12;
+	tree_nele = (abs(lep1id)==11 and abs(lep2id)==11) ? 2 : (abs(lep1id)==11 or abs(lep2id)==11) ? 1 : 0 ;
+	tree_jet1pt = ptj1;
+	tree_jet2pt = ptj2;
+	tree_btag1pt = ptbt1;
+	tree_drl1l2 =  calcDeltaR(ss::lep1_p4().eta(),ss::lep1_p4().phi(),ss::lep2_p4().eta(),ss::lep2_p4().phi());
+	tree_mindrl1j = minDR(ss::lep1_p4(),ss::jets());
+	tree_mindrl2j = minDR(ss::lep2_p4(),ss::jets());
+	tree_mindrl1bt = minDR(ss::lep1_p4(),ss::btags());
+	tree_mindrl2bt = minDR(ss::lep2_p4(),ss::btags());
+	tree_dphil1met = calcDeltaPhi(lep1phi,metphi);
+	tree_dphil2met = calcDeltaPhi(lep2phi,metphi);
+	tree_mt1 = calcMT(ss::lep1_p4().pt(),ss::lep1_p4().phi(), met, metphi);
+	tree_mt2 = calcMT(ss::lep2_p4().pt(),ss::lep2_p4().phi(), met, metphi);
+	tree_dphil1l2 = calcDeltaPhi(lep1phi,lep2phi);
+	tree_l1miniiso = ss::lep1_miniIso();
+	tree_l2miniiso = ss::lep2_miniIso();
+	tree_l1dxy = ss::lep1_dxyPV();
+	tree_l1dz = ss::lep2_dZ();
+	tree_l2dxy = ss::lep2_dxyPV();
+	tree_l2dz = ss::lep2_dZ();
+	tree_l1ptratio = lep1ptratio;
+	tree_l1ptrel = lep1ptrel;
+	tree_l2ptratio = lep2ptratio;
+	tree_l2ptrel = lep2ptrel;
 	tree_weight = weight;	
 	out_tree->Fill();	
 	//cout<<" bdt value"<<reader->EvaluateMVA("BDTG method")<<endl;

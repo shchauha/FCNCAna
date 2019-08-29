@@ -17,8 +17,10 @@
      *     evaluateBDT: calculates event BDT, other event_bdt==0
      */
     TString options = "useInclusiveSFs Data2016 doSS";
+    //TString options = "useInclusiveSFs Data2016 doSS BDTTraining";
+    //TString options = "useInclusiveSFs Data2016 doSS BDTApplication";
     //TString outputdir = "v4.2_data";
-    TString outputdir = "v4.2_skimfix2";
+    TString outputdir = "v4.2_skimfix2_test2";
     //TString outputdir = "v";
     gSystem->Exec(Form("rm -rf %s", outputdir.Data()));
     gSystem->Exec(Form("mkdir -p %s", outputdir.Data()));
@@ -27,9 +29,9 @@
     // gSystem->Exec(Form("git diff >> %s/git.diff", outputdir.Data()));
 
     //Data
-    TChain ch_data("t", "data");
-    ch_data.Add(basedir_data+"Data*.root");
-    ScanChain(&ch_data, options, outputdir);
+    // TChain ch_data("t", "data");
+    // ch_data.Add(basedir_data+"Data*.root");
+    // ScanChain(&ch_data, options, outputdir);
 
     // // Data-Driven Fakes
     // TChain ch_fakes("t", "fakes");
@@ -113,15 +115,17 @@
     // ch_ttdl.Add(basedir_mc+"TTDL.root");
     // ScanChain(&ch_ttdl, options, outputdir);
 
-    // TChain ch_fcnc("t", "fcnc");
-    // ch_fcnc.Add(basedir_mc+"FCNC_hut_top.root");
-    // ch_fcnc.Add(basedir_mc+"FCNC_hut_antitop.root");
-    // ScanChain(&ch_fcnc, options, outputdir);
+    TChain ch_fcnc("t", "fcnc");
+    ch_fcnc.Add(basedir_mc+"FCNC_hut_top.root");
+    ch_fcnc.Add(basedir_mc+"FCNC_hut_antitop.root");
+    //ScanChain(&ch_fcnc, options + "BDTTraining", outputdir);
+    ScanChain(&ch_fcnc, options, outputdir);
 
-    // TChain ch_ttsl("t", "ttsl");
-    // ch_ttsl.Add(basedir_mc+"TTSLtop.root");
-    // ch_ttsl.Add(basedir_mc+"TTSLtopbar.root");
-    // ScanChain(&ch_ttsl, options, outputdir);
+    TChain ch_ttsl("t", "ttsl");
+    ch_ttsl.Add(basedir_mc+"TTSLtop.root");
+    ch_ttsl.Add(basedir_mc+"TTSLtopbar.root");
+    //ScanChain(&ch_ttsl, options + " BDTTraining", outputdir);
+    ScanChain(&ch_ttsl, options, outputdir);
 
 }
 
