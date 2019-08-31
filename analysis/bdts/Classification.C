@@ -21,9 +21,9 @@ int Classification( TString myMethodList = "" )
    TMVA::Tools::Instance();
 
    // directory training tree
-
-   TString basedir ="/home/shchauha/2019/Analysis/FCNCAna/analysis/yields/v3.24_training/";
    
+   //TString basedir ="/home/shchauha/2019/Analysis/FCNCAna/analysis/yields/v3.24_training/";
+   TString basedir ="/home/users/shchauha/2019/FCNCAna/analysis/yields/v3.24_training/";
    // Default MVA methods to be trained + tested
    std::map<std::string,int> Use;      
    // Boosted Decision Trees
