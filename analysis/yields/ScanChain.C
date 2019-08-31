@@ -231,10 +231,10 @@ int ScanChain(TChain *ch, TString options="", TString outputdir="outputs"){
   bool BDTTraining = options.Contains("BDTTraining");
   bool BDTApplication = options.Contains("BDTApplication");
   
-  ana_t analysis = FTANA;
-  if (doSS) {
-    analysis = SSANA;
-  }
+  //ana_t analysis = FTANA;
+  //if (doSS) {
+  ana_t analysis = SSANA;
+  //}
 
   TString proc(ch->GetTitle());
 
@@ -295,25 +295,27 @@ int ScanChain(TChain *ch, TString options="", TString outputdir="outputs"){
     "ss0b2j",
     "ss1b2j",
     "ss2b2j",
-    "lowmetonzor0b",
-    "ssbr2",
-    "ss1b2j2",
-    "ss2b2j2",
-    "ss1b2jbtagM",
-    "ss2b2jbtagM",
-    "ss1b2jbtag25",
-    "ss2b2jbtag25",
-    "ss1b2jbtag25M",
-    "ss2b2jbtag25M",
-    "ss1b2jjet40",
-    "ss2b2jjet40",
-    "ss1b2jjet40btagM",
-    "ss2b2jjet40btagM",
-    "ss1b2jjet40btag25",
-    "ss2b2jjet40btag25",
-    "ss1b2jjet40btag25M",
-    "ss2b2jjet40btag25M",
-    
+    "mlbr",
+    "ml1b1j",
+    "ml2b2j",
+    // "lowmetonzor0b",
+    // "ssbr2",
+    // "ss1b2j2",
+    // "ss2b2j2",
+    // "ss1b2jbtagM",
+    // "ss2b2jbtagM",
+    // "ss1b2jbtag25",
+    // "ss2b2jbtag25",
+    // "ss1b2jbtag25M",
+    // "ss2b2jbtag25M",
+    // "ss1b2jjet40",
+    // "ss2b2jjet40",
+    // "ss1b2jjet40btagM",
+    // "ss2b2jjet40btagM",
+    // "ss1b2jjet40btag25",
+    // "ss2b2jjet40btag25",
+    // "ss1b2jjet40btag25M",
+    // "ss2b2jjet40btag25M",    
     //"ssonz",
     //"ss1b2j_s",
     //"ss1b2j_s_met50",
@@ -511,9 +513,41 @@ int ScanChain(TChain *ch, TString options="", TString outputdir="outputs"){
   out_tree->Branch("weight", &tree_weight);
 
   TMVA::Reader *reader = new TMVA::Reader( "!Color:!Silent" );
-  reader->AddVariable("nbtags", &tree_nbtags);
-  reader->AddVariable("njets", &tree_nbtags);
-  reader->AddVariable("met", &tree_met);
+
+  reader->AddVariable("lep1pt", &tree_lep1pt );
+  reader->AddVariable("lep2pt", &tree_lep2pt );
+  reader->AddVariable("lep1eta", &tree_lep1eta );
+  reader->AddVariable("lep2eta", &tree_lep2eta );
+  reader->AddVariable("njets", &tree_njets );
+  reader->AddVariable("nbtags", &tree_nbtags );
+  reader->AddVariable("met", &tree_met );
+  reader->AddVariable("ht", &tree_ht );
+  reader->AddVariable("mll", &tree_mll );
+  reader->AddVariable("nele", &tree_nele );
+  reader->AddVariable("jet1pt", &tree_jet1pt );
+  reader->AddVariable("jet2pt", &tree_jet2pt );
+  reader->AddVariable("btag1pt", &tree_btag1pt );
+  reader->AddVariable("drl1l2", &tree_drl1l2 );
+  reader->AddVariable("mindrl1j", &tree_mindrl1j );
+  reader->AddVariable("mindrl2j", &tree_mindrl2j );
+  reader->AddVariable("mindrl1bt", &tree_mindrl1bt );
+  reader->AddVariable("mindrl2bt", &tree_mindrl2bt );
+  reader->AddVariable("dphil1met", &tree_dphil1met );
+  reader->AddVariable("dphil2met", &tree_dphil2met );
+  reader->AddVariable("mt1", &tree_mt1 );
+  reader->AddVariable("mt2", &tree_mt2 );
+  reader->AddVariable("dphil1l2", &tree_dphil1l2 );
+  reader->AddVariable("l1miniiso", &tree_l1miniiso );
+  reader->AddVariable("l2miniiso", &tree_l2miniiso );
+  reader->AddVariable("l1dxy", &tree_l1dxy );
+  reader->AddVariable("l1dz", &tree_l1dz );
+  reader->AddVariable("l2dxy", &tree_l2dxy );
+  reader->AddVariable("l2dz", &tree_l2dz );
+  reader->AddVariable("l1ptratio", &tree_l1ptratio );
+  reader->AddVariable("l1ptrel", &tree_l1ptrel );
+  reader->AddVariable("l2ptratio", &tree_l2ptratio );
+  reader->AddVariable("l2ptrel", &tree_l2ptrel );
+
   reader->BookMVA("BDTG method","../misc/bdt_xml/Classification_BDTG.weights.xml");
 
   TFile *currentFile = 0;
@@ -545,7 +579,8 @@ int ScanChain(TChain *ch, TString options="", TString outputdir="outputs"){
       //Calculate weight
       lumiAG=140;
       weight = ss::is_real_data() ? 1 : ss::scale1fb()*lumiAG;
-      if(proc.Contains("fcnc")) weight =  ss::scale1fb()*lumiAG*2.519*0.5/9.6000003;
+      //if(proc.Contains("fcnc")) weight =  ss::scale1fb()*lumiAG*2.519*0.5/9.6000003;
+      if(proc.Contains("fcnc")) weight =  ss::scale1fb()*lumiAG*2.519*0.5;
       //cout<<"weight "<<weight<<endl;
       
       // Use odd events for training
@@ -563,7 +598,9 @@ int ScanChain(TChain *ch, TString options="", TString outputdir="outputs"){
       }
       lep1id = ss::lep1_id();
       lep2id = ss::lep2_id();
-      bool pass_trig = (doSS) ? ss::fired_trigger_ss() : ss::fired_trigger();	    
+      //bool pass_trig = (doSS) ? ss::fired_trigger_ss() : ss::fired_trigger();	    
+
+      bool pass_trig =  ss::fired_trigger_ss();
       if (!pass_trig) continue;
       if (!ss::passes_met_filters()) continue;
       // Reject duplicates
@@ -603,28 +640,25 @@ int ScanChain(TChain *ch, TString options="", TString outputdir="outputs"){
 
       njets40 = 0; float ht40 = 0; 
       if(njets>0)for(int i =0; i< njets;i++){
-	  if(ss::jets()[i].pt()*ss::jets_undoJEC()[i]*ss::jets_JEC()[i]>40){
+	  if(ss::jets()[i].pt()>40){
 	    njets40++;
-	    ht40 = ht40+ss::jets()[i].pt()*ss::jets_undoJEC()[i]*ss::jets_JEC()[i];
+	    ht40 = ht40+ss::jets()[i].pt();
 	  }
       }
       nbtags25 = 0;      nbtagsM = 0;       nbtags25M = 0;
       if(nbtags>0)for(int i=0;i<nbtags;i++){
-	  if(ss::btags()[i].pt()*ss::btags_undoJEC()[i]*ss::btags_JEC()[i]>25) nbtags25++;
-	  if(ss::btags_disc()[i]>0.6324) nbtagsM++;
-	  if(ss::btags()[i].pt()*ss::btags_undoJEC()[i]*ss::btags_JEC()[i]>25&&ss::btags_disc()[i]>0.6324) nbtags25M++;	  	  
+	  if(ss::btags()[i].pt()>25) nbtags25++;
+	  nbtagsM++;
+	  if(ss::btags()[i].pt()>25) nbtags25M++;	  	  
       }
       
-      if (doSS) {
-	nleps = (lep3good) ? ((ss::lep4_passes_id() and (ss::lep4_p4().pt() > (abs(ss::lep4_id())==11 ? 15 : 10))) ? 4 : 3) : 2;
-      } else {
-	nleps = (lep3good and lep3ccpt > 20) ? ((ss::lep4_passes_id() and ss::lep4_p4().pt() > 20) ? 4 : 3) : 2;
-      }
 
+      nleps = (lep3good) ? ((ss::lep4_passes_id() and (ss::lep4_p4().pt() > (abs(ss::lep4_id())==11 ? 15 : 10))) ? 4 : 3) : 2;
+      
       bool isClass6 = ss::hyp_class() == 6;
       float mtnonz = ss::mtmin();
-      //SR = signal_region(ss::njets(), ss::nbtags(), ss::met(), ss::ht(), ss::mtmin(), lep1id, lep2id, lep1ccpt, lep2ccpt, lep3ccpt, nleps);
-      SR = signal_region(njets40, nbtags25M, ss::met(), ht40 , ss::mtmin(), lep1id, lep2id, lep1ccpt, lep2ccpt, lep3ccpt, nleps); 
+      SR = signal_region(ss::njets(), ss::nbtags(), ss::met(), ss::ht(), ss::mtmin(), lep1id, lep2id, lep1ccpt, lep2ccpt, lep3ccpt, nleps);
+      //SR = signal_region(njets40, nbtags25M, ss::met(), ht40 , ss::mtmin(), lep1id, lep2id, lep1ccpt, lep2ccpt, lep3ccpt, nleps); 
       ht = ss::ht();
       nisrmatch = ss::nisrMatch();      	    
       /* hyp_class
@@ -640,10 +674,9 @@ int ScanChain(TChain *ch, TString options="", TString outputdir="outputs"){
 	weight *= getTruePUw(year, ss::trueNumInt()[0]);
 	if (lep1good) weight *= leptonScaleFactor(year, lep1id, lep1ccpt, lep1eta, ht);
 	if (lep2good) weight *= leptonScaleFactor(year, lep2id, lep2ccpt, lep2eta, ht);
-	if (not doSS) {
-	  if (lep3good) weight *= leptonScaleFactor(year, lep3id, lep3ccpt, lep3eta, ht);
-	}
-	if (doSS or !lep3good) {
+	if (lep3good) weight *= leptonScaleFactor(year, lep3id, lep3ccpt, lep3eta, ht);
+
+	if (!lep3good) {
 	  weight *= triggerScaleFactor(year, lep1id, lep2id, lep1pt, lep2pt, lep1eta, lep2eta, ht, analysis, 0);
 	}
 	weight *= ss::weight_btagsf();
@@ -699,11 +732,11 @@ int ScanChain(TChain *ch, TString options="", TString outputdir="outputs"){
 	if (weight == 0.0) continue; // just quit if there are no flips.
       }
 
-      if (not doSS) {
+
 	// if all 3 charges are the same, throw the event away
-	if (nleps > 2 and ((lep1id>0 and lep2id>0 and lep3id>0) or
-			   (lep1id<0 and lep2id<0 and lep3id<0))) continue;
-      }
+      if (nleps > 2 and ((lep1id>0 and lep2id>0 and lep3id>0) or
+			 (lep1id<0 and lep2id<0 and lep3id<0))) continue;
+      
 
       auto getmll = [](const Vec4& p1, const Vec4& p2, float ccpt1=-1, float ccpt2=-1) {
 	/* Calculate dilepton mass with optional rescaling based on cone-corrected lepton pt */
@@ -855,17 +888,14 @@ int ScanChain(TChain *ch, TString options="", TString outputdir="outputs"){
       bool BR_lite = ht > 300  and njets >= 2 and  nbtags >= 2 and met >= 50;
       bool BR = BR_lite and hyp_class == 3;
       //if (BR) fill_region("br", weight);            	    
-      //if (hyp_class == 3 and nleps == 2 and njets >= 2 and met > 50 and lep1ccpt > 25 and lep2ccpt > 25 ) {
-      if (hyp_class == 3 and nleps == 2 and njets40 >= 2 and met > 50 and lep1ccpt > 25 and lep2ccpt > 25 ) {	      	
+      if (hyp_class == 3 and nleps == 2 and njets >= 2 and met > 50 and lep1ccpt > 25 and lep2ccpt > 25 ) {
+      //if (hyp_class == 3 and nleps == 2 and njets40 >= 2 and met > 50 and lep1ccpt > 25 and lep2ccpt > 25 ) {	      	
 	fill_region("sshh", weight);
       }
       bool OnZ = abs(m12-91.2) <15.;
-      bool LowMetOnZor0b = (met<50&&OnZ)||nbtags==0;
-
-      
+      bool LowMetOnZor0b = (met<50&&OnZ)||nbtags==0;      
       if (hyp_class == 3 and nleps == 2 and njets >= 2 and nbtags > 0 and lep1ccpt > 25 and lep2ccpt > 20 ){ 
 	fill_region("ssbr", weight); 
-
 	//fill the tree variables
 	tree_lep1pt = lep1pt;
 	tree_lep2pt = lep2pt;
@@ -910,7 +940,6 @@ int ScanChain(TChain *ch, TString options="", TString outputdir="outputs"){
       
       
       if (hyp_class == 3 and nleps == 2 and njets >= 2 and nbtags == 0  and lep1ccpt > 25 and lep2ccpt > 20 ) fill_region("ss0b2j", weight); 
-
       if (hyp_class == 3 and nleps == 2 and njets >= 2 and nbtags == 1  and lep1ccpt > 25 and lep2ccpt > 20 ) fill_region("ss1b2j", weight); 
       if (hyp_class == 3 and nleps == 2 and njets >= 2 and nbtags  > 1  and lep1ccpt > 25 and lep2ccpt > 20 ) fill_region("ss2b2j", weight);
       if (hyp_class == 3 and nleps == 2 and njets >= 2 and nbtagsM == 1  and lep1ccpt > 25 and lep2ccpt > 20 ) fill_region("ss1b2jbtagM", weight); 
@@ -932,11 +961,12 @@ int ScanChain(TChain *ch, TString options="", TString outputdir="outputs"){
       if (hyp_class == 3 and LowMetOnZor0b and lep1ccpt > 25 and lep2ccpt > 20 )  fill_region("lowmetonzor0b", weight);	      
       if (hyp_class == 3 and nleps == 2 and njets >= 2 and lep1ccpt > 25 and lep2ccpt > 20 and !LowMetOnZor0b ) fill_region("ssbr2", weight); 
       if (hyp_class == 3 and nleps == 2 and njets >= 2 and nbtags == 1   and lep1ccpt > 25 and lep2ccpt > 20 and !LowMetOnZor0b ) fill_region("ss1b2j2", weight); 
-      if (hyp_class == 3 and nleps == 2 and njets >= 2 and nbtags  > 1   and lep1ccpt > 25 and lep2ccpt > 20 and !LowMetOnZor0b ) fill_region("ss2b2j2", weight);
-
-
+      if (hyp_class == 3 and nleps == 2 and njets >= 2 and nbtags  > 1   and lep1ccpt > 25 and lep2ccpt > 20 and !LowMetOnZor0b ) fill_region("ss2b2j2", weight);      
       
-      
+      if (hyp_class == 3 and nleps >  2 and njets >= 1 and nbtags >  0 and lep1ccpt > 25 and lep2ccpt > 20 and lep3ccpt > 20) fill_region("mlbr", weight);  
+      if (hyp_class == 3 and nleps >  2 and njets >= 1 and nbtags == 1 and lep1ccpt > 25 and lep2ccpt > 20 and lep3ccpt > 20) fill_region("ml1b1j", weight);  
+      if (hyp_class == 3 and nleps >  2 and njets >= 2 and nbtags >  1 and lep1ccpt > 25 and lep2ccpt > 20 and lep3ccpt > 20) fill_region("ml2b2j", weight);  		
+
     }//event loop
     //delete tree;
     delete file;

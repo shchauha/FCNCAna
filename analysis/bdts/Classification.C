@@ -20,9 +20,12 @@ int Classification( TString myMethodList = "" )
 {
    TMVA::Tools::Instance();
 
+   // directory training tree
+
+   TString basedir ="/home/shchauha/2019/Analysis/FCNCAna/analysis/yields/v3.24_training/";
+   
    // Default MVA methods to be trained + tested
-   std::map<std::string,int> Use;
- 
+   std::map<std::string,int> Use;      
    // Boosted Decision Trees
    Use["BDT"]             = 0; // uses Adaptive Boost
    Use["BDTG"]            = 1; // uses Gradient Boost
@@ -59,13 +62,13 @@ int Classification( TString myMethodList = "" )
 
    // Read training and test data
    // (it is also possible to use ASCII format as input -> see TMVA Users Guide)
-   TFile * signal = TFile::Open("../yields/outputs2016/histos_data.root");
-   TFile * bg1 = TFile::Open("../yields/outputs2016/histos_ttdl.root");
-   TFile * bg2 = TFile::Open("../yields/outputs2016/histos_ttsl.root");
-   TFile * bg3 = TFile::Open("../yields/outputs2016/histos_wz.root");
-   TFile * bg4 = TFile::Open("../yields/outputs2016/histos_ttw.root");
-   TFile * bg5 = TFile::Open("../yields/outputs2016/histos_ttz.root");	 
-   TFile * bg6 = TFile::Open("../yields/outputs2016/histos_tth.root");
+   TFile * signal = TFile::Open(basedir+"histos_fcnc.root");
+   TFile * bg1 = TFile::Open(basedir+"histos_wz.root");
+   TFile * bg2 = TFile::Open(basedir+"histos_ttdl.root");
+   TFile * bg3 = TFile::Open(basedir+"histos_tth.root");
+   TFile * bg4 = TFile::Open(basedir+"histos_ttsl.root");
+   TFile * bg5 = TFile::Open(basedir+"histos_ttw.root");	 
+   TFile * bg6 = TFile::Open(basedir+"histos_ttz.root");
    
    // Register the training and test trees
    TTree *signalTree     = (TTree*)signal->Get("t");
@@ -78,7 +81,7 @@ int Classification( TString myMethodList = "" )
    //TTree *background7     = (TTree*)bg7->Get("SSTree");
 
    // Create a ROOT output file where TMVA will store ntuples, histograms, etc.
-   TString outfileName( "TMVA_FCNC.root" );
+   TString outfileName( "BDT_output_trainig_testing.root" );
    TFile* outputFile = TFile::Open( outfileName, "RECREATE" );
 
    // Create the factory object. Later you can choose the methods
@@ -111,83 +114,78 @@ int Classification( TString myMethodList = "" )
    // note that you may also use variable expressions, such as: "3*var1/var2*abs(var3)"
    // [all types of expressions that can also be parsed by TTree::Draw( "expression" )]
 
-   // dataloader->AddVariable("lep1pt");
-   // dataloader->AddVariable("lep2pt");
-   // dataloader->AddVariable("lep1eta");
-   // dataloader->AddVariable("lep2eta");
-   // dataloader->AddVariable("njet");
-   // dataloader->AddVariable("nbjet");
-   // dataloader->AddVariable("ssmet");
-   // dataloader->AddVariable("ssht");
-   // dataloader->AddVariable("dilepmass");
-   // dataloader->AddVariable("nele");
-   // dataloader->AddVariable("jet1pt");
-   // dataloader->AddVariable("jet2pt");
-   // dataloader->AddVariable("bjet1pt");
-   // dataloader->AddVariable("deltar12");
-   // dataloader->AddVariable("lep1jetmindr");
-   // dataloader->AddVariable("lep2jetmindr");
-   // dataloader->AddVariable("lep1bjetmindr");
-   // dataloader->AddVariable("lep2bjetmindr");
-   // dataloader->AddVariable("lep1metdphi");
-   // dataloader->AddVariable("lep2metdphi");
-   // dataloader->AddVariable("ssmt1");
-   // dataloader->AddVariable("ssmt2");
-   // dataloader->AddVariable("deltaphi12");
-   // dataloader->AddVariable("lep1iso");
-   // dataloader->AddVariable("lep1miniiso");
-   // dataloader->AddVariable("lep1dxy");
-   // dataloader->AddVariable("lep1dz");
-   // dataloader->AddVariable("lep1d0_err");
-   // dataloader->AddVariable("lep1ip3d");
-   // dataloader->AddVariable("lep1ip3d_err");
-   // dataloader->AddVariable("lep1sip");
-   // dataloader->AddVariable("lep1ptrel_v1");
-   // dataloader->AddVariable("lep1ptratio");
-   // dataloader->AddVariable("lep2iso");
-   // dataloader->AddVariable("lep2miniiso");
-   // dataloader->AddVariable("lep2dxy");
-   // dataloader->AddVariable("lep2dz");
-   // dataloader->AddVariable("lep2d0_err");
-   // dataloader->AddVariable("lep2ip3d");
-   // dataloader->AddVariable("lep2ip3d_err");
-   // dataloader->AddVariable("lep2sip");
-   // dataloader->AddVariable("lep2ptrel_v1");
-   // dataloader->AddVariable("lep2ptratio");
 
-   dataloader->AddVariable("nbtags");
-   dataloader->AddVariable("njets");
-   dataloader->AddVariable("met");
    dataloader->AddVariable("lep1pt");
    dataloader->AddVariable("lep2pt");
    dataloader->AddVariable("lep1eta");
    dataloader->AddVariable("lep2eta");
-
+   dataloader->AddVariable("njets");
+   dataloader->AddVariable("nbtags");
+   dataloader->AddVariable("met");
+   dataloader->AddVariable("ht");
+   dataloader->AddVariable("mll");
+   dataloader->AddVariable("nele");
+   dataloader->AddVariable("jet1pt");
+   dataloader->AddVariable("jet2pt");
+   dataloader->AddVariable("btag1pt");
+   dataloader->AddVariable("drl1l2");
+   dataloader->AddVariable("mindrl1j");
+   dataloader->AddVariable("mindrl2j");
+   dataloader->AddVariable("mindrl1bt");
+   dataloader->AddVariable("mindrl2bt");
+   dataloader->AddVariable("dphil1met");
+   dataloader->AddVariable("dphil2met");
+   dataloader->AddVariable("mt1");
+   dataloader->AddVariable("mt2");
+   dataloader->AddVariable("dphil1l2");
+   dataloader->AddVariable("l1miniiso");
+   dataloader->AddVariable("l2miniiso");
+   dataloader->AddVariable("l1dxy");
+   dataloader->AddVariable("l1dz");
+   dataloader->AddVariable("l2dxy");
+   dataloader->AddVariable("l2dz");
+   dataloader->AddVariable("l1ptratio");
+   dataloader->AddVariable("l1ptrel");
+   dataloader->AddVariable("l2ptratio");
+   dataloader->AddVariable("l2ptrel");
+   //dataloader->AddVariable("weight");
    // You can add so-called "Spectator variables", which are not used in the MVA training,
    // but will appear in the final "TestTree" produced by TMVA. This TestTree will contain the
    // input variables, the response values of all trained MVAs, and the spectator variables
-
    // dataloader->AddSpectator( "spec1 := var1*2",  "Spectator 1", "units", 'F' );
    // dataloader->AddSpectator( "spec2 := var1*3",  "Spectator 2", "units", 'F' );
-
    // global event weights per tree (see below for setting event-wise weights)
    Double_t signalWeight     = 1.0;
    Double_t backgroundWeight = 1.0;
-
+   
    // You can add an arbitrary number of signal or background trees
-   dataloader->AddSignalTree    ( signalTree,     signalWeight );
-   dataloader->AddBackgroundTree( background1, backgroundWeight );
-   dataloader->AddBackgroundTree( background2, backgroundWeight );
-   dataloader->AddBackgroundTree( background3, backgroundWeight );
-   dataloader->AddBackgroundTree( background4, backgroundWeight );
-   dataloader->AddBackgroundTree( background5, backgroundWeight );
-   dataloader->AddBackgroundTree( background6, backgroundWeight );
+   // dataloader->AddSignalTree    ( signalTree,     signalWeight );
+   // dataloader->AddBackgroundTree( background1, backgroundWeight );
+   // dataloader->AddBackgroundTree( background2, backgroundWeight );
+   // dataloader->AddBackgroundTree( background3, backgroundWeight );
+   // dataloader->AddBackgroundTree( background4, backgroundWeight );
+   // dataloader->AddBackgroundTree( background5, backgroundWeight );
+   // dataloader->AddBackgroundTree( background6, backgroundWeight );
 
    // To give different trees for training and testing, do as follows:
    //
-   //     dataloader->AddSignalTree( signalTrainingTree, signalTrainWeight, "Training" );
-   //     dataloader->AddSignalTree( signalTestTree,     signalTestWeight,  "Test" );
+   dataloader->AddSignalTree( signalTree,     signalWeight, "Training" );
+   dataloader->AddSignalTree( signalTree,     signalWeight,  "Test" );
+   
+   dataloader->AddBackgroundTree( background1, backgroundWeight, "Training" );
+   dataloader->AddBackgroundTree( background2, backgroundWeight, "Training" );
+   dataloader->AddBackgroundTree( background3, backgroundWeight, "Training" );
+   dataloader->AddBackgroundTree( background4, backgroundWeight, "Training" );
+   dataloader->AddBackgroundTree( background5, backgroundWeight, "Training" );
+   dataloader->AddBackgroundTree( background6, backgroundWeight, "Training" );
 
+   dataloader->AddBackgroundTree( background1, backgroundWeight, "Test" );
+   dataloader->AddBackgroundTree( background2, backgroundWeight, "Test" );
+   dataloader->AddBackgroundTree( background3, backgroundWeight, "Test" );
+   dataloader->AddBackgroundTree( background4, backgroundWeight, "Test" );
+   dataloader->AddBackgroundTree( background5, backgroundWeight, "Test" );
+   dataloader->AddBackgroundTree( background6, backgroundWeight, "Test" );
+            
    // Use the following code instead of the above two or four lines to add signal and background
    // training and test events "by hand"
    // NOTE that in this case one should not give expressions (such as "var1+var2") in the input

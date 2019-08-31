@@ -4,8 +4,7 @@ branches="jets,lep2_closeJet,lep2_p4_gen,lep1_p4_gen,lep1_closeJet,jets_disc,jet
 # skimdir="skim"
 
 cut="(hyp_class!=4 || is_real_data) && (njets >= 2 || njets_unc_up >= 2 || njets_unc_dn >= 2 || njets_JER_up >= 2 || njets_JER_dn >= 2)"
-skimdir="skimfix-2"
-
+skimdir="skimfix"
 function make_skims() {
     basedir=$1
     mkdir -p ${basedir}/${skimdir}
@@ -16,35 +15,13 @@ function make_skims() {
             echo "$outname already exists, skipping"
             continue
         }
-        echo python2 skim.py -t t -c "${cut}" "${basedir}/${sample}" -o ${outname} --flipbranches -b "${branches}"
-        python2 skim.py -t t -c "${cut}" "${basedir}/${sample}" -o ${outname} --flipbranches -b "${branches}"
+        echo python skim.py -t t -c "${cut}" "${basedir}/${sample}" -o ${outname}
+        python skim.py -t t -c "${cut}" "${basedir}/${sample}" -o ${outname} 
     done
-
-
-
 }
 
 mkdir -p logs
-
-# make_skims "/nfs-7/userdata/namin/tupler_babies/merged/FT/v3.24/output/year_2016/" >& logs/skim_log_2016.txt &
-# # make_skims "/nfs-7/userdata/namin/tupler_babies/merged/FT/v3.24/output/year_2017/" >& logs/skim_log_2017.txt &
-# make_skims "/nfs-7/userdata/namin/tupler_babies/merged/FT/v3.24_newfixfsjecs/output/year_2017/" >& logs/skim_log_2017fix.txt &
-# make_skims "/nfs-7/userdata/namin/tupler_babies/merged/FT/v3.28//output/year_2018/" >& logs/skim_log_2018.txt &
-
-# make_skims "/nfs-7/userdata/namin/tupler_babies/merged/FT/v3.30//output/year_2016/" >& logs/skim_log_2016.txt &
-# make_skims "/nfs-7/userdata/namin/tupler_babies/merged/FT/v3.30//output/year_2017/" >& logs/skim_log_2017.txt &
-# make_skims "/nfs-7/userdata/namin/tupler_babies/merged/FT/v3.30//output/year_2018/" >& logs/skim_log_2018.txt &
-# make_skims "/nfs-7/userdata/namin/tupler_babies/merged/FT/v3.29//output/year_2016_94x//" >& logs/skim_log_2016_94x.txt &
-
-# # make_skims "/nfs-7/userdata/namin/tupler_babies/merged/FT/v3.30_hhat/output/year_2016/" >& logs/skim_log_2016.txt &
-# make_skims "/nfs-7/userdata/namin/tupler_babies/merged/FT/v3.30_hhat/output/year_2017/" >& logs/skim_log_2017.txt &
-# make_skims "/nfs-7/userdata/namin/tupler_babies/merged/FT/v3.30_hhat/output/year_2018/" >& logs/skim_log_2018.txt &
-
-#make_skims "/nfs-7/userdata/namin/tupler_babies/merged/FT/v3.31//output/year_2016_94x//" >& logs/skim_log_2016_94x.txt &
-#make_skims "/nfs-7/userdata/namin/tupler_babies/merged/FT/v3.31//output/year_2017/" >& logs/skim_log_2017.txt &
-#make_skims "/nfs-7/userdata/namin/tupler_babies/merged/FT/v3.31//output/year_2018/" >& logs/skim_log_2018.txt &
-# make_skims "/nfs-7/userdata/namin/tupler_babies/merged/FT/v3.31_jec15//output/year_2018/" >& logs/skim_log_2018.txt &
-
-make_skims "/home/shchauha/2019/Analysis/Babies/year_2016/" >& logs/skim_log_2016_94x.txt &
+#make_skims "/home/shchauha/2019/Analysis/Babies/year_2016/" >& logs/skim_log_2016_94x.txt &
+make_skims "/nfs-7/userdata/shchauha-2/tupler_babies/merged/FT/v4.2/output/year_2017/" >  logs/skim_log_2017.txt 
 
 wait

@@ -1,15 +1,15 @@
-#therelease=CMSSW_9_4_9
-#export SCRAM_ARCH=slc6_amd64_gcc630
-#mkdir -p common
-#if [ ! -d common/$therelease ]; then 
-#    cd common/ ;
-#    cmsrel $therelease;
-#    cd ~-
-#fi
-#cd common/$therelease/src
-#eval `scram ru -sh`
-#cd -
-#
+therelease=CMSSW_9_4_9
+export SCRAM_ARCH=slc6_amd64_gcc630
+mkdir -p common
+if [ ! -d common/$therelease ]; then 
+    cd common/ ;
+    cmsrel $therelease;
+    cd ~-
+fi
+cd common/$therelease/src
+eval `scram ru -sh`
+cd -
+
 
 export FTBASE="$( cd "$(dirname "$BASH_SOURCE")" ; pwd -P )"
 
@@ -44,15 +44,15 @@ export LANG=en_US.UTF-8
     make -j10 >&/dev/null &
     cd -;
 }
-#[[ -d ${FTBASE}/common/${therelease}/src/HiggsAnalysis/CombinedLimit/ ]] || {
-#    pushd ${FTBASE}/
-#    cd $CMSSW_BASE/src
-#    cmsenv
-#    git clone https://github.com/cms-analysis/HiggsAnalysis-CombinedLimit.git HiggsAnalysis/CombinedLimit
-#    cd HiggsAnalysis/CombinedLimit
-#    git checkout 94x
-#    scramv1 b vclean
-#    scramv1 b -j 15
-#    popd
-#}
+[[ -d ${FTBASE}/common/${therelease}/src/HiggsAnalysis/CombinedLimit/ ]] || {
+    pushd ${FTBASE}/
+    cd $CMSSW_BASE/src
+    cmsenv
+    git clone https://github.com/cms-analysis/HiggsAnalysis-CombinedLimit.git HiggsAnalysis/CombinedLimit
+    cd HiggsAnalysis/CombinedLimit
+   git checkout 94x
+    scramv1 b vclean
+    scramv1 b -j 15
+    popd
+}
 

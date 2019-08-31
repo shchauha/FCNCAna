@@ -14,10 +14,11 @@ from matplottery.utils import Hist1D, MET_LATEX, binomial_obs_z
 #dirname = "cutandcountmc"
 #dirname = "outputs2016"
 #dirname = "v3.24_test"
+dirname = "v3.24_training"
 #dirname = "v4.2"
 #dirname = "v4.2_nonskim"
 #dirname = "v4.2_data"
-dirname = "v4.2_skimfix2"
+#dirname = "v4.2_skimfix2"
 
 signalname = "fcnc"
 files = []
@@ -33,25 +34,28 @@ regions = ["ssbr",
            "ss0b2j",
            "ss1b2j",
            "ss2b2j",
-           "lowmetonzor0b",
-           "ssbr2",
-           "ss1b2j2",
-           "ss2b2j2",
-           "ss1b2jbtagM",
-           "ss2b2jbtagM",
-           "ss1b2jbtag25",
-           "ss2b2jbtag25",
-           "ss1b2jbtag25M",
-           "ss2b2jbtag25M",
-           "ss1b2jjet40",
-           "ss2b2jjet40",
-           "ss1b2jjet40btagM",
-           "ss2b2jjet40btagM",
-           "ss1b2jjet40btag25",
-           "ss2b2jjet40btag25",
-           "ss1b2jjet40btag25M",
-           "ss2b2jjet40btag25M",
-           
+           "mlbr",
+           "ml1b1j",
+           "ml2b2j",
+           #"lowmetonzor0b",
+           #"ssbr2",
+           #"ss1b2j2",
+           #"ss2b2j2",
+           #"ss1b2jbtagM",
+           #"ss2b2jbtagM",
+           #"ss1b2jbtag25",
+           #"ss2b2jbtag25",
+           #"ss1b2jbtag25M",
+           #"ss2b2jbtag25M",
+           #"ss1b2jjet40",
+           #"ss2b2jjet40",
+           #"ss1b2jjet40btagM",
+           #"ss2b2jjet40btagM",
+           #"ss1b2jjet40btag25",
+           #"ss2b2jjet40btag25",
+           #"ss1b2jjet40btag25M",
+           #"ss2b2jjet40btag25M",
+           #
 ]
 
 for region in regions:
