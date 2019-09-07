@@ -42,3 +42,47 @@ float flipRateError(float pt, float eta) {
    if (pt>=200.0 && fabs(eta)>=1.479 && fabs(eta)<2.500 ) return 0.000947054283257*scale; // 15.6%
    return 0.;
 }
+float flipRate_legacy(float pt, float eta) {
+    float scale = 1.09;
+   if (pt>=15.0 && pt<40.0 && fabs(eta)>=0.000 && fabs(eta)<0.800 ) return 4.02556047095e-05*scale;
+   if (pt>=15.0 && pt<40.0 && fabs(eta)>=0.800 && fabs(eta)<1.479 ) return 0.000191283075539*scale;
+   if (pt>=15.0 && pt<40.0 && fabs(eta)>=1.479 && fabs(eta)<2.500 ) return 0.0014808018906*scale;
+   if (pt>=40.0 && pt<60.0 && fabs(eta)>=0.000 && fabs(eta)<0.800 ) return 3.24184888544e-05*scale;
+   if (pt>=40.0 && pt<60.0 && fabs(eta)>=0.800 && fabs(eta)<1.479 ) return 0.000288330168267*scale;
+   if (pt>=40.0 && pt<60.0 && fabs(eta)>=1.479 && fabs(eta)<2.500 ) return 0.00190707063301*scale;
+   if (pt>=60.0 && pt<80.0 && fabs(eta)>=0.000 && fabs(eta)<0.800 ) return 2.72826587544e-05*scale;
+   if (pt>=60.0 && pt<80.0 && fabs(eta)>=0.800 && fabs(eta)<1.479 ) return 0.000425901801084*scale;
+   if (pt>=60.0 && pt<80.0 && fabs(eta)>=1.479 && fabs(eta)<2.500 ) return 0.00299318101504*scale;
+   if (pt>=80.0 && pt<100.0 && fabs(eta)>=0.000 && fabs(eta)<0.800 ) return 0.000111754820026*scale;
+   if (pt>=80.0 && pt<100.0 && fabs(eta)>=0.800 && fabs(eta)<1.479 ) return 0.000481357446343*scale;
+   if (pt>=80.0 && pt<100.0 && fabs(eta)>=1.479 && fabs(eta)<2.500 ) return 0.00351907105176*scale;
+   if (pt>=100.0 && pt<200.0 && fabs(eta)>=0.000 && fabs(eta)<0.800 ) return 8.43473757551e-05*scale;
+   if (pt>=100.0 && pt<200.0 && fabs(eta)>=0.800 && fabs(eta)<1.479 ) return 0.000817956862414*scale;
+   if (pt>=100.0 && pt<200.0 && fabs(eta)>=1.479 && fabs(eta)<2.500 ) return 0.00515126700964*scale;
+   if (pt>=200.0 && fabs(eta)>=0.000 && fabs(eta)<0.800 ) return 5.83122836433e-05*scale;
+   if (pt>=200.0 && fabs(eta)>=0.800 && fabs(eta)<1.479 ) return 0.000517371989468*scale;
+   if (pt>=200.0 && fabs(eta)>=1.479 && fabs(eta)<2.500 ) return 0.00661050703454*scale;
+   return 0.;
+}
+float flipRateError_legacy(float pt, float eta) {
+    float scale = 1.09;
+   if (pt>=15.0 && pt<40.0 && fabs(eta)>=0.000 && fabs(eta)<0.800 ) return 3.9183184838e-06*scale; // 9.7%
+   if (pt>=15.0 && pt<40.0 && fabs(eta)>=0.800 && fabs(eta)<1.479 ) return 1.04671211985e-05*scale; // 5.5%
+   if (pt>=15.0 && pt<40.0 && fabs(eta)>=1.479 && fabs(eta)<2.500 ) return 3.30698016443e-05*scale; // 2.2%
+   if (pt>=40.0 && pt<60.0 && fabs(eta)>=0.000 && fabs(eta)<0.800 ) return 3.55113783018e-06*scale; // 11.0%
+   if (pt>=40.0 && pt<60.0 && fabs(eta)>=0.800 && fabs(eta)<1.479 ) return 1.29495594391e-05*scale; // 4.5%
+   if (pt>=40.0 && pt<60.0 && fabs(eta)>=1.479 && fabs(eta)<2.500 ) return 4.11772636975e-05*scale; // 2.2%
+   if (pt>=60.0 && pt<80.0 && fabs(eta)>=0.000 && fabs(eta)<0.800 ) return 7.08869241586e-06*scale; // 26.0%
+   if (pt>=60.0 && pt<80.0 && fabs(eta)>=0.800 && fabs(eta)<1.479 ) return 3.54825189691e-05*scale; // 8.3%
+   if (pt>=60.0 && pt<80.0 && fabs(eta)>=1.479 && fabs(eta)<2.500 ) return 0.000118230988153*scale; // 4.0%
+   if (pt>=80.0 && pt<100.0 && fabs(eta)>=0.000 && fabs(eta)<0.800 ) return 2.37086576912e-05*scale; // 21.2%
+   if (pt>=80.0 && pt<100.0 && fabs(eta)>=0.800 && fabs(eta)<1.479 ) return 6.05683392889e-05*scale; // 12.6%
+   if (pt>=80.0 && pt<100.0 && fabs(eta)>=1.479 && fabs(eta)<2.500 ) return 0.000213884154333*scale; // 6.1%
+   if (pt>=100.0 && pt<200.0 && fabs(eta)>=0.000 && fabs(eta)<0.800 ) return 1.81133825762e-05*scale; // 21.5%
+   if (pt>=100.0 && pt<200.0 && fabs(eta)>=0.800 && fabs(eta)<1.479 ) return 7.27846562709e-05*scale; // 8.9%
+   if (pt>=100.0 && pt<200.0 && fabs(eta)>=1.479 && fabs(eta)<2.500 ) return 0.000244608599105*scale; // 4.7%
+   if (pt>=200.0 && fabs(eta)>=0.000 && fabs(eta)<0.800 ) return 4.13001955295e-05*scale; // 70.8%
+   if (pt>=200.0 && fabs(eta)>=0.800 && fabs(eta)<1.479 ) return 0.000154530063971*scale; // 29.9%
+   if (pt>=200.0 && fabs(eta)>=1.479 && fabs(eta)<2.500 ) return 0.000836941070856*scale; // 12.7%
+   return 0.;
+}

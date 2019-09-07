@@ -14,11 +14,21 @@ from matplottery.utils import Hist1D, MET_LATEX, binomial_obs_z
 #dirname = "cutandcountmc"
 #dirname = "outputs2016"
 #dirname = "v3.24_test"
-dirname = "v3.24_training"
-#dirname = "v4.2"
+#dirname = "v3.24_training"
+#dirname = "v4.2/mc"
 #dirname = "v4.2_nonskim"
 #dirname = "v4.2_data"
 #dirname = "v4.2_skimfix2"
+#dirname = "v3.31_2016_94x_140ifb"
+#dirname = "v3.31_2016_94x_140ifb/data"
+#dirname = "v3.31_2016_94x/mc"
+#dirname = "v3.31_2016_94x/data"
+#dirname = "v3.31_2016_94x_140ifb_plots/mc"
+#dirname = "v3.31_2017/mc"
+#dirname = "v3.31_2017/data"
+
+dirname = "v3.31_test/osmc"
+#dirname = "v3.31_test/osdata"
 
 signalname = "fcnc"
 files = []
@@ -30,31 +40,35 @@ for r, d, f in os.walk(dirname):
 print files
 log_scale =[False, True]
 log_string =""
-regions = ["ssbr",
-           "ss0b2j",
-           "ss1b2j",
-           "ss2b2j",
-           "mlbr",
-           "ml1b1j",
-           "ml2b2j",
+regions = [#"ssbr",
+           #"ss0b2j",
+           #"ss1b2j",
+           #"ss2b2j",
+           "lnt",
+           "osbr",
+           #"mlbr",
+           #"ml1b1j",
+           #"ml2b2j",
+
            #"lowmetonzor0b",
            #"ssbr2",
            #"ss1b2j2",
            #"ss2b2j2",
-           #"ss1b2jbtagM",
-           #"ss2b2jbtagM",
-           #"ss1b2jbtag25",
-           #"ss2b2jbtag25",
-           #"ss1b2jbtag25M",
-           #"ss2b2jbtag25M",
-           #"ss1b2jjet40",
-           #"ss2b2jjet40",
-           #"ss1b2jjet40btagM",
-           #"ss2b2jjet40btagM",
-           #"ss1b2jjet40btag25",
-           #"ss2b2jjet40btag25",
-           #"ss1b2jjet40btag25M",
-           #"ss2b2jjet40btag25M",
+           #           "ss1b2jbtagM",
+           #           "ss2b2jbtagM",
+           #           "ss1b2jbtag25",
+           #           "ss2b2jbtag25",
+           #           "ss1b2jbtag25M",
+           #           "ss2b2jbtag25M",
+           #           "ss1b2jjet40",
+           #           "ss2b2jjet40",
+           #           "ss1b2jjet40btagM",
+           #           "ss2b2jjet40btagM",
+           #           "ss1b2jjet40btag25",
+           #           "ss2b2jjet40btag25",
+           #           "ss1b2jjet40btag25M",
+           #           "ss2b2jjet40btag25M",
+           #
            #
 ]
 
@@ -83,6 +97,21 @@ for region in regions:
         [region+"_miniiso2_in","miniiso2"],
         [region+"_dphil1l2_in","dphil1l2"],
         [region+"_bdt_in","bdt"],
+
+        [region+"_drl1l2_in","drl1l2"],
+        [region+"_mindrl1j_in","mindrl1j"],
+        [region+"_mindrl2j_in","mindrl2j"],
+        [region+"_mindrl1bt_in","mindrl1bt"],
+        [region+"_mindrl2bt_in","mindrl2bt"],
+        [region+"_mt1_in","mt1"],        
+        [region+"_mt2_in","mt2"],
+        [region+"_l1dxy_in","l1dxy"],
+        [region+"_l2dxy_in","l2dxy"],
+        [region+"_l1dz_in","l1dz"],
+        [region+"_l2dz_in","l2dz"],
+        [region+"_mossf_in","mossf"],
+        #[region+"__in",""],
+        
         [region+"_ptj1_in","1st jet pt"],
         [region+"_ptj2_in","2nd jet pt"],
         [region+"_ptj3_in","3rd jet pt"],
@@ -90,7 +119,7 @@ for region in regions:
         [region+"_ptbt1_in","1st bjet pt"],
         [region+"_ptbt2_in","2nd bjet pt"],
         [region+"_ptbt3_in","3rd bjet pt"],
-        [region+"_ptbt4_in","4th bjet pt"],
+        [region+"_ptbt4_in","4th bjet pt"],                
 
         ]    
     for plot in range(len(plotname)):
@@ -115,7 +144,7 @@ for region in regions:
                 log_string = ""
 
             plot_stack(bgs=bgs,
-                       #data = data[0],
+                       data = data[0],
                        title="",
                        xlabel=plotname[plot][1], 
                        ylabel="Events", 
@@ -123,8 +152,9 @@ for region in regions:
                        cms_type = "Preliminary",
                        #lumi = 140,
                        lumi = 35.9,
-                       #ratio = data[0].divide(sum(bgs)),
-                       ratio = sum(sigs).divide(sum(bgs)),
+                       #lumi = 41.4,
+                       ratio = data[0].divide(sum(bgs)),
+                       #ratio = sum(sigs).divide(sum(bgs)),
                        ratio_range=[0,2],
                        sigs=sigs,
                        do_log=log,    
