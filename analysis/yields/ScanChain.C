@@ -186,6 +186,22 @@ float minDR(const Vec4 & lep , const vector<Vec4> & jet)
   return mindr;
 }
 
+float PtMaxEta(const vector<Vec4> & jet)
+{
+  int size = (int)jet.size();
+  //cout<<"jet size "<<size<<endl;
+  float maxeta=0, eta=0;
+  int index=0;
+  for(int i=0;i<size;i++){
+        eta = jet[i].eta();
+        if(eta>maxeta){
+                maxeta = eta;
+                index = i;
+        }
+  }
+  return jet[index].pt();
+}
+
 struct lepton
 {
   Vec4 v;
@@ -434,7 +450,6 @@ int ScanChain(TChain *ch, TString options="", TString outputdir="outputs"){
   HistCol h_ptj6        (regions, "ptj6"       , 30, 0   , 300 , &registry);
   HistCol h_ptj7        (regions, "ptj7"       , 30, 0   , 300 , &registry);
   HistCol h_ptj8        (regions, "ptj8"       , 30, 0   , 300 , &registry);
-
   
   HistCol h_ptbt1        (regions, "ptbt1"       , 50, 0   , 500 , &registry);
   HistCol h_ptbt2        (regions, "ptbt2"       , 50, 0   , 500 , &registry);
@@ -456,6 +471,7 @@ int ScanChain(TChain *ch, TString options="", TString outputdir="outputs"){
   HistCol h_l1dz         (regions, "l1dz"        , 20, -0.1, 0.1 , &registry);
   HistCol h_l2dz         (regions, "l2dz"        , 20, -0.1, 0.1 , &registry);
   HistCol h_mossf        (regions, "mossf"       ,30, 0, 300 , &registry);
+  HistCol h_fwd_jetpt    (regions, "fwd_jetpt"   ,50, 0, 500 , &registry);
   
 
   // Declare a bunch of event variables to be filled below in the loop
@@ -523,6 +539,9 @@ int ScanChain(TChain *ch, TString options="", TString outputdir="outputs"){
   float tree_l2ptratio = -1;
   float tree_l2ptrel = -1;
   float tree_weight = -1;
+  float tree_jet3pt = -1;
+  float tree_fwd_jetpt = -1;
+
 
   TFile *  f1 = new TFile(Form("%s/histos_%s.root", outputdir.Data(), ch->GetTitle()), "RECREATE");
   f1->cd();
@@ -561,6 +580,8 @@ int ScanChain(TChain *ch, TString options="", TString outputdir="outputs"){
   out_tree->Branch("l1ptrel", &tree_l1ptrel );
   out_tree->Branch("l2ptratio", &tree_l2ptratio );
   out_tree->Branch("l2ptrel", &tree_l2ptrel );
+  out_tree->Branch("jet3pt", &tree_jet3pt );
+  out_tree->Branch("fwd_jetpt", &tree_fwd_jetpt );
   
   out_tree->Branch("weight", &tree_weight);
 
@@ -598,6 +619,9 @@ int ScanChain(TChain *ch, TString options="", TString outputdir="outputs"){
   reader->AddVariable("l1ptrel", &tree_l1ptrel );
   reader->AddVariable("l2ptratio", &tree_l2ptratio );
   reader->AddVariable("l2ptrel", &tree_l2ptrel );
+  reader->AddVariable("jet3pt", &tree_jet3pt );
+  reader->AddVariable("fwd_jetpt", &tree_fwd_jetpt );
+
   
   if(ReadBDT)reader->BookMVA("BDTG method","../misc/bdt_xml/Classification_BDTG1000t2.5%n2d.weights.xml");
 
@@ -948,7 +972,9 @@ int ScanChain(TChain *ch, TString options="", TString outputdir="outputs"){
 			   do_fill(h_ptbt1,   ptbt1);
 			   do_fill(h_ptbt2,   ptbt2);
 			   do_fill(h_ptbt3,   ptbt3);
-			   do_fill(h_ptbt4,   ptbt4);			   	    
+			   do_fill(h_ptbt4,   ptbt4);
+			   do_fill(h_fwd_jetpt, PtMaxEta(ss::jets()));
+			   
 			 };
 
       bool BR_lite = ht > 300  and njets >= 2 and  nbtags >= 2 and met >= 50;
@@ -999,6 +1025,9 @@ int ScanChain(TChain *ch, TString options="", TString outputdir="outputs"){
 	tree_l1ptrel = lep1ptrel;
 	tree_l2ptratio = lep2ptratio;
 	tree_l2ptrel = lep2ptrel;
+	tree_jet3pt = ((int)ss::jets().size() >= 3) ? ss::jets()[2].pt() : 0;
+        tree_fwd_jetpt = PtMaxEta(ss::jets());
+	
 	tree_weight = weight;	
 	out_tree->Fill();	
 	//cout<<" bdt value"<<reader->EvaluateMVA("BDTG method")<<endl;

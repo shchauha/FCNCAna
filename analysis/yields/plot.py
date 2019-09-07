@@ -120,7 +120,8 @@ for region in regions:
         [region+"_ptbt2_in","2nd bjet pt"],
         [region+"_ptbt3_in","3rd bjet pt"],
         [region+"_ptbt4_in","4th bjet pt"],                
-
+        [region+"_fwd_jet_in","fwd jet pt"],
+        
         ]    
     for plot in range(len(plotname)):
         #print plotname[plot][0]            
