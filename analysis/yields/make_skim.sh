@@ -22,6 +22,11 @@ function make_skims() {
 
 mkdir -p logs
 #make_skims "/home/shchauha/2019/Analysis/Babies/year_2016/" >& logs/skim_log_2016_94x.txt &
-make_skims "/nfs-7/userdata/shchauha-2/tupler_babies/merged/FT/v4.2/output/year_2017/" >  logs/skim_log_2017.txt 
+#make_skims "/nfs-7/userdata/shchauha-2/tupler_babies/merged/FT/v4.2/output/year_2017/" >  logs/skim_log_2017.txt 
+#make_skims "/nfs-7/userdata/shchauha-2/tupler_babies/merged/FT/v3.24/year_2016/" >  logs/skim_log_2016_v3.24.txt 
+#make_skims "/nfs-7/userdata/shchauha-2/tupler_babies/merged/FT/v3.24/year_2017/" >  logs/skim_log_2017_v3.24.txt 
+make_skims "/nfs-7/userdata/shchauha-2/tupler_babies/merged/FT/v3.31/year_2016_94x/" >  logs/skim_log_2016_94X_3.31.txt 
+#make_skims "/nfs-7/userdata/shchauha-2/tupler_babies/merged/FT/v3.31/year_2017/" >  logs/skim_log_2017.txt 
+#make_skims "/nfs-7/userdata/shchauha-2/tupler_babies/merged/FT/v3.31/year_2018/" >  logs/skim_log_2018.txt 
 
 wait

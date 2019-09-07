@@ -39,8 +39,8 @@ def createDatcards(varname="Variable", signalname="Signal", srname="SR", debug=F
     #basedir = "/home/shchauha/2019/Analysis/FCNCAna/analysis/yields/v3.24/"
     #basedir = "/home/users/shchauha/2019/FCNCAna/analysis/yields/v3.24_test/"
     bginput = [basedir+"histos_fcnc.root",
-               basedir+"histos_ttdl.root",
-               basedir+"histos_ttsl.root",
+               basedir+"histos_flips.root",
+               basedir+"histos_fakes.root",
                basedir+"histos_tth.root",
                basedir+"histos_ttw.root",
                basedir+"histos_ttz.root",
