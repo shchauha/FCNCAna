@@ -29,19 +29,19 @@ from matplottery.utils import Hist1D, MET_LATEX, binomial_obs_z
 #dirname = "v3.31_2017/data"
 
 #dirname = "v3.31_2016/osmc"
-dirname = "outputs_19Jun26_v3p31_ss"
-
-
+dirname = "outputs_v3p31_Sep7"
+plots_dir = dirname+"/mc"
+os.system("mkdir -p {}".format(plots_dir))
 #proc_to_consider = ["ttw","tth","ttz","ttdl","ttsl","wz","singletop","wjets","dy"]
 proc_to_consider = ["ttw","tth","ttz","ttdl","ttsl","wz","wjets","dy"]
-
+#proc_to_consider = ["ttw","tth","ttz","fakes","flips","wz"]
 
 signalname = "fcnc"
 #signalname = "ttw"
 
-year = "2018"
-#other_years = ["2017","2018"]
-other_years = []
+year = "2016"
+other_years = ["2017","2018"]
+#other_years = []
 
 files = {}
 for y in [year]+other_years:
@@ -55,40 +55,49 @@ for y in [year]+other_years:
 
 #print files
 
-
 log_scale =[False, True]
 log_string =""
-regions = ["ssbr",
-           #"ss0b2j",
-           "ss1b2j",
-           "ss2b2j",
-           "tl",
-           "osbr",
-           "mlbr",
-           "ml1b1j",
-           "ml2b2j",
-
-           #"lowmetonzor0b",
-           #"ssbr2",
-           #"ss1b2j2",
-           #"ss2b2j2",
-           #           "ss1b2jbtagM",
-           #           "ss2b2jbtagM",
-           #           "ss1b2jbtag25",
-           #           "ss2b2jbtag25",
-           #           "ss1b2jbtag25M",
-           #           "ss2b2jbtag25M",
-           #           "ss1b2jjet40",
-           #           "ss2b2jjet40",
-           #           "ss1b2jjet40btagM",
-           #           "ss2b2jjet40btagM",
-           #           "ss1b2jjet40btag25",
-           #           "ss2b2jjet40btag25",
-           #           "ss1b2jjet40btag25M",
-           #           "ss2b2jjet40btag25M",
-           #
-           #
-]
+regions = [
+    "sshh",
+    "ssbr",
+    "ss0b2j",
+    "ss1b2j",
+    "ss2b2j",
+    "mlbr",
+    "ml1b1j",
+    "ml2b2j",
+    "mlbronz",
+    "ml1b1jonz",
+    "ml2b2jonz",
+    "mlbroffz",
+    "ml1b1joffz",
+    "ml2b2joffz",
+    "osbr",
+    "tl",
+    "br",
+    "susytl",
+    "hhtl",
+    #"lowmetonzor0b",
+    #"ssbr2",
+    #"ss1b2j2",
+    #"ss2b2j2",
+    #           "ss1b2jbtagM",
+    #           "ss2b2jbtagM",
+    #           "ss1b2jbtag25",
+    #           "ss2b2jbtag25",
+    #           "ss1b2jbtag25M",
+    #           "ss2b2jbtag25M",
+    #           "ss1b2jjet40",
+    #           "ss2b2jjet40",
+    #           "ss1b2jjet40btagM",
+    #           "ss2b2jjet40btagM",
+    #           "ss1b2jjet40btag25",
+    #           "ss2b2jjet40btag25",
+    #           "ss1b2jjet40btag25M",
+    #           "ss2b2jjet40btag25M",
+    #
+    #
+    ]
 
 d_label_colors = {
     "dy" : [0.4, 0.6, 1.0],
@@ -136,43 +145,44 @@ for region in regions:
         #        [region+"_nbtagsM_in","No of bjets medium"],
         [region+"_met_in","MET"],
         [region+"_ht_in","HT"],
-        #        [region+"_mtmin_in","MTmin"],
-        #        [region+"_mll_in","M_{ll} [GeV]"],
-        #        [region+"_dphil1met_in","dphil1met"],
-        #        [region+"_dphil2met_in","dphil2met"],
-        #        [region+"_dphimetj1_in","dphimetj1"],
-        #        [region+"_ptrel1_in","ptrel1"],
-        #        [region+"_ptrel2_in","ptrel2"],
-        #        [region+"_ptratio1_in","ptratio1"],
-        #        [region+"_ptratio2_in","ptratio2"],
-        #        [region+"_miniiso1_in","miniiso1"],
-        #        [region+"_miniiso2_in","miniiso2"],
-        #        [region+"_dphil1l2_in","dphil1l2"],
+        [region+"_mtmin_in","MTmin"],
+        [region+"_mll_in","M_{ll} [GeV]"],
+        [region+"_dphil1met_in","dphil1met"],
+        [region+"_dphil2met_in","dphil2met"],
+        [region+"_dphimetj1_in","dphimetj1"],
+        [region+"_ptrel1_in","ptrel1"],
+        [region+"_ptrel2_in","ptrel2"],
+        [region+"_ptratio1_in","ptratio1"],
+        [region+"_ptratio2_in","ptratio2"],
+        [region+"_miniiso1_in","miniiso1"],
+        [region+"_miniiso2_in","miniiso2"],
+        [region+"_dphil1l2_in","dphil1l2"],
         #        [region+"_bdt_in","bdt"],
         #
-        #        [region+"_drl1l2_in","drl1l2"],
-        #        [region+"_mindrl1j_in","mindrl1j"],
-        #        [region+"_mindrl2j_in","mindrl2j"],
-        #        [region+"_mindrl1bt_in","mindrl1bt"],
-        #        [region+"_mindrl2bt_in","mindrl2bt"],
-        #        [region+"_mt1_in","mt1"],        
-        #        [region+"_mt2_in","mt2"],
-        #        [region+"_l1dxy_in","l1dxy"],
-        #        [region+"_l2dxy_in","l2dxy"],
-        #        [region+"_l1dz_in","l1dz"],
-        #        [region+"_l2dz_in","l2dz"],
-        #        [region+"_mossf_in","mossf"],
+        [region+"_drl1l2_in","drl1l2"],
+        [region+"_mindrl1j_in","mindrl1j"],
+        [region+"_mindrl2j_in","mindrl2j"],
+        [region+"_mindrl1bt_in","mindrl1bt"],
+        [region+"_mindrl2bt_in","mindrl2bt"],
+        [region+"_mt1_in","mt1"],        
+        [region+"_mt2_in","mt2"],
+        [region+"_l1dxy_in","l1dxy"],
+        [region+"_l2dxy_in","l2dxy"],
+        [region+"_l1dz_in","l1dz"],
+        [region+"_l2dz_in","l2dz"],
+        [region+"_mossf_in","mossf"],
         #        #[region+"__in",""],        
-        #        [region+"_ptj1_in","1st jet pt"],
-        #        [region+"_ptj2_in","2nd jet pt"],
-        #        [region+"_ptj3_in","3rd jet pt"],
-        #        [region+"_ptj4_in","4th jet pt"],
-        #        [region+"_ptbt1_in","1st bjet pt"],
-        #        [region+"_ptbt2_in","2nd bjet pt"],
+        [region+"_ptj1_in","1st jet pt"],
+        [region+"_ptj2_in","2nd jet pt"],
+        [region+"_ptj3_in","3rd jet pt"],
+        #[region+"_ptj4_in","4th jet pt"],
+        [region+"_ptbt1_in","1st bjet pt"],
+        [region+"_ptbt2_in","2nd bjet pt"],
         #        [region+"_ptbt3_in","3rd bjet pt"],
         #        [region+"_ptbt4_in","4th bjet pt"],                
-        #        [region+"_fwd_jetpt_in","fwd jet pt"],        
+        [region+"_fwd_jetpt_in","fwd jet pt"],        
         #
+
         ]    
     for plot in range(len(plotname)):
         data = sum([Hist1D(files[y]["data"][plotname[plot][0]], label = "data") for y in files.keys()])
@@ -182,17 +192,6 @@ for region in regions:
              ]        
         bgs = sorted(bgs, key=lambda bg: bg.get_integral())       
 
-        lumi = 35.9     
-        if year is "2017":
-            lumi = 41.5            
-        if year is "2018":
-            lumi = 59.7
-        outname = dirname+"/year"+year+"_"+plotname[plot][0]+log_string+".png"
-        if len(other_years) > 0:
-            outname = dirname+"/run2"+"_"+plotname[plot][0]+log_string+".png"            
-            lumi = 137
-
-        print year, outname, lumi, len(other_years)
         #print "size of the bgs ", len(bgs)
         for bg in bgs:
             # add flat systematic to stat unc in quadrature
@@ -203,25 +202,33 @@ for region in regions:
                 log_string = "_log"
             else:
                 log_string = ""
+                
+            lumi = 35.9     
+            if year is "2017":
+                lumi = 41.5            
+            if year is "2018":
+                lumi = 59.7
+            outname = plots_dir+"/year"+year+"_"+plotname[plot][0]+log_string+".png"
+            if len(other_years) > 0:
+                outname = plots_dir+"/run2"+"_"+plotname[plot][0]+log_string+".png"            
+                lumi = 137
+            print year, outname, lumi, len(other_years)    
 
             plot_stack(bgs=bgs,
                        data = data,
                        title="",
                        xlabel=plotname[plot][1], 
-                       ylabel="Events", 
-                       #filename=dirname+"/"+plotname[plot][0]+log_string+".png",
+                       ylabel="Events",                        
                        filename=outname,
-                       cms_type = "Preliminary",
-                       #lumi = 140,
-                       lumi = lumi,
-                       #lumi = 41.4,
+                       cms_type = "Preliminary",                       
+                       lumi = lumi,                       
                        ratio = data.divide(sum(bgs)),
                        #ratio = sum(sigs).divide(sum(bgs)),
                        ratio_range=[0,2],
                        sigs=sigs,
                        do_log=log,    
                        #mpl_ratio_params={"label":"Sig/Bkgd"},                       
-                       mpl_ratio_params={"label":"Obr/Pred."},                       
+                       mpl_ratio_params={"label":"Obs./Pred."},                       
                        do_bkg_syst=True,
                        )
         

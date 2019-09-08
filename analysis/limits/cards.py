@@ -31,27 +31,26 @@ def BinError(hist, bin):
     if(bin==nbinx):
         error =pow(hist.GetBinError(bin)*hist.GetBinError(bin)+hist.GetBinError(bin+1)*hist.GetBinError(bin+1),0.5)
         if(error==0.0):
-            error = 0.0001
-        
+            error = 0.0001        
     return error
 
-def createDatcards(varname="Variable", signalname="Signal", srname="SR", debug=False) :
+def createDatcards(varname="Variable", signalname="Signal", srname="SR", year="2016", debug=False) :
     #basedir = "/home/shchauha/2019/Analysis/FCNCAna/analysis/yields/v3.24/"
     #basedir = "/home/users/shchauha/2019/FCNCAna/analysis/yields/v3.24_test/"
-    bginput = [basedir+"histos_fcnc.root",
-               basedir+"histos_ttdl.root",
-               basedir+"histos_ttsl.root",
-               basedir+"histos_tth.root",
-               basedir+"histos_ttw.root",
-               basedir+"histos_ttz.root",
-               basedir+"histos_wz.root",
+    bginput = [basedir+"histos_fcnc_"+year+".root",
+               basedir+"histos_ttdl_"+year+".root",
+               basedir+"histos_ttsl_"+year+".root",
+               basedir+"histos_tth_"+year+".root",
+               basedir+"histos_ttw_"+year+".root",
+               basedir+"histos_ttz_"+year+".root",
+               basedir+"histos_wz_"+year+".root",
                #basedir+"histos_dy.root"        
     ]
-    sginput = [basedir+"histos_fcnc.root"]
-    datainput = [basedir+"histos_fcnc.root"]
+    sginput = [basedir+"histos_fcnc_"+year+".root"]
+    datainput = [basedir+"histos_fcnc_"+year+".root"]
 
-    fd = TFile(basedir+"histos_fcnc.root","read")
-    fs = TFile(basedir+"histos_fcnc.root","read")
+    fd = TFile(basedir+"histos_fcnc_"+year+".root","read")
+    fs = TFile(basedir+"histos_fcnc_"+year+".root","read")
     hdata = fd.Get(varname).Clone()
     hs = fs.Get(varname).Clone()
     
@@ -63,28 +62,27 @@ def createDatcards(varname="Variable", signalname="Signal", srname="SR", debug=F
     bgname =[] 
     #hbg = []
 
-
     flatsystematics=[
-        ("WZNORM"    ,0.07,               "wz"),
-        ("TTWNORM"   ,0.50,               "ttw"),
-        ("TTZNORM"   ,0.50,               "ttz"),
-        ("TTHNORM"   ,0.50,               "tth"),
-        ("nonprompt" , 0.30,              "nonprompt"),
+        ("WZNORM"    ,0.30,               "wz"),
+        ("TTWNORM"   ,0.30,               "ttw"),
+        ("TTZNORM"   ,0.30,               "ttz"),
+        ("TTHNORM"   ,0.30,               "tth"),
+        ("nonprompt" , 0.40,              "nonprompt"),
         ("chargeflip", 0.30,              "chargeflip"),
         ("IDISO"     , 0.06,              signalname,"ttw","ttz","tth"), 
         ("LUMI"      ,0.024,              signalname,"ttw","ttz","tth"),
     ]
     
     for i in range(len(bginput)):
-        bgname.append(bginput[i].replace(".root","").replace(basedir+"histos_",""))
+        bgname.append(bginput[i].replace("_"+year+".root","").replace(basedir+"histos_",""))
     
     for bin in range(hs.GetNbinsX()+1):
         if(hs.GetBinContent(bin)==0):
             print "skipped bin ", bin
             continue
         #print "bin content ", hs.GetBinContent(bin)
-        outname = srname+"_"+str(bin)+".txt"
-        ustr = srname+"_"+str(bin)
+        outname = year+"_"+srname+"_"+str(bin)+".txt"
+        ustr = srname+"_"+year+"_"+str(bin)
         f = open(outname, 'w')
         orig_stdout = sys.stdout
         sys.stdout = f
@@ -117,6 +115,7 @@ def createDatcards(varname="Variable", signalname="Signal", srname="SR", debug=F
         print "#----------------"
         for i in range(len(bgname)):            
             print bgname[i]+"_"+ustr+"_STAT gmN ",
+            #print bgname[i]+"_STAT gmN ",
             temp = TFile(bginput[i],"read")
             temph = temp.Get(varname).Clone()
             bincontent = BinContents(temph,bin)
@@ -127,15 +126,13 @@ def createDatcards(varname="Variable", signalname="Signal", srname="SR", debug=F
             print processn,"  -  "*(i), processweight,"  -  "*(len(bgname)-i-1)
 
 
-        print "ttdl_SYST lnN   -   1.20  -    -    -    -    - -  "
-        print "ttsl_SYST lnN   -    -   1.30  -    -    -    - - "    
-        print "tth_SYST lnN   -   -  - 1.50    -    -    -   -  "
-        print "ttw_SYST lnN   -   -    -  -  1.50  -    -  - "
-        print "ttz_SYST lnN   -   -    -  - -   1.50     -  -"
-        print "wz_SYST lnN   -    -    -  -  - - 1.10  -  "
+        print "ttdl_SYST lnN   -   1.20  -    -    -    -    -   "
+        print "ttsl_SYST lnN   -    -   1.30  -    -    -    -  "    
+        print "tth_SYST lnN   -   -  - 1.50    -    -    -     "
+        print "ttw_SYST lnN   -   -    -  -  1.50  -    -   "
+        print "ttz_SYST lnN   -   -    -  - -   1.50     -  "
+        print "wz_SYST lnN   -    -    -  -  - - 1.10    "
         #print "DY_high_SYST lnN   -    -  -  -    -    - -   1.20  "    
-
-
     
         sys.stdout = orig_stdout
         f.close()        
@@ -146,11 +143,14 @@ if __name__ == '__main__':
     varname          = sys.argv[2]
     signalname       = sys.argv[3]
     srname           = sys.argv[4]
-    debugoff         = int(sys.argv[5])
-    debug=True
+    year             = sys.argv[5]
+    #debugoff         = int(sys.argv[5])
     
-    if debugoff==1 : debug=False
+    #debug=True
+    
+    #if debugoff==1 : debug=False
+    debug=False
 
-    if debug : print "\npython dataCardProducer.py basedir Variable  Signal SRname debugOff \n"
-    createDatcards(varname, signalname, srname, debug)
+    if debug : print "\npython dataCardProducer.py basedir Variable  Signal SRname year debugOff \n"
+    createDatcards(varname, signalname, srname, year, debug)
     exit(0)
