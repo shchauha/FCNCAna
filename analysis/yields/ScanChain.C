@@ -353,7 +353,10 @@ int ScanChain(TChain *ch, TString options="", TString outputdir="outputs"){
      "ml1b1joffz",
      "ml2b2joffz",
      "osbr",
-     "lnt",
+     "tl",
+     "br",
+     "susytl",
+     "hhtl",
      
      // "lowmetonzor0b",
      // "ssbr2",
@@ -397,6 +400,7 @@ int ScanChain(TChain *ch, TString options="", TString outputdir="outputs"){
   HistCol h_dphimetj1      (regions, "dphimetj1"     , 35, -3.5, 3.5 , &registry);
   HistCol h_metoverptj1      (regions, "metoverptj1"     , 50, 0.,2., &registry);
   HistCol h_nleps       (regions, "nleps"      , 5, -0.5 , 4.5 , &registry);
+  HistCol h_nele        (regions, "nele"       , 5, -0.5 , 4.5 , &registry);
   HistCol h_njets       (regions, "njets"      , 6 , 0   , 6   , &registry);
   HistCol h_njets40     (regions, "njets40"    , 6 , 0   , 6   , &registry);
   HistCol h_nisrjets    (regions, "nisrjets"   , 5 , 0   , 5   , &registry);
@@ -652,13 +656,15 @@ int ScanChain(TChain *ch, TString options="", TString outputdir="outputs"){
       if (!quiet) bar.progress(nEventsTotal, nEventsChain);
 
       //Calculate weight
-      lumiAG=140;
+      //lumiAG=140;
       //lumiAG=41.4;
+      //cout<<"lumiAG "<<lumiAG<<endl;
       weight = ss::is_real_data() ? 1 : ss::scale1fb()*lumiAG;
-      //if(proc.Contains("fcnc")) weight =  ss::scale1fb()*lumiAG*2.519*0.5/9.6000003;
-      if(proc.Contains("fcnc")) weight =  ss::scale1fb()*lumiAG*2.519*0.5;
-      //cout<<"weight "<<weight<<endl;
-      
+      if(proc.Contains("fcnc")) weight =  ss::scale1fb()*lumiAG*2.519*0.5/9.6000003; // signal samples have xsec of 9.6
+      if(proc.Contains("fcnc") and ( year == 2017 or year == 2018 )) weight =  (ss::scale1fb()*lumiAG*2.519*0.5)/(9.6000003*1.527); // correct for missing tau decays
+      //if(proc.Contains("fcnc")) weight =  ss::scale1fb()*lumiAG*2.519*0.5;
+      //if(proc.Contains("fcnc")) cout<< "fcnc weight "<<weight<<endl;
+      //cout<<"weight "<<weight<<endl;      
       // Use odd events for training
       if(BDTTraining and event %2 == 0) continue ;
       //Use even events for Application
@@ -772,32 +778,89 @@ int ScanChain(TChain *ch, TString options="", TString outputdir="outputs"){
                 
       }
 
-      bool class6Fake = false;     
+
+      bool class6Fake = false;
       if (doFakes) {
-	if (hyp_class == 1 or hyp_class == 2) {
+	if (hyp_class == 6) {
+	  bool lep1_lowpt_veto = lep1pt < (abs(lep1id) == 11 ? 15 : 10);
+	  bool lep2_lowpt_veto = lep2pt < (abs(lep2id) == 11 ? 15 : 10);
+	  bool lep3_lowpt_veto = lep3pt < (abs(lep3id) == 11 ? 15 : 10);
+
+	  int nfakes = 0;
+	  if (ss::lep3_fo() and !ss::lep3_tight() and !lep3_lowpt_veto and lep1good and lep2good && lep3pt>min_pt_fake) {  // lep3 fake
+	    float fr = fakeRate(year, lep3id, lep3ccpt, lep3eta, ht, analysis, new2016FRBins, !minPtFake18);
+	    class6Fake = true;
+	    nfakes++;
+	    weight *= fr / (1-fr);
+	  }
+	  if (ss::lep2_fo() and !ss::lep2_tight() and !lep2_lowpt_veto and lep1good and lep3good && lep2pt>min_pt_fake) {  // lep2 fake
+	    float fr = fakeRate(year, lep2id, lep2ccpt, lep2eta, ht, analysis, new2016FRBins, !minPtFake18);
+	    class6Fake = true;
+	    nfakes++;
+	    weight *= fr / (1-fr);
+	  }
+	  if (ss::lep1_fo() and !ss::lep1_tight() and !lep1_lowpt_veto and lep2good and lep3good && lep1pt>min_pt_fake) {  // lep1 fake
+	    float fr = fakeRate(year, lep1id, lep1ccpt, lep1eta, ht, analysis, new2016FRBins, !minPtFake18);
+	    class6Fake = true;
+	    nfakes++;
+	    weight *= fr / (1-fr);
+	  }
+	  if (!class6Fake) {
+	    continue; // No fakes!
+	  }
+	  if (nfakes == 2) weight *= -1;
+	} else if (hyp_class == 1 or hyp_class == 2) {
 	  bool foundGoodLoose = false;
-	  if (ss::lep1_passes_id()==0 ) {
+	  if (ss::lep1_passes_id()==0 && lep1pt>min_pt_fake) {
 	    float fr = fakeRate(year, lep1id, lep1ccpt, lep1eta, ht, analysis, new2016FRBins, !minPtFake18);
 	    weight *= fr/(1.-fr);
 	    foundGoodLoose = true;
 	  }
-	  if (ss::lep2_passes_id()==0 ) {
+	  if (ss::lep2_passes_id()==0 && lep2pt>min_pt_fake) {
 	    float fr = fakeRate(year, lep2id, lep2ccpt, lep2eta, ht, analysis, new2016FRBins, !minPtFake18);
 	    weight *= fr/(1.-fr);
 	    foundGoodLoose = true;
 	  }
 	  if (!foundGoodLoose)
 	    continue;
-	  // subtract double FO (why is this?)                                                                                                                                      
-	  if (hyp_class == 1) weight *= -1.;
-	  hyp_class = 3; // we've faked a SS Tight-Tight with a SS LL or SS TL                                                                                                      
-	  // Basically just update this so it gets put in the SR                                                                                                     
-	} 
-
-	else {
-	  continue; // Not a fakeing hyp_class                                                                                                                                      
+	  // subtract double FO (why is this?)
+	  if (hyp_class == 1 && lep1pt>min_pt_fake && lep2pt>min_pt_fake) weight *= -1.;
+	  hyp_class = 3; // we've faked a SS Tight-Tight with a SS LL or SS TL
+	  // Basically just update this so it gets put in the SR
+	} else {
+	  continue; // Not a fakeing hyp_class
 	}
-      }
+      }      
+
+      //
+      // bool class6Fake = false;     
+      // if (doFakes) {
+      // 	if (hyp_class == 1 or hyp_class == 2) {
+      // 	  bool foundGoodLoose = false;
+      // 	  if (ss::lep1_passes_id()==0 ) {
+      // 	    float fr = fakeRate(year, lep1id, lep1ccpt, lep1eta, ht, analysis, new2016FRBins, !minPtFake18);
+      // 	    weight *= fr/(1.-fr);
+      // 	    foundGoodLoose = true;
+      // 	  }
+      // 	  if (ss::lep2_passes_id()==0 ) {
+      // 	    float fr = fakeRate(year, lep2id, lep2ccpt, lep2eta, ht, analysis, new2016FRBins, !minPtFake18);
+      // 	    weight *= fr/(1.-fr);
+      // 	    foundGoodLoose = true;
+      // 	  }
+      // 	  if (!foundGoodLoose)
+      // 	    continue;
+      // 	  // subtract double FO (why is this?)                                                                                                                                      
+      // 	  if (hyp_class == 1) weight *= -1.;
+      // 	  hyp_class = 3; // we've faked a SS Tight-Tight with a SS LL or SS TL                                                                                                      
+      // 	  // Basically just update this so it gets put in the SR                                                                                                     
+      // 	} 
+
+      // 	else {
+      // 	  continue; // Not a fakeing hyp_class                                                                                                                                      
+      // 	}
+      // }
+
+      //flips
 
       if (doFlips) {
 	if (hyp_class == 4) hyp_class = 3; // we've flipped an OS to a SS
@@ -815,7 +878,6 @@ int ScanChain(TChain *ch, TString options="", TString outputdir="outputs"){
 	weight *= flipFact;
 	if (weight == 0.0) continue; // just quit if there are no flips.
       }
-
 
       // if all 3 charges are the same, throw the event away
       if (nleps > 2 and ((lep1id>0 and lep2id>0 and lep3id>0) or
@@ -974,12 +1036,15 @@ int ScanChain(TChain *ch, TString options="", TString outputdir="outputs"){
 			   do_fill(h_ptbt3,   ptbt3);
 			   do_fill(h_ptbt4,   ptbt4);
 			   do_fill(h_fwd_jetpt, PtMaxEta(ss::jets()));
-			   
+			   do_fill(h_nele,  (abs(lep1id)==11 and abs(lep2id)==11) ? 2 : (abs(lep1id)==11 or abs(lep2id)==11) ? 1 : 0  );
 			 };
 
       bool BR_lite = ht > 300  and njets >= 2 and  nbtags >= 2 and met >= 50;
       bool BR = BR_lite and hyp_class == 3;
-      //if (BR) fill_region("br", weight);            	    
+      if (BR) fill_region("br", weight);
+      if (hyp_class == 2) fill_region("susytl", weight);
+      if (hyp_class == 2 and lep1ccpt > 25 and lep2ccpt > 25) fill_region("hhtl", weight);
+            	    
       if (hyp_class == 3 and nleps == 2 and njets >= 2 and met > 50 and lep1ccpt > 25 and lep2ccpt > 25 ) {
 	//if (hyp_class == 3 and nleps == 2 and njets40 >= 2 and met > 50 and lep1ccpt > 25 and lep2ccpt > 25 ) {	      	
 	fill_region("sshh", weight);
@@ -1072,17 +1137,17 @@ int ScanChain(TChain *ch, TString options="", TString outputdir="outputs"){
       if (hyp_class == 3 and nleps >  2 and njets >= 2 and nbtags == 1 and lep1ccpt > 25 and lep2ccpt > 20 and lep3ccpt > 20 ) fill_region("ml1b1j", weight);  
       if (hyp_class == 3 and nleps >  2 and njets >= 2 and nbtags >  1 and lep1ccpt > 25 and lep2ccpt > 20 and lep3ccpt > 20 ) fill_region("ml2b2j", weight);
       
-      if (hyp_class == 3 and nleps >  2 and njets >= 2 and nbtags >  0 and lep1ccpt > 25 and lep2ccpt > 20 and lep3ccpt > 20 and  MossfOnZ ) fill_region("mlbronz", weight);  
-      if (hyp_class == 3 and nleps >  2 and njets >= 2 and nbtags == 1 and lep1ccpt > 25 and lep2ccpt > 20 and lep3ccpt > 20 and  MossfOnZ ) fill_region("ml1b1jonz", weight);  
-      if (hyp_class == 3 and nleps >  2 and njets >= 2 and nbtags >  1 and lep1ccpt > 25 and lep2ccpt > 20 and lep3ccpt > 20 and  MossfOnZ ) fill_region("ml2b2jonz", weight);
+      if ((hyp_class == 3 or hyp_class == 6) and nleps >  2 and njets >= 2 and nbtags >  0 and lep1ccpt > 25 and lep2ccpt > 20 and lep3ccpt > 20 ) fill_region("mlbrinc", weight);  
+      if ((hyp_class == 3 or hyp_class == 6) and nleps >  2 and njets >= 2 and nbtags == 1 and lep1ccpt > 25 and lep2ccpt > 20 and lep3ccpt > 20 ) fill_region("ml1b1jinc", weight);  
+      if ((hyp_class == 3 or hyp_class == 6) and nleps >  2 and njets >= 2 and nbtags >  1 and lep1ccpt > 25 and lep2ccpt > 20 and lep3ccpt > 20 ) fill_region("ml2b2jinc", weight);
       
-      if (hyp_class == 3 and nleps >  2 and njets >= 2 and nbtags >  0 and lep1ccpt > 25 and lep2ccpt > 20 and lep3ccpt > 20 and  !MossfOnZ ) fill_region("mlbroffz", weight);  
-      if (hyp_class == 3 and nleps >  2 and njets >= 2 and nbtags == 1 and lep1ccpt > 25 and lep2ccpt > 20 and lep3ccpt > 20 and  !MossfOnZ ) fill_region("ml1b1joffz", weight);  
-      if (hyp_class == 3 and nleps >  2 and njets >= 2 and nbtags >  1 and lep1ccpt > 25 and lep2ccpt > 20 and lep3ccpt > 20 and  !MossfOnZ ) fill_region("ml2b2joffz", weight);
+      if (hyp_class == 6 and nleps >  2 and njets >= 2 and nbtags >  0 and lep1ccpt > 25 and lep2ccpt > 20 and lep3ccpt > 20 ) fill_region("mlbronz", weight);  
+      if (hyp_class == 6 and nleps >  2 and njets >= 2 and nbtags == 1 and lep1ccpt > 25 and lep2ccpt > 20 and lep3ccpt > 20 ) fill_region("ml1b1jonz", weight);  
+      if (hyp_class == 6 and nleps >  2 and njets >= 2 and nbtags >  1 and lep1ccpt > 25 and lep2ccpt > 20 and lep3ccpt > 20 ) fill_region("ml2b2jonz", weight);
       
       //if (hyp_class == 3 and nleps >  2 and njets >= 2 and nbtags == 2 and lep1ccpt > 25 and lep2ccpt > 20 and lep3ccpt > 20 and MossfOnZ ) fill_region("ttzbr", weight);
       if (hyp_class == 4 and nleps == 2 and njets >= 2 and nbtags > 0  and lep1ccpt > 25 and lep2ccpt > 20 ) fill_region("osbr", weight);
-      if (hyp_class == 2 and nleps == 2 and njets >= 2 and nbtags > 0  and lep1ccpt > 25 and lep2ccpt > 20 ) fill_region("lnt", weight); 
+      if (hyp_class == 2 and nleps == 2 and njets >= 2 and nbtags > 0  and lep1ccpt > 25 and lep2ccpt > 20 ) fill_region("tl", weight); 
       
     }//event loop
     //delete tree;

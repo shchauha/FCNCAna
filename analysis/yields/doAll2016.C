@@ -5,8 +5,9 @@
     
     //TString basedir_data = "/home/users/namin/2018/fourtop/all/FTAnalysis/analysis/yields/local/year_2016/";
     //TString basedir_data = "/nfs-7/userdata/namin/tupler_babies/merged/FT/v3.24/output/year_2016/";
-    TString basedir_data = "/home/shchauha/2019/Analysis/Babies/v3.31/year_2016_94x/";
+    //TString basedir_data = "/home/shchauha/2019/Analysis/Babies/v3.31/year_2016_94x/";
     //TString basedir_data = "/home/shchauha/2019/Analysis/Babies/year_2016/";
+    TString basedir_data = "/nfs-7/userdata/shchauha-2/tupler_babies/merged/FT/v3.31/year_2016_94x/";
     TString basedir_mc = basedir_data;
 
     /* Options:
@@ -27,7 +28,7 @@
     //TString outputdir = "v3.31_2016_94x";
     //TString outputdir = "v3.31_2016_94x_140ifb_plots";
 
-    TString outputdir = "v3.31_test";
+    TString outputdir = "v3.31_2016";
     
     //TString outputdir = "v";
     gSystem->Exec(Form("rm -rf %s", outputdir.Data()));
