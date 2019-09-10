@@ -200,7 +200,7 @@ if __name__ == "__main__":
     ]
     flavs = ["in"]
     # flavs = ["ee","em","mm","in"]
-    inputdir = "outputs_v3p31_test_root/"
+    inputdir = "outputs_v3p31_New_Plotter/"
     outputdir = inputdir+"plots"
 
     make_plots(
