@@ -8,12 +8,12 @@ import uproot
 
 sys.path.insert(1,os.getcwd()+'/../utils')
 from plotting_utils import write_table
-
 sys.path.insert(0,os.getenv("HOME")+'/.local/lib/python2.7/site-packages/')
 from matplottery.plotter import plot_stack
 from matplottery.utils import Hist1D, MET_LATEX
 np.set_printoptions(linewidth=200)
-
+signame = "fcnc"
+plotdata = True
 labels = {
     "ht": "$H_{T}$",
     "met": MET_LATEX,
@@ -97,8 +97,7 @@ d_label_colors = {
 bginfo = {
     "sshh": { k:d_label_colors[k] for k in [ "dy", "ttz", "ttsl", "tth", "ttw", ] },
     "ssbr": { k:d_label_colors[k] for k in [ "dy", "ttz", "ttsl", "tth", "ttw", ] },
-    "osbr": { k:d_label_colors[k] for k in [ "dy", "ttz", "ttsl", "tth", "ttw", ] },
-    
+    "osbr": { k:d_label_colors[k] for k in [ "dy", "ttz", "ttsl", "tth", "ttw", ] },    
 }
 
 # make these global for multiprocessing since uproot file objects can't be pickled
@@ -118,13 +117,20 @@ def worker(info):
                 for proc,(label,color) in sorted(bginfo[region].items())
                 ]
         data = sum([Hist1D(files["data"][hname])] + [Hist1D(other_files[y]["data"][hname]) for y in other_files.keys()])
+        #sigs = [sum([Hist1D(files[signame][hname],label = signame+"[{}]".format(int(sigs.get_integral())), color = [1.0, 0.4, 1.0] )] + [Hist1D(other_files[y][signame][hname],label = signame+"[{}]".format(int(sigs.get_integral())), color = [1.0, 0.4, 1.0]) for y in other_files.keys()])]
+
+        sigs = [sum([Hist1D(files[signame][hname])] + [Hist1D(other_files[y][signame][hname]) for y in other_files.keys()])]
     else:
         bgs = [Hist1D(files[proc][hname], label=label,color=color) for proc,(label,color) in sorted(bginfo[region].items())]
         data = Hist1D(files["data"][hname])
+        sigs = [Hist1D(files[signame][hname])]
+        
     data.set_attr("label", "Data [{}]".format(int(data.get_integral())))
+    sum(sigs).set_attr("label", signame+"[{}]".format(int(sum(sigs).get_integral())))
+    sum(sigs).set_attr("color", [1.0, 0.4, 1.0])
+    
     if data.get_integral() < 1e-6: return
     if abs(sum(bgs).get_integral()) < 1e-6: return
-
 
     do_bkg_syst = True
     
@@ -137,8 +143,14 @@ def worker(info):
         fname = "{}/run2_{}_{}_{}.pdf".format(outputdir,region,var,flav)
     else:
         fname = "{}/year{}_{}_{}_{}.pdf".format(outputdir,year,region,var,flav)
-
-    plot_stack(bgs=bgs, data=data, title=title, xlabel=xlabel, filename=fname,
+        
+    if plotdata :
+        plot_stack(bgs=bgs, 
+               data=data, 
+               sigs = sigs,
+               title=title,                
+               xlabel=xlabel, 
+               filename=fname,
                cms_type = "Preliminary",
                # do_log=True,
                do_bkg_syst=do_bkg_syst,
@@ -148,8 +160,13 @@ def worker(info):
                # ratio_range=[0.5,1.5],
                )
 
-    fname_log = fname.replace(".pdf","_log.pdf").replace(".png","_log.png")
-    plot_stack(bgs=bgs, data=data, title=title, xlabel=xlabel, filename=fname_log,
+        fname_log = fname.replace(".pdf","_log.pdf").replace(".png","_log.png")
+        plot_stack(bgs=bgs, 
+               data=data, 
+               sigs = sigs, 
+               title=title,                
+               xlabel=xlabel, 
+               filename=fname_log,
                cms_type = "Preliminary",
                do_log=True,
                do_bkg_syst=do_bkg_syst,
@@ -159,8 +176,45 @@ def worker(info):
                # ratio_range=[0.5,1.5],
                )
 
-    # os.system("ic {}".format(fname))
 
+    if not plotdata:
+        plot_stack(bgs=bgs, 
+                   #data=data, 
+                   sigs = sigs,
+                   ratio = sum(sigs).divide(sum(bgs)),
+                   title=title, 
+                   xlabel=xlabel, 
+                   filename=fname,
+                   cms_type = "Preliminary",
+                   # do_log=True,
+                   do_bkg_syst=do_bkg_syst,
+                   lumi = lumi,
+                   ratio_range=[0.0,2.0],
+                   mpl_title_params=dict(fontsize=(8 if len(str(lumi))>=5 else 9)),
+                   mpl_ratio_params={"label":"Sig/Bkgd"},
+                   # ratio_range=[0.5,1.5],
+                   )
+
+        fname_log = fname.replace(".pdf","_log.pdf").replace(".png","_log.png")
+        plot_stack(bgs=bgs, 
+               #data=data, 
+               sigs = sigs, 
+               ratio = sum(sigs).divide(sum(bgs)),
+               title=title, 
+               xlabel=xlabel, 
+               filename=fname_log,
+               cms_type = "Preliminary",
+               do_log=True,
+               do_bkg_syst=do_bkg_syst,
+               lumi = lumi,
+               ratio_range=[0.0,2.0],
+               mpl_title_params=dict(fontsize=(8 if len(str(lumi))>=5 else 9)),
+               mpl_ratio_params={"label":"Sig/Bkgd"},
+               # ratio_range=[0.5,1.5],
+               )
+
+
+    # os.system("ic {}".format(fname))
     #write_table(data,bgs,outname=fname.replace(".pdf",".txt"))
     return fname
 
@@ -169,10 +223,10 @@ def make_plots(outputdir="plots", inputdir="outputs", year=2017, lumi="41.5", ot
 
     os.system("mkdir -p {}/".format(outputdir))
 
-    files = { proc:uproot.open("{}/histos_{}_{}.root".format(inputdir,proc,year)) for proc in (list(set(sum(map(lambda x:x.keys(),bginfo.values()),[])))+["data"]) }
+    files = { proc:uproot.open("{}/histos_{}_{}.root".format(inputdir,proc,year)) for proc in (list(set(sum(map(lambda x:x.keys(),bginfo.values()),[])))+["data"]+[signame]) }
     other_files = {}
     for y in other_years:
-        other_files[y] = { proc:uproot.open("{}/histos_{}_{}.root".format(inputdir,proc,y)) for proc in (list(set(sum(map(lambda x:x.keys(),bginfo.values()),[])))+["data"]) }
+        other_files[y] = { proc:uproot.open("{}/histos_{}_{}.root".format(inputdir,proc,y)) for proc in (list(set(sum(map(lambda x:x.keys(),bginfo.values()),[])))+["data"]+[signame]) }
 
 
     # for region in ["htnb1mc","htnb1","os","osloose","br","crw","crz","tt_isr_reweight_check"]:
@@ -234,7 +288,7 @@ if __name__ == "__main__":
             outputdir=outputdir,
             inputdir=inputdir,
             regions = regions, flavs = flavs,
-            year=2016,
+            year=2016, 
             lumi="137.2",
             other_years = [2017,2018],
             )
