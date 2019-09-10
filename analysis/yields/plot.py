@@ -29,7 +29,7 @@ from matplottery.utils import Hist1D, MET_LATEX, binomial_obs_z
 #dirname = "v3.31_2017/data"
 
 #dirname = "v3.31_2016/osmc"
-dirname = "outputs_v3p31_Sep7"
+dirname = "outputs_v3p31_Sep7_BDT"
 plots_dir = dirname+"/mc"
 os.system("mkdir -p {}".format(plots_dir))
 #proc_to_consider = ["ttw","tth","ttz","ttdl","ttsl","wz","singletop","wjets","dy"]
@@ -69,34 +69,14 @@ regions = [
     "mlbronz",
     "ml1b1jonz",
     "ml2b2jonz",
-    "mlbroffz",
-    "ml1b1joffz",
-    "ml2b2joffz",
+    "mlbrinc",
+    "ml1b1jinc",
+    "ml2b2jinc",
     "osbr",
     "tl",
     "br",
     "susytl",
     "hhtl",
-    #"lowmetonzor0b",
-    #"ssbr2",
-    #"ss1b2j2",
-    #"ss2b2j2",
-    #           "ss1b2jbtagM",
-    #           "ss2b2jbtagM",
-    #           "ss1b2jbtag25",
-    #           "ss2b2jbtag25",
-    #           "ss1b2jbtag25M",
-    #           "ss2b2jbtag25M",
-    #           "ss1b2jjet40",
-    #           "ss2b2jjet40",
-    #           "ss1b2jjet40btagM",
-    #           "ss2b2jjet40btagM",
-    #           "ss1b2jjet40btag25",
-    #           "ss2b2jjet40btag25",
-    #           "ss1b2jjet40btag25M",
-    #           "ss2b2jjet40btag25M",
-    #
-    #
     ]
 
 d_label_colors = {
@@ -157,7 +137,7 @@ for region in regions:
         [region+"_miniiso1_in","miniiso1"],
         [region+"_miniiso2_in","miniiso2"],
         [region+"_dphil1l2_in","dphil1l2"],
-        #        [region+"_bdt_in","bdt"],
+        [region+"_bdt_in","bdt"],
         #
         [region+"_drl1l2_in","drl1l2"],
         [region+"_mindrl1j_in","mindrl1j"],

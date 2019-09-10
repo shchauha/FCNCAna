@@ -1091,8 +1091,7 @@ int ScanChain(TChain *ch, TString options="", TString outputdir="outputs"){
 	tree_l2ptratio = lep2ptratio;
 	tree_l2ptrel = lep2ptrel;
 	tree_jet3pt = ((int)ss::jets().size() >= 3) ? ss::jets()[2].pt() : 0;
-        tree_fwd_jetpt = PtMaxEta(ss::jets());
-	
+        tree_fwd_jetpt = PtMaxEta(ss::jets());	
 	tree_weight = weight;	
 	out_tree->Fill();	
 	//cout<<" bdt value"<<reader->EvaluateMVA("BDTG method")<<endl;

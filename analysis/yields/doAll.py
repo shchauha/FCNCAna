@@ -44,14 +44,13 @@ basedirs ={
 
     }
 
-outputdir = "outputs_v3p31_Sep7" #
-
+outputdir = "outputs_v3p31_Sep7_BDT" #
 options = {
     
     # for SS
-    2016: "  doSS Data2016 new2016FRBins quiet ",
-    2017: "  doSS Data2017 quiet ",
-    2018: "  doSS Data2018 quiet ",
+    2016: "  doSS Data2016 new2016FRBins ReadBDT quiet ",
+    2017: "  doSS Data2017 ReadBDT quiet ",
+    2018: "  doSS Data2018 ReadBDT quiet ",
 
     }
 

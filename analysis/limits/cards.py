@@ -12,11 +12,11 @@ def BinContents( hist,bin):
     #print "nbinx ", nbinx    
     if(bin<nbinx):
         content = hist.GetBinContent(bin)
-        if(content==0.0):
+        if(content<0.0001):
             content = 0.0001
     if(bin==hist.GetNbinsX()):
         content =  hist.GetBinContent(bin)+hist.GetBinContent(bin+1)
-        if(content==0.0):
+        if(content<0.0001):
             content = 0.0001
     return content
             
@@ -25,15 +25,17 @@ def BinError(hist, bin):
     #print "nbinx ", nbinx
     if(bin<nbinx):
         error = hist.GetBinError(bin)
-        if(error==0.0):
+        if(error<0.0001):
             error = 0.0001
     
     if(bin==nbinx):
         error =pow(hist.GetBinError(bin)*hist.GetBinError(bin)+hist.GetBinError(bin+1)*hist.GetBinError(bin+1),0.5)
-        if(error==0.0):
+        if(error<0.0001):
             error = 0.0001        
     return error
 
+outdir = "CNC"
+os.system("mkdir -p {}".format(outdir))
 def createDatcards(varname="Variable", signalname="Signal", srname="SR", year="2016", debug=False) :
     #basedir = "/home/shchauha/2019/Analysis/FCNCAna/analysis/yields/v3.24/"
     #basedir = "/home/users/shchauha/2019/FCNCAna/analysis/yields/v3.24_test/"
@@ -67,7 +69,7 @@ def createDatcards(varname="Variable", signalname="Signal", srname="SR", year="2
         ("TTWNORM"   ,0.30,               "ttw"),
         ("TTZNORM"   ,0.30,               "ttz"),
         ("TTHNORM"   ,0.30,               "tth"),
-        ("nonprompt" , 0.40,              "nonprompt"),
+        ("nonprompt" , 0.30,              "nonprompt"),
         ("chargeflip", 0.30,              "chargeflip"),
         ("IDISO"     , 0.06,              signalname,"ttw","ttz","tth"), 
         ("LUMI"      ,0.024,              signalname,"ttw","ttz","tth"),
@@ -81,7 +83,7 @@ def createDatcards(varname="Variable", signalname="Signal", srname="SR", year="2
             print "skipped bin ", bin
             continue
         #print "bin content ", hs.GetBinContent(bin)
-        outname = year+"_"+srname+"_"+str(bin)+".txt"
+        outname = outdir+"/"+year+"_"+srname+"_"+str(bin)+".txt"
         ustr = srname+"_"+year+"_"+str(bin)
         f = open(outname, 'w')
         orig_stdout = sys.stdout
@@ -126,12 +128,12 @@ def createDatcards(varname="Variable", signalname="Signal", srname="SR", year="2
             print processn,"  -  "*(i), processweight,"  -  "*(len(bgname)-i-1)
 
 
-        print "ttdl_SYST lnN   -   1.20  -    -    -    -    -   "
-        print "ttsl_SYST lnN   -    -   1.30  -    -    -    -  "    
-        print "tth_SYST lnN   -   -  - 1.50    -    -    -     "
-        print "ttw_SYST lnN   -   -    -  -  1.50  -    -   "
-        print "ttz_SYST lnN   -   -    -  - -   1.50     -  "
-        print "wz_SYST lnN   -    -    -  -  - - 1.10    "
+        print "ttdl_SYST lnN   -   1.30  -    -    -    -    -   "
+        print "ttsl_SYST lnN   -    -   1.40  -    -    -    -  "    
+        print "tth_SYST lnN   -   -  - 1.30    -    -    -     "
+        print "ttw_SYST lnN   -   -    -  -  1.30  -    -   "
+        print "ttz_SYST lnN   -   -    -  - -   1.30     -  "
+        print "wz_SYST lnN   -    -    -  -  - - 1.30    "
         #print "DY_high_SYST lnN   -    -  -  -    -    - -   1.20  "    
     
         sys.stdout = orig_stdout
