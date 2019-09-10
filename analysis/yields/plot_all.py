@@ -1,0 +1,241 @@
+from tqdm import tqdm
+import json
+import os
+import sys
+import numpy as np
+import itertools
+import uproot
+
+sys.path.insert(1,os.getcwd()+'/../utils')
+from plotting_utils import write_table
+
+sys.path.insert(0,os.getenv("HOME")+'/.local/lib/python2.7/site-packages/')
+from matplottery.plotter import plot_stack
+from matplottery.utils import Hist1D, MET_LATEX
+np.set_printoptions(linewidth=200)
+
+labels = {
+    "ht": "$H_{T}$",
+    "met": MET_LATEX,
+    "mll": "$m_{ll}$",
+    "njets": "Njets",
+    "nbtags": "Nbtags",
+    "pt1": "$p_T$(lep1)",
+    "pt2": "$p_T$(lep2)",
+    "pt3": "$p_T$(lep3)",    
+    "eta1": r"$\eta$(lep1)",
+    "eta2": r"$\eta$(lep2)",
+    "ptj1": "$p_T$ - jet 1",
+    "ptj2": "$p_T$ - jet 2",
+    "ptj3": "$p_T$ - jet 3",
+    "ptbt1": "$p_T$ - btag 1",
+    "ptbt2": "$p_T$ - btag 2",
+    "fwd_jetpt": "$p_T$ - fwd jet",
+    
+    "mtmin": "$m_{T}^\\mathrm{min}$",
+    "mt1": "$m_{T}^1$",
+    "mt2": "$m_{T}^2$",
+    #"nvtx": "# good vertices",    
+    "dphil1l2": r"$\Delta\phi(l_1,l_2)$",
+    "dphil1met": r"$\Delta\phi(l_1,${}$)$".format(MET_LATEX),
+    "dphil2met": r"$\Delta\phi(l_2,${}$)$".format(MET_LATEX),
+    "dphimetj1": r"$\Delta\phi(j_1,${}$)$".format(MET_LATEX),
+    "drl1l2": r"$\Delta R(l_1,l_2)$",
+    
+    "ptrel1": "$p_T^{rel}$(lep1)",
+    "ptrel2": "$p_T^{rel}$(lep2)",
+    "ptratio1": "$p_T^{ratio}$(lep1)",
+    "ptratio2": "$p_T^{ratio}$(lep2)",
+    "miniiso1": "miniiso1",
+    "miniiso2": "miniiso2",
+
+    "mindrl1j": r"$\Delta R^{min}(l_1,j)$",
+    "mindrl2j": r"$\Delta R^{min}(l_2,j)$",
+    "mindrl1bt": r"$\Delta R^{min}(l_1,btag)$",
+    "mindrl2bt": r"$\Delta R^{min}(l_2,btag)$",
+    
+    "l1dxy": "$l^{1}_{dxy}$",
+    "l2dxy": "$l^{2}_{dxy}$",
+    "l1dz": "$l^{1}_{dz}$",
+    "l2dz": "$l^{2}_{dz}$",
+
+    "mossf": "MOSSF",
+            
+    "bdt":"Event Discriminator",
+
+
+    #"htb": r"$H_{T}$(b-jets)",
+    #"nlb40": r"N-loose b-tags, $p_{T}>40$",
+    #"ntb40": r"N-tight b-tags, $p_{T}>40$",
+    
+}
+
+d_label_colors = {
+            "dy":                      (r"DY+jets",        [0.4, 0.6, 1.0]),
+            "fakes":                   (r"Nonprompt lep.", [0.85, 0.85, 0.85]),
+            "ttsl":                   (r"ttsl",            [0.85, 0.85, 0.85]),
+            "flips":                   (r"Charge misid.",  [0.4, 0.4, 0.4]),
+            "rares":                   ("Rare",            [1.0, 0.4, 1.0]),
+            "singletop":               ("Single Top",      [1.0, 0.4, 0.0]),
+            "tt":                      (r"$t\bar{t}$",     [0.8, 0.8, 0.8]),
+            "ttfake":                   (r"$t\bar{t}$ Nonprompt", [0.85, 0.85, 0.85]),
+            "wjets":                   (r"W+jets",         [113./255,151./255,44./255]),
+            "tth":                     (r"$t\bar{t}H$",    [0.4, 0.4, 0.6]),
+            "ttw":                     (r"$t\bar{t}W$",    [0.0, 0.4, 0.0]),
+            "ttz":                     (r"$t\bar{t}Z$",    [0.4, 0.8, 0.4]),
+            # "zbb":                     (r"$t\bar{t}Z$(bb)",    [0.3, 0.6, 0.4]),
+            "wz":                      (r"WZ" ,             [1.0,0.8,0.0]),
+            "vv":                      (r"VV",             [0.0, 0.4, 0.8]),
+            "vvnowz":                   (r"VV",             [0.0, 0.4, 0.8]),
+            "tttt":                      (r"$t\bar{t}t\bar{t}$",             [0.786,0.147,0.022]),
+            "wgamma":                   (r"W+$\gamma$",             "#9D7ABF"),
+            "zgamma":                   (r"Z+$\gamma$",             "#8154AD"),
+            "othergamma":                   (r"Other X+$\gamma$",             "#54267F"),
+            "raresnoxg":                   ("Rare",            [1.0, 0.4, 1.0]),
+        }
+
+bginfo = {
+    "sshh": { k:d_label_colors[k] for k in [ "dy", "ttz", "ttsl", "tth", "ttw", ] },
+    "ssbr": { k:d_label_colors[k] for k in [ "dy", "ttz", "ttsl", "tth", "ttw", ] },
+    "osbr": { k:d_label_colors[k] for k in [ "dy", "ttz", "ttsl", "tth", "ttw", ] },
+    
+}
+
+# make these global for multiprocessing since uproot file objects can't be pickled
+files, other_files = {}, {}
+
+def worker(info):
+    global files, other_files
+
+    outputdir, year, lumi, region, flav, var = info
+    title = region.upper()
+    xlabel = labels[var]
+    hname = "{}_{}_{}".format(region,var,flav)
+
+    if other_files:
+        bgs = [
+                sum([Hist1D(files[proc][hname],label=label,color=color)] + [Hist1D(other_files[y][proc][hname],label=label,color=color) for y in other_files.keys()])
+                for proc,(label,color) in sorted(bginfo[region].items())
+                ]
+        data = sum([Hist1D(files["data"][hname])] + [Hist1D(other_files[y]["data"][hname]) for y in other_files.keys()])
+    else:
+        bgs = [Hist1D(files[proc][hname], label=label,color=color) for proc,(label,color) in sorted(bginfo[region].items())]
+        data = Hist1D(files["data"][hname])
+    data.set_attr("label", "Data [{}]".format(int(data.get_integral())))
+    if data.get_integral() < 1e-6: return
+    if abs(sum(bgs).get_integral()) < 1e-6: return
+
+
+    do_bkg_syst = True
+    
+    bgs = sorted(bgs, key=lambda bg: bg.get_integral())
+    sf = data.get_integral()/sum(bgs).get_integral()
+    #bgs = [bg*sf for bg in bgs]
+    # bgs = [bg*1 for bg in bgs]
+    #title += " data/MC={:.2f}".format(sf)
+    if other_files:
+        fname = "{}/run2_{}_{}_{}.pdf".format(outputdir,region,var,flav)
+    else:
+        fname = "{}/year{}_{}_{}_{}.pdf".format(outputdir,year,region,var,flav)
+
+    plot_stack(bgs=bgs, data=data, title=title, xlabel=xlabel, filename=fname,
+               cms_type = "Preliminary",
+               # do_log=True,
+               do_bkg_syst=do_bkg_syst,
+               lumi = lumi,
+               ratio_range=[0.0,2.0],
+               mpl_title_params=dict(fontsize=(8 if len(str(lumi))>=5 else 9)),
+               # ratio_range=[0.5,1.5],
+               )
+
+    fname_log = fname.replace(".pdf","_log.pdf").replace(".png","_log.png")
+    plot_stack(bgs=bgs, data=data, title=title, xlabel=xlabel, filename=fname_log,
+               cms_type = "Preliminary",
+               do_log=True,
+               do_bkg_syst=do_bkg_syst,
+               lumi = lumi,
+               ratio_range=[0.0,2.0],
+               mpl_title_params=dict(fontsize=(8 if len(str(lumi))>=5 else 9)),
+               # ratio_range=[0.5,1.5],
+               )
+
+    # os.system("ic {}".format(fname))
+
+    #write_table(data,bgs,outname=fname.replace(".pdf",".txt"))
+    return fname
+
+def make_plots(outputdir="plots", inputdir="outputs", year=2017, lumi="41.5", other_years=[], regions=[], flavs=["ee","em","mm","in"]):
+    global files, other_files
+
+    os.system("mkdir -p {}/".format(outputdir))
+
+    files = { proc:uproot.open("{}/histos_{}_{}.root".format(inputdir,proc,year)) for proc in (list(set(sum(map(lambda x:x.keys(),bginfo.values()),[])))+["data"]) }
+    other_files = {}
+    for y in other_years:
+        other_files[y] = { proc:uproot.open("{}/histos_{}_{}.root".format(inputdir,proc,y)) for proc in (list(set(sum(map(lambda x:x.keys(),bginfo.values()),[])))+["data"]) }
+
+
+    # for region in ["htnb1mc","htnb1","os","osloose","br","crw","crz","tt_isr_reweight_check"]:
+    # regions = ["htnb1mc","htnb1","htnb1mcmu","htnb1mu","os","os_noht","osloose","br","crw","crz"]
+    regions = regions or ["ssbr","mlbr"]
+    flavs = flavs or ["ee","em","mm","in"]
+    varss = labels.keys()
+    infos = [[outputdir,year,lumi]+list(x) for x in itertools.product(regions,flavs,varss)]
+
+    os.nice(10)
+    from multiprocessing import Pool as ThreadPool
+    pool = ThreadPool(25)
+    for res in pool.imap_unordered(worker,infos):
+        if res:
+            print "Wrote {}".format(res)
+
+
+if __name__ == "__main__":
+
+    ## SAME SIGN NOTE
+    regions = [
+            "sshh",
+            #"ssbr",
+            #"osbr",
+    ]
+    flavs = ["in"]
+    # flavs = ["ee","em","mm","in"]
+    inputdir = "outputs_v3p31_test_root/"
+    outputdir = inputdir+"plots"
+
+    make_plots(
+            outputdir=outputdir,
+            inputdir=inputdir,
+            regions = regions, flavs = flavs,
+            year=2016,
+            lumi="35.9",
+            )
+
+    # 2017 alone
+    make_plots(
+            outputdir=outputdir,
+            inputdir=inputdir,
+            regions = regions, flavs = flavs,
+            year=2017,
+            lumi="41.5",
+            )
+
+    # 2018 alone
+    make_plots(
+            outputdir=outputdir,
+            inputdir=inputdir,
+            regions = regions, flavs = flavs,
+            year=2018,
+            lumi="59.7",
+            )
+
+    # # 2016 + 2018 + 2017
+    make_plots(
+            outputdir=outputdir,
+            inputdir=inputdir,
+            regions = regions, flavs = flavs,
+            year=2016,
+            lumi="137.2",
+            other_years = [2017,2018],
+            )
+
