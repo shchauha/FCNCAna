@@ -26,7 +26,7 @@ export LANG=en_US.UTF-8
 # export PYTHONPATH=$PWD/analysis/bdt/root_numpy-4.7.2/lib/python2.7/site-packages/:$PYTHONPATH
 
 [[ -d ${FTBASE}/common/matplottery/ ]] || {
-    git clone git@github.com:aminnj/matplottery.git ${FTBASE}/common/matplottery/;
+    git clone git@github.com:shchauha/matplottery.git ${FTBASE}/common/matplottery/;
     pip install --user matplotlib
     pip install --user uproot
     export PATH=/home/users/${USER}/.local/bin:$PATH
