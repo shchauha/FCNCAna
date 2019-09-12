@@ -13,10 +13,11 @@ from matplottery.plotter import plot_stack
 from matplottery.utils import Hist1D, MET_LATEX
 np.set_printoptions(linewidth=200)
 signame = "fcnc"
+#plotdata = False
 plotdata = True
 labels = {
     "ht": "$H_{T}$",
-    "met": MET_LATEX,
+    "met": "$p_{T}^{miss}",
     "mll": "$m_{ll}$",
     "njets": "Njets",
     "nbtags": "Nbtags",
@@ -30,16 +31,15 @@ labels = {
     "ptj3": "$p_T$ - jet 3",
     "ptbt1": "$p_T$ - btag 1",
     "ptbt2": "$p_T$ - btag 2",
-    "fwd_jetpt": "$p_T$ - fwd jet",
-    
+    "fwd_jetpt": "$p_T$ - fwd jet",    
     "mtmin": "$m_{T}^\\mathrm{min}$",
     "mt1": "$m_{T}^1$",
     "mt2": "$m_{T}^2$",
     #"nvtx": "# good vertices",    
     "dphil1l2": r"$\Delta\phi(l_1,l_2)$",
-    "dphil1met": r"$\Delta\phi(l_1,${}$)$".format(MET_LATEX),
-    "dphil2met": r"$\Delta\phi(l_2,${}$)$".format(MET_LATEX),
-    "dphimetj1": r"$\Delta\phi(j_1,${}$)$".format(MET_LATEX),
+    "dphil1met": r"$\Delta\phi(l_1,$p_{T}^{miss})$",
+    "dphil2met": r"$\Delta\phi(l_2,$p_{T}^{miss})$",
+    "dphimetj1": r"$\Delta\phi(j_1,$p_{T}^{miss})$",
     "drl1l2": r"$\Delta R(l_1,l_2)$",
     
     "ptrel1": "$p_T^{rel}$(lep1)",
@@ -58,11 +58,8 @@ labels = {
     "l2dxy": "$l^{2}_{dxy}$",
     "l1dz": "$l^{1}_{dz}$",
     "l2dz": "$l^{2}_{dz}$",
-
-    "mossf": "MOSSF",
-            
+    "mossf": "MOSSF",            
     "bdt":"Event Discriminator",
-
 
     #"htb": r"$H_{T}$(b-jets)",
     #"nlb40": r"N-loose b-tags, $p_{T}>40$",
@@ -73,25 +70,25 @@ labels = {
 d_label_colors = {
             "dy":                      (r"DY+jets",        [0.4, 0.6, 1.0]),
             "fakes":                   (r"Nonprompt lep.", [0.85, 0.85, 0.85]),
-            "ttsl":                   (r"ttsl",            [0.85, 0.85, 0.85]),
+            "ttsl":                    (r"ttsl",            [0.85, 0.85, 0.85]),
             "flips":                   (r"Charge misid.",  [0.4, 0.4, 0.4]),
             "rares":                   ("Rare",            [1.0, 0.4, 1.0]),
             "singletop":               ("Single Top",      [1.0, 0.4, 0.0]),
             "tt":                      (r"$t\bar{t}$",     [0.8, 0.8, 0.8]),
-            "ttfake":                   (r"$t\bar{t}$ Nonprompt", [0.85, 0.85, 0.85]),
+            "ttfake":                  (r"$t\bar{t}$ Nonprompt", [0.85, 0.85, 0.85]),
             "wjets":                   (r"W+jets",         [113./255,151./255,44./255]),
             "tth":                     (r"$t\bar{t}H$",    [0.4, 0.4, 0.6]),
             "ttw":                     (r"$t\bar{t}W$",    [0.0, 0.4, 0.0]),
             "ttz":                     (r"$t\bar{t}Z$",    [0.4, 0.8, 0.4]),
-            # "zbb":                     (r"$t\bar{t}Z$(bb)",    [0.3, 0.6, 0.4]),
+            #"zbb":                     (r"$t\bar{t}Z$(bb)",    [0.3, 0.6, 0.4]),
             "wz":                      (r"WZ" ,             [1.0,0.8,0.0]),
             "vv":                      (r"VV",             [0.0, 0.4, 0.8]),
-            "vvnowz":                   (r"VV",             [0.0, 0.4, 0.8]),
-            "tttt":                      (r"$t\bar{t}t\bar{t}$",             [0.786,0.147,0.022]),
-            "wgamma":                   (r"W+$\gamma$",             "#9D7ABF"),
-            "zgamma":                   (r"Z+$\gamma$",             "#8154AD"),
-            "othergamma":                   (r"Other X+$\gamma$",             "#54267F"),
-            "raresnoxg":                   ("Rare",            [1.0, 0.4, 1.0]),
+            "vvnowz":                  (r"VV",             [0.0, 0.4, 0.8]),
+            "tttt":                    (r"$t\bar{t}t\bar{t}$", [0.786,0.147,0.022]),
+            "wgamma":                  (r"W+$\gamma$",             "#9D7ABF"),
+            "zgamma":                  (r"Z+$\gamma$",             "#8154AD"),
+            "othergamma":              (r"Other X+$\gamma$",             "#54267F"),
+            "raresnoxg":               ("Rare",            [1.0, 0.4, 1.0]),
         }
 
 bginfo = {
@@ -99,7 +96,6 @@ bginfo = {
     "ssbr": { k:d_label_colors[k] for k in [ "dy", "ttz", "ttsl", "tth", "ttw", ] },
     "osbr": { k:d_label_colors[k] for k in [ "dy", "ttz", "ttsl", "tth", "ttw", ] },    
 }
-
 # make these global for multiprocessing since uproot file objects can't be pickled
 files, other_files = {}, {}
 
@@ -138,7 +134,9 @@ def worker(info):
     sf = data.get_integral()/sum(bgs).get_integral()
     #bgs = [bg*sf for bg in bgs]
     # bgs = [bg*1 for bg in bgs]
-    #title += " data/MC={:.2f}".format(sf)
+    if plotdata:
+        title += " data/MC={:.2f}".format(sf)
+
     if other_files:
         fname = "{}/run2_{}_{}_{}.pdf".format(outputdir,region,var,flav)
     else:
@@ -248,13 +246,13 @@ if __name__ == "__main__":
 
     ## SAME SIGN NOTE
     regions = [
-            "sshh",
-            #"ssbr",
-            #"osbr",
+        #"sshh",
+        #"ssbr",
+        "osbr",
     ]
     flavs = ["in"]
     # flavs = ["ee","em","mm","in"]
-    inputdir = "outputs_v3p31_New_Plotter/"
+    inputdir = "outputs_v3p31_Sep7_BDT/"
     outputdir = inputdir+"plots"
 
     make_plots(
@@ -293,3 +291,4 @@ if __name__ == "__main__":
             other_years = [2017,2018],
             )
 
+    #os.system("niceplots outputs_v3p31_Sep7_BDT/plots plots_Sep7")
