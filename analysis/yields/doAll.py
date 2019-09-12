@@ -128,6 +128,7 @@ chs = {
                 basedirs[2016]+"TTTW.root",
                 ],options=options[2016]),
         "fcnc_hut": make_objs(basedirs[2016]+"FCNC_hut*.root", options=options[2016]),
+        "fcnc_hct": make_objs(basedirs[2016]+"FCNC_hct*.root", options=options[2016]),
         },
     2017: {
         "data": make_objs(basedirs[2017]+"Data*.root", options=options[2017]),

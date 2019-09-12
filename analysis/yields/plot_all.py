@@ -12,12 +12,18 @@ sys.path.insert(0,os.getenv("HOME")+'/.local/lib/python2.7/site-packages/')
 from matplottery.plotter import plot_stack
 from matplottery.utils import Hist1D, MET_LATEX
 np.set_printoptions(linewidth=200)
-signame = "fcnc"
+
+#signame ={
+#    "fcnc_hut":                ("hut",             [1.0, 0.4, 1.0]),
+#    "fcnc_hct":                ("hct",             [1.0, 0.4, 1.0]),
+#    } 
+
 #plotdata = False
 plotdata = True
+useddbkg = False
 labels = {
     "ht": "$H_{T}$",
-    "met": "$p_{T}^{miss}",
+    "met": "$p_{T}^{miss}$",
     "mll": "$m_{ll}$",
     "njets": "Njets",
     "nbtags": "Nbtags",
@@ -37,9 +43,9 @@ labels = {
     "mt2": "$m_{T}^2$",
     #"nvtx": "# good vertices",    
     "dphil1l2": r"$\Delta\phi(l_1,l_2)$",
-    "dphil1met": r"$\Delta\phi(l_1,$p_{T}^{miss})$",
-    "dphil2met": r"$\Delta\phi(l_2,$p_{T}^{miss})$",
-    "dphimetj1": r"$\Delta\phi(j_1,$p_{T}^{miss})$",
+    "dphil1met": r"$\Delta\phi(l_1,p_{T}^{miss})$",
+    "dphil2met": r"$\Delta\phi(l_2,p_{T}^{miss})$",
+    "dphimetj1": r"$\Delta\phi(j_1,p_{T}^{miss})$",
     "drl1l2": r"$\Delta R(l_1,l_2)$",
     
     "ptrel1": "$p_T^{rel}$(lep1)",
@@ -70,8 +76,11 @@ labels = {
 d_label_colors = {
             "dy":                      (r"DY+jets",        [0.4, 0.6, 1.0]),
             "fakes":                   (r"Nonprompt lep.", [0.85, 0.85, 0.85]),
+            "fakes_mc":                (r"Nonprompt lep.", [0.85, 0.85, 0.85]),
+            "fakes_mc_ml":             (r"Nonprompt lep.", [0.85, 0.85, 0.85]),
             "ttsl":                    (r"ttsl",            [0.85, 0.85, 0.85]),
             "flips":                   (r"Charge misid.",  [0.4, 0.4, 0.4]),
+            "flips_mc":                (r"Charge misid.",  [0.4, 0.4, 0.4]),
             "rares":                   ("Rare",            [1.0, 0.4, 1.0]),
             "singletop":               ("Single Top",      [1.0, 0.4, 0.0]),
             "tt":                      (r"$t\bar{t}$",     [0.8, 0.8, 0.8]),
@@ -83,19 +92,27 @@ d_label_colors = {
             #"zbb":                     (r"$t\bar{t}Z$(bb)",    [0.3, 0.6, 0.4]),
             "wz":                      (r"WZ" ,             [1.0,0.8,0.0]),
             "vv":                      (r"VV",             [0.0, 0.4, 0.8]),
-            "vvnowz":                  (r"VV",             [0.0, 0.4, 0.8]),
+            "ttvv":                    (r"$t\bar{t}$VV",             [0.0, 0.4, 0.8]),
             "tttt":                    (r"$t\bar{t}t\bar{t}$", [0.786,0.147,0.022]),
             "wgamma":                  (r"W+$\gamma$",             "#9D7ABF"),
             "zgamma":                  (r"Z+$\gamma$",             "#8154AD"),
-            "othergamma":              (r"Other X+$\gamma$",             "#54267F"),
+            "xg":                      (r"X+$\gamma$",             "#54267F"),
             "raresnoxg":               ("Rare",            [1.0, 0.4, 1.0]),
         }
+bginfo = {}
+if useddbkg : 
+    bginfo = {        
+        "ssbr": { k:d_label_colors[k] for k in [ "ttw", "tth", "ttz", "fakes", "flips", "xg", "ttvv", "rares"] },
+        "mlbr": { k:d_label_colors[k] for k in [ "ttw", "tth", "ttz", "fakes", "xg", "ttvv", "rares" ] },                    
+        }
 
-bginfo = {
-    "sshh": { k:d_label_colors[k] for k in [ "dy", "ttz", "ttsl", "tth", "ttw", ] },
-    "ssbr": { k:d_label_colors[k] for k in [ "dy", "ttz", "ttsl", "tth", "ttw", ] },
-    "osbr": { k:d_label_colors[k] for k in [ "dy", "ttz", "ttsl", "tth", "ttw", ] },    
-}
+if not useddbkg : 
+    bginfo = {
+        "ssbr": { k:d_label_colors[k] for k in [ "ttw", "tth", "ttz", "fakes_mc", "flips_mc", "xg", "ttvv", "rares"] },
+        "mlbr": { k:d_label_colors[k] for k in [ "ttw", "tth", "ttz", "fakes_mc_ml", "xg", "ttvv", "rares" ] },            
+        "osbr": { k:d_label_colors[k] for k in [ "ttw", "tth", "ttz", "fakes_mc", "flips_mc", "xg", "ttvv", "rares" ] },
+        "tl"  : { k:d_label_colors[k] for k in [ "ttw", "tth", "ttz", "fakes_mc", "flips_mc", "xg", "ttvv", "rares" ] },      
+        }    
 # make these global for multiprocessing since uproot file objects can't be pickled
 files, other_files = {}, {}
 
@@ -113,17 +130,19 @@ def worker(info):
                 for proc,(label,color) in sorted(bginfo[region].items())
                 ]
         data = sum([Hist1D(files["data"][hname])] + [Hist1D(other_files[y]["data"][hname]) for y in other_files.keys()])
-        #sigs = [sum([Hist1D(files[signame][hname],label = signame+"[{}]".format(int(sigs.get_integral())), color = [1.0, 0.4, 1.0] )] + [Hist1D(other_files[y][signame][hname],label = signame+"[{}]".format(int(sigs.get_integral())), color = [1.0, 0.4, 1.0]) for y in other_files.keys()])]
-
-        sigs = [sum([Hist1D(files[signame][hname])] + [Hist1D(other_files[y][signame][hname]) for y in other_files.keys()])]
+        sigs = [sum(Hist1D(files["fcnc_hut"][hname],label="hut", color = "#9D7ABF" ) + Hist1D(other_files[y]["fcnc_hut"][hname],label="hut", color = "#9D7ABF") for y in other_files.keys()),
+                sum(Hist1D(files["fcnc_hct"][hname],label="hct", color = "#8154AD" ) + Hist1D(other_files[y]["fcnc_hct"][hname],label="hct", color = "#8154AD") for y in other_files.keys())
+                ]        
     else:
         bgs = [Hist1D(files[proc][hname], label=label,color=color) for proc,(label,color) in sorted(bginfo[region].items())]
         data = Hist1D(files["data"][hname])
-        sigs = [Hist1D(files[signame][hname])]
+        sigs = [Hist1D(files["fcnc_hut"][hname],label="hut", color = "#9D7ABF"), Hist1D(files["fcnc_hct"][hname],label="hct", color = "#8154AD" ) ]           
         
+    #print sigs
     data.set_attr("label", "Data [{}]".format(int(data.get_integral())))
-    sum(sigs).set_attr("label", signame+"[{}]".format(int(sum(sigs).get_integral())))
-    sum(sigs).set_attr("color", [1.0, 0.4, 1.0])
+    sigs[0].set_attr("label", "hut [{:.1f}]".format(sigs[0].get_integral()))
+    sigs[1].set_attr("label", "hct [{:.1f}]".format(sigs[1].get_integral()))
+    #sum(sigs).set_attr("color", [1.0, 0.4, 1.0])
     
     if data.get_integral() < 1e-6: return
     if abs(sum(bgs).get_integral()) < 1e-6: return
@@ -179,7 +198,7 @@ def worker(info):
         plot_stack(bgs=bgs, 
                    #data=data, 
                    sigs = sigs,
-                   ratio = sum(sigs).divide(sum(bgs)),
+                   ratio = sigs[0].divide(sum(bgs)),
                    title=title, 
                    xlabel=xlabel, 
                    filename=fname,
@@ -189,7 +208,7 @@ def worker(info):
                    lumi = lumi,
                    ratio_range=[0.0,2.0],
                    mpl_title_params=dict(fontsize=(8 if len(str(lumi))>=5 else 9)),
-                   mpl_ratio_params={"label":"Sig/Bkgd"},
+                   mpl_ratio_params={"label":"hut/Bkgd"},
                    # ratio_range=[0.5,1.5],
                    )
 
@@ -197,7 +216,7 @@ def worker(info):
         plot_stack(bgs=bgs, 
                #data=data, 
                sigs = sigs, 
-               ratio = sum(sigs).divide(sum(bgs)),
+               ratio = sigs[0].divide(sum(bgs)),
                title=title, 
                xlabel=xlabel, 
                filename=fname_log,
@@ -207,7 +226,7 @@ def worker(info):
                lumi = lumi,
                ratio_range=[0.0,2.0],
                mpl_title_params=dict(fontsize=(8 if len(str(lumi))>=5 else 9)),
-               mpl_ratio_params={"label":"Sig/Bkgd"},
+               mpl_ratio_params={"label":"hut/Bkgd"},
                # ratio_range=[0.5,1.5],
                )
 
@@ -221,12 +240,12 @@ def make_plots(outputdir="plots", inputdir="outputs", year=2017, lumi="41.5", ot
 
     os.system("mkdir -p {}/".format(outputdir))
 
-    files = { proc:uproot.open("{}/histos_{}_{}.root".format(inputdir,proc,year)) for proc in (list(set(sum(map(lambda x:x.keys(),bginfo.values()),[])))+["data"]+[signame]) }
+    files = { proc:uproot.open("{}/histos_{}_{}.root".format(inputdir,proc,year)) for proc in (list(set(sum(map(lambda x:x.keys(),bginfo.values()),[])))+["data"]+["fcnc_hut"]+["fcnc_hct"]) }
     other_files = {}
     for y in other_years:
-        other_files[y] = { proc:uproot.open("{}/histos_{}_{}.root".format(inputdir,proc,y)) for proc in (list(set(sum(map(lambda x:x.keys(),bginfo.values()),[])))+["data"]+[signame]) }
-
-
+        other_files[y] = { proc:uproot.open("{}/histos_{}_{}.root".format(inputdir,proc,y)) for proc in (list(set(sum(map(lambda x:x.keys(),bginfo.values()),[])))+["data"]+["fcnc_hut"]+["fcnc_hct"]) }
+        
+    #print files
     # for region in ["htnb1mc","htnb1","os","osloose","br","crw","crz","tt_isr_reweight_check"]:
     # regions = ["htnb1mc","htnb1","htnb1mcmu","htnb1mu","os","os_noht","osloose","br","crw","crz"]
     regions = regions or ["ssbr","mlbr"]
@@ -244,15 +263,24 @@ def make_plots(outputdir="plots", inputdir="outputs", year=2017, lumi="41.5", ot
 
 if __name__ == "__main__":
 
-    ## SAME SIGN NOTE
-    regions = [
-        #"sshh",
-        #"ssbr",
-        "osbr",
-    ]
+    ## 
+    if useddbkg:        
+        regions = [
+            "ssbr",
+            "mlbr",            
+            ]
+        
+    if not useddbkg:        
+        regions = [
+            "ssbr",
+            "mlbr",
+            "osbr",
+            "tl"
+            ]
+       
     flavs = ["in"]
     # flavs = ["ee","em","mm","in"]
-    inputdir = "outputs_v3p31_Sep7_BDT/"
+    inputdir = "outputs_v3p31/"
     outputdir = inputdir+"plots"
 
     make_plots(
@@ -291,4 +319,4 @@ if __name__ == "__main__":
             other_years = [2017,2018],
             )
 
-    #os.system("niceplots outputs_v3p31_Sep7_BDT/plots plots_Sep7")
+    os.system("niceplots outputs_v3p31/plots plots_v3.31")
