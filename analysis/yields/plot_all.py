@@ -13,63 +13,58 @@ from matplottery.plotter import plot_stack
 from matplottery.utils import Hist1D, MET_LATEX
 np.set_printoptions(linewidth=200)
 
-#signame ={
-#    "fcnc_hut":                ("hut",             [1.0, 0.4, 1.0]),
-#    "fcnc_hct":                ("hct",             [1.0, 0.4, 1.0]),
-#    } 
-
 #plotdata = False
 plotdata = True
 useddbkg = False
 labels = {
-    "ht": "$H_{T}$",
-    "met": "$p_{T}^{miss}$",
-    "mll": "$m_{ll}$",
-    "njets": "Njets",
-    "nbtags": "Nbtags",
-    "pt1": "$p_T$(lep1)",
-    "pt2": "$p_T$(lep2)",
-    "pt3": "$p_T$(lep3)",    
-    "eta1": r"$\eta$(lep1)",
-    "eta2": r"$\eta$(lep2)",
-    "ptj1": "$p_T$ - jet 1",
-    "ptj2": "$p_T$ - jet 2",
-    "ptj3": "$p_T$ - jet 3",
-    "ptbt1": "$p_T$ - btag 1",
-    "ptbt2": "$p_T$ - btag 2",
-    "fwd_jetpt": "$p_T$ - fwd jet",    
-    "mtmin": "$m_{T}^\\mathrm{min}$",
-    "mt1": "$m_{T}^1$",
-    "mt2": "$m_{T}^2$",
-    #"nvtx": "# good vertices",    
-    "dphil1l2": r"$\Delta\phi(l_1,l_2)$",
-    "dphil1met": r"$\Delta\phi(l_1,p_{T}^{miss})$",
-    "dphil2met": r"$\Delta\phi(l_2,p_{T}^{miss})$",
-    "dphimetj1": r"$\Delta\phi(j_1,p_{T}^{miss})$",
-    "drl1l2": r"$\Delta R(l_1,l_2)$",
+    "ht"          : "$H_{T}$",
+    "met"         : "$p_{T}^{miss}$",
+    "mll"         : "$m_{ll}$",
+    "njets"       : "Njets",
+    "nbtags"      : "Nbtags",
+    "nele"        : "No of electrons", 
+    "pt1"         : "$p_T$(lep1)",
+    "pt2"         : "$p_T$(lep2)",
+    "pt3"         : "$p_T$(lep3)",    
+    "eta1"        : r"$\eta$(lep1)",
+    "eta2"        : r"$\eta$(lep2)",
+    "ptj1"        : "$p_T$ - jet 1",
+    "ptj2"        : "$p_T$ - jet 2",
+    "ptj3"        : "$p_T$ - jet 3",
+    "ptbt1"       : "$p_T$ - btag 1",
+    "ptbt2"       : "$p_T$ - btag 2",
+    "fwd_jetpt"   : "$p_T$ - fwd jet",    
+    "mtmin"       : "$m_{T}^\\mathrm{min}$",
+    "mt1"         : "$m_{T}^1$",
+    "mt2"         : "$m_{T}^2$",
+    "nvtx"        : "# good vertices",    
+    "dphil1l2"    : r"$\Delta\phi(l_1,l_2)$",
+    "dphil1met"   : r"$\Delta\phi(l_1,p_{T}^{miss})$",
+    "dphil2met"   : r"$\Delta\phi(l_2,p_{T}^{miss})$",
+    "dphimetj1"   : r"$\Delta\phi(j_1,p_{T}^{miss})$",
+    "drl1l2"      : r"$\Delta R(l_1,l_2)$",
     
-    "ptrel1": "$p_T^{rel}$(lep1)",
-    "ptrel2": "$p_T^{rel}$(lep2)",
-    "ptratio1": "$p_T^{ratio}$(lep1)",
-    "ptratio2": "$p_T^{ratio}$(lep2)",
-    "miniiso1": "miniiso1",
-    "miniiso2": "miniiso2",
-
-    "mindrl1j": r"$\Delta R^{min}(l_1,j)$",
-    "mindrl2j": r"$\Delta R^{min}(l_2,j)$",
-    "mindrl1bt": r"$\Delta R^{min}(l_1,btag)$",
-    "mindrl2bt": r"$\Delta R^{min}(l_2,btag)$",
+    "ptrel1"      : "$p_T^{rel}$(lep1)",
+    "ptrel2"      : "$p_T^{rel}$(lep2)",
+    "ptratio1"    : "$p_T^{ratio}$(lep1)",
+    "ptratio2"    : "$p_T^{ratio}$(lep2)",
+    "miniiso1"    : "miniiso1",
+    "miniiso2"    : "miniiso2",
+    "mindrl1j"    : r"$\Delta R^{min}(l_1,j)$",
+    "mindrl2j"    : r"$\Delta R^{min}(l_2,j)$",
+    "mindrl1bt"   : r"$\Delta R^{min}(l_1,btag)$",
+    "mindrl2bt"   : r"$\Delta R^{min}(l_2,btag)$",
     
-    "l1dxy": "$l^{1}_{dxy}$",
-    "l2dxy": "$l^{2}_{dxy}$",
-    "l1dz": "$l^{1}_{dz}$",
-    "l2dz": "$l^{2}_{dz}$",
-    "mossf": "MOSSF",            
-    "bdt":"Event Discriminator",
+    "l1dxy"       : "$l^{1}_{dxy}$",
+    "l2dxy"       : "$l^{2}_{dxy}$",
+    "l1dz"        : "$l^{1}_{dz}$",
+    "l2dz"        : "$l^{2}_{dz}$",
+    "mossf"       : "MOSSF",            
+    "bdt"         :"Event Discriminator",
 
-    #"htb": r"$H_{T}$(b-jets)",
-    #"nlb40": r"N-loose b-tags, $p_{T}>40$",
-    #"ntb40": r"N-tight b-tags, $p_{T}>40$",
+    #"htb"        : r"$H_{T}$(b-jets)",
+    #"nlb40"      : r"N-loose b-tags, $p_{T}>40$",
+    #"ntb40"      : r"N-tight b-tags, $p_{T}>40$",
     
 }
 
@@ -99,6 +94,27 @@ d_label_colors = {
             "xg":                      (r"X+$\gamma$",             "#54267F"),
             "raresnoxg":               ("Rare",            [1.0, 0.4, 1.0]),
         }
+
+d_flat_systematics = {
+    "fakes"         : 0.40,
+    "fakes_mc"      : 0.40,
+    "fakes_mc_ml"   : 0.40,
+    "flips"         : 0.2,
+    "flips_mc"      : 0.2,    
+    "ttsl"          : 0.40,
+    "wjets"         : 0.40,
+    "singletop"     : 0.40,
+    "ttdl"          : 0.2,
+    "rares"         : 0.5,
+    "ww"            : 0.3,
+    "ttw"           : 0.3,
+    "ttz"           : 0.3,
+    "wz"            : 0.3,
+    "tth"           : 0.3,
+    "xg"            : 0.5,
+    "ttvv"          : 0.5,
+    }
+
 bginfo = {}
 if useddbkg : 
     bginfo = {        
@@ -153,6 +169,11 @@ def worker(info):
     sf = data.get_integral()/sum(bgs).get_integral()
     #bgs = [bg*sf for bg in bgs]
     # bgs = [bg*1 for bg in bgs]
+    
+    for bg in bgs:
+        # add flat systematic to stat unc in quadrature                                                                                                                                                                                   
+        bg._errors = np.hypot(bg._counts*d_flat_systematics.get(bg.get_attr("label"),0.),bg._errors)
+
     if plotdata:
         title += " data/MC={:.2f}".format(sf)
 
@@ -272,10 +293,10 @@ if __name__ == "__main__":
         
     if not useddbkg:        
         regions = [
-            "ssbr",
-            "mlbr",
+            #"ssbr",
+            #"mlbr",
             "osbr",
-            "tl"
+            "tl",
             ]
        
     flavs = ["in"]

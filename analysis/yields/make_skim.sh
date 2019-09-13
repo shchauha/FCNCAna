@@ -3,8 +3,8 @@ branches="jets,lep2_closeJet,lep2_p4_gen,lep1_p4_gen,lep1_closeJet,jets_disc,jet
 # cut="(hyp_class!=4 || is_real_data) && (njets >= 2)"
 # skimdir="skim"
 
-cut="(hyp_class!=4 || is_real_data) && (njets >= 2 || njets_unc_up >= 2 || njets_unc_dn >= 2 || njets_JER_up >= 2 || njets_JER_dn >= 2)"
-skimdir="skimfix"
+cut="(hyp_class!=4 || is_real_data) && ((njets >= 2 || njets_unc_up >= 2 || njets_unc_dn >= 2 || njets_JER_up >= 2 || njets_JER_dn >= 2) || (lep3_passes_id && (njets >= 1 || njets_unc_up >= 1 || njets_unc_dn >= 1 || njets_JER_up >= 1 || njets_JER_dn >= 1) ))"
+skimdir="skim"
 function make_skims() {
     basedir=$1
     mkdir -p ${basedir}/${skimdir}
@@ -26,7 +26,8 @@ mkdir -p logs
 #make_skims "/nfs-7/userdata/shchauha-2/tupler_babies/merged/FT/v3.24/year_2016/" >  logs/skim_log_2016_v3.24.txt 
 #make_skims "/nfs-7/userdata/shchauha-2/tupler_babies/merged/FT/v3.24/year_2017/" >  logs/skim_log_2017_v3.24.txt 
 make_skims "/nfs-7/userdata/shchauha-2/tupler_babies/merged/FT/v3.31/year_2016_94x/" >  logs/skim_log_2016_94X_3.31.txt 
-#make_skims "/nfs-7/userdata/shchauha-2/tupler_babies/merged/FT/v3.31/year_2017/" >  logs/skim_log_2017.txt 
-#make_skims "/nfs-7/userdata/shchauha-2/tupler_babies/merged/FT/v3.31/year_2018/" >  logs/skim_log_2018.txt 
+make_skims "/nfs-7/userdata/shchauha-2/tupler_babies/merged/FT/v3.31/year_2017/" >  logs/skim_log_2017.txt 
+make_skims "/nfs-7/userdata/shchauha-2/tupler_babies/merged/FT/v3.31/year_2018/" >  logs/skim_log_2018.txt 
+
 
 wait

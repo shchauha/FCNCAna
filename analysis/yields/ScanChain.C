@@ -235,10 +235,10 @@ float MOSSF(vector<lepton> lep)
 }
 
 
-float isr_reweight(bool useIsrWeight, int year, int nisrmatch) {
+float isr_reweight(bool useIsrWeight, int year, int nisrmatch, int sample) {
   if (!useIsrWeight) return 1;
   if (ss::is_real_data()) return 1;
-  return isrWeight(year, nisrmatch, 10); // 10 is ttbar
+  return isrWeight(year, nisrmatch, sample); // 10 is ttbar
 }
 
 float nb_reweight(int nbtags) {
@@ -279,6 +279,7 @@ int ScanChain(TChain *ch, TString options="", TString outputdir="outputs"){
   bool BDTTraining = options.Contains("BDTTraining");
   bool BDTApplication = options.Contains("BDTApplication");
   bool ReadBDT = options.Contains("ReadBDT");
+  bool isData = options.Contains("doData");
   
   //ana_t analysis = FTANA;
   //if (doSS) {
@@ -290,19 +291,19 @@ int ScanChain(TChain *ch, TString options="", TString outputdir="outputs"){
   //cout<<"proc "<<proc<<endl;
   // bool useIsrWeight = proc.Contains("tt_");
   bool useIsrWeight = proc.Contains("tt_") 
-    or proc.Contains("ttw_") 
-    or proc.Contains("ttz_") 
-    or proc.Contains("tth_")
-    or proc.Contains("tthf_")
-    or proc.Contains("ttnonhf_");
+    or proc.Contains("ttw") 
+    or proc.Contains("ttz") 
+    or proc.Contains("tth");
+
 
   bool doScaleUnc = proc.Contains("tt_");
   bool useTTBB = proc.Contains("tt_") 
-    or proc.Contains("ttw_") 
-    or proc.Contains("ttz_") 
-    or proc.Contains("tth_");
+    or proc.Contains("ttw") 
+    or proc.Contains("ttz") 
+    or proc.Contains("tth");
   
-  //cout<<"using isr "<<useIsrWeight<<" TTBB "<<useTTBB<<endl;
+  useTTBB = false;
+  //cout<<"using isr "<<useIsrWeight<<" TTBB "<<useTTBB<<endl;  
   if (noISRWeights) useIsrWeight = false;
   // We may have derived the fake rate map throwing away leptons with pT<18 (e.g., 2017), so
   // we need to apply this cut here to be consistent
@@ -354,11 +355,11 @@ int ScanChain(TChain *ch, TString options="", TString outputdir="outputs"){
      "ml2b2jinc",
      "osbr",
      "tl",
-     "br",
-     "susytl",
-     "hhtl",
-     
-     // "lowmetonzor0b",
+     //"br",
+     //"susytl",
+     //"hhtl",     
+     //"lowmetonzor0b",
+     "mllowmetonz2b",
      // "ssbr2",
      // "ss1b2j2",
      // "ss2b2j2",
@@ -660,8 +661,8 @@ int ScanChain(TChain *ch, TString options="", TString outputdir="outputs"){
       //lumiAG=41.4;
       //cout<<"lumiAG "<<lumiAG<<endl;
       weight = ss::is_real_data() ? 1 : ss::scale1fb()*lumiAG;
-      if(proc.Contains("fcnc")) weight =  ss::scale1fb()*lumiAG*2.519*0.5/9.6000003; // signal samples have xsec of 9.6
-      if(proc.Contains("fcnc") and ( year == 2017 or year == 2018 )) weight =  (ss::scale1fb()*lumiAG*2.519*0.5)/(9.6000003*1.527); // correct for missing tau decays
+      if(proc.Contains("fcnc")) weight =  ss::scale1fb()*lumiAG*2.519*0.5/9.6; // signal samples have xsec of 9.6
+      //if(proc.Contains("fcnc") and ( year == 2017 or year == 2018 )) weight =  (ss::scale1fb()*lumiAG*2.519*0.5)/(9.6*1.527); // correct for missing tau decays
       //if(proc.Contains("fcnc")) weight =  ss::scale1fb()*lumiAG*2.519*0.5;
       //if(proc.Contains("fcnc")) cout<< "fcnc weight "<<weight<<endl;
       //cout<<"weight "<<weight<<endl;      
@@ -771,13 +772,15 @@ int ScanChain(TChain *ch, TString options="", TString outputdir="outputs"){
 	  weight *= triggerScaleFactor(year, lep1id, lep2id, lep1pt, lep2pt, lep1eta, lep2eta, ht, analysis, 0);
 	}
 	weight *= ss::weight_btagsf();
-	weight *= isr_reweight(useIsrWeight, year, nisrmatch);
+	if (proc.Contains("ttw"))  weight *= isrWeight(year, nisrmatch, 1);
+	if (proc.Contains("ttz"))  weight *= isrWeight(year, nisrmatch, 2);
+	if (proc.Contains("tt_"))  weight *= isrWeight(year, nisrmatch, 10);
+
 	if (year == 2016) weight *= ss::prefire2016_sf();
 	if (year == 2017) weight *= ss::prefire2017_sf();		
-	if (useTTBB and (ss::extragenb() >= 2)) weight *= 1.7;
-                
+	if (useTTBB and (ss::extragenb() >= 2)) weight *= 1.7;	
+	weight *=ss::decayWSF();	
       }
-
 
       bool class6Fake = false;
       if (doFakes) {
@@ -785,7 +788,6 @@ int ScanChain(TChain *ch, TString options="", TString outputdir="outputs"){
 	  bool lep1_lowpt_veto = lep1pt < (abs(lep1id) == 11 ? 15 : 10);
 	  bool lep2_lowpt_veto = lep2pt < (abs(lep2id) == 11 ? 15 : 10);
 	  bool lep3_lowpt_veto = lep3pt < (abs(lep3id) == 11 ? 15 : 10);
-
 	  int nfakes = 0;
 	  if (ss::lep3_fo() and !ss::lep3_tight() and !lep3_lowpt_veto and lep1good and lep2good && lep3pt>min_pt_fake) {  // lep3 fake
 	    float fr = fakeRate(year, lep3id, lep3ccpt, lep3eta, ht, analysis, new2016FRBins, !minPtFake18);
@@ -825,8 +827,10 @@ int ScanChain(TChain *ch, TString options="", TString outputdir="outputs"){
 	    continue;
 	  // subtract double FO (why is this?)
 	  if (hyp_class == 1 && lep1pt>min_pt_fake && lep2pt>min_pt_fake) weight *= -1.;
+	  // subtract prompt MC
+	  if (isData and !ss::is_real_data()) weight *= -1.;
 	  hyp_class = 3; // we've faked a SS Tight-Tight with a SS LL or SS TL
-	  // Basically just update this so it gets put in the SR
+	  // Basically just update this so it gets put in the SR	  	  
 	} else {
 	  continue; // Not a fakeing hyp_class
 	}
@@ -1053,6 +1057,7 @@ int ScanChain(TChain *ch, TString options="", TString outputdir="outputs"){
       bool LowMetOnZor0b = (met<50&&OnZ)||nbtags==0;
 
       bool MossfOnZ = fabs(MOSSF(lep)-91.2)<15.;
+      bool mllowmetonz2b = met<50. and nleps >2 and hyp_class == 6 and nbtags >= 2 ;   
       
       if (hyp_class == 3 and nleps == 2 and njets >= 2 and nbtags > 0 and lep1ccpt > 25 and lep2ccpt > 20 ){ 
 	fill_region("ssbr", weight); 
@@ -1131,18 +1136,20 @@ int ScanChain(TChain *ch, TString options="", TString outputdir="outputs"){
       if (hyp_class == 3 and nleps == 2 and njets >= 2 and lep1ccpt > 25 and lep2ccpt > 20 and !LowMetOnZor0b ) fill_region("ssbr2", weight); 
       if (hyp_class == 3 and nleps == 2 and njets >= 2 and nbtags == 1   and lep1ccpt > 25 and lep2ccpt > 20 and !LowMetOnZor0b ) fill_region("ss1b2j2", weight); 
       if (hyp_class == 3 and nleps == 2 and njets >= 2 and nbtags  > 1   and lep1ccpt > 25 and lep2ccpt > 20 and !LowMetOnZor0b ) fill_region("ss2b2j2", weight);      
+      
+      if (hyp_class == 3 and nleps >  2 and njets >= 1 and nbtags >  0 and lep1ccpt > 25 and lep2ccpt > 20 and lep3ccpt > 20 ) fill_region("mlbr", weight);  
+      if (hyp_class == 3 and nleps >  2 and njets >= 1 and nbtags == 1 and lep1ccpt > 25 and lep2ccpt > 20 and lep3ccpt > 20 ) fill_region("ml1b1j", weight);  
+      if (hyp_class == 3 and nleps >  2 and njets >= 1 and nbtags >  1 and lep1ccpt > 25 and lep2ccpt > 20 and lep3ccpt > 20 ) fill_region("ml2b2j", weight);
+      
+      if (mllowmetonz2b  and njets >= 1 and lep1ccpt > 25 and lep2ccpt > 20 and lep3ccpt > 20 ) fill_region("mllowmetonz2b", weight);  
 
-      if (hyp_class == 3 and nleps >  2 and njets >= 2 and nbtags >  0 and lep1ccpt > 25 and lep2ccpt > 20 and lep3ccpt > 20 ) fill_region("mlbr", weight);  
-      if (hyp_class == 3 and nleps >  2 and njets >= 2 and nbtags == 1 and lep1ccpt > 25 and lep2ccpt > 20 and lep3ccpt > 20 ) fill_region("ml1b1j", weight);  
-      if (hyp_class == 3 and nleps >  2 and njets >= 2 and nbtags >  1 and lep1ccpt > 25 and lep2ccpt > 20 and lep3ccpt > 20 ) fill_region("ml2b2j", weight);
+      if ((hyp_class == 3 or hyp_class == 6) and nleps >  2 and njets >= 1 and nbtags >  0 and lep1ccpt > 25 and lep2ccpt > 20 and lep3ccpt > 20 and !mllowmetonz2b ) fill_region("mlbrinc", weight);  
+      if ((hyp_class == 3 or hyp_class == 6) and nleps >  2 and njets >= 1 and nbtags == 1 and lep1ccpt > 25 and lep2ccpt > 20 and lep3ccpt > 20 and !mllowmetonz2b ) fill_region("ml1b1jinc", weight);  
+      if ((hyp_class == 3 or hyp_class == 6) and nleps >  2 and njets >= 1 and nbtags >  1 and lep1ccpt > 25 and lep2ccpt > 20 and lep3ccpt > 20 and !mllowmetonz2b ) fill_region("ml2b2jinc", weight);
       
-      if ((hyp_class == 3 or hyp_class == 6) and nleps >  2 and njets >= 2 and nbtags >  0 and lep1ccpt > 25 and lep2ccpt > 20 and lep3ccpt > 20 ) fill_region("mlbrinc", weight);  
-      if ((hyp_class == 3 or hyp_class == 6) and nleps >  2 and njets >= 2 and nbtags == 1 and lep1ccpt > 25 and lep2ccpt > 20 and lep3ccpt > 20 ) fill_region("ml1b1jinc", weight);  
-      if ((hyp_class == 3 or hyp_class == 6) and nleps >  2 and njets >= 2 and nbtags >  1 and lep1ccpt > 25 and lep2ccpt > 20 and lep3ccpt > 20 ) fill_region("ml2b2jinc", weight);
-      
-      if (hyp_class == 6 and nleps >  2 and njets >= 2 and nbtags >  0 and lep1ccpt > 25 and lep2ccpt > 20 and lep3ccpt > 20 ) fill_region("mlbronz", weight);  
-      if (hyp_class == 6 and nleps >  2 and njets >= 2 and nbtags == 1 and lep1ccpt > 25 and lep2ccpt > 20 and lep3ccpt > 20 ) fill_region("ml1b1jonz", weight);  
-      if (hyp_class == 6 and nleps >  2 and njets >= 2 and nbtags >  1 and lep1ccpt > 25 and lep2ccpt > 20 and lep3ccpt > 20 ) fill_region("ml2b2jonz", weight);
+      if (hyp_class == 6 and nleps >  2 and njets >= 1 and nbtags >  0 and lep1ccpt > 25 and lep2ccpt > 20 and lep3ccpt > 20 and !mllowmetonz2b ) fill_region("mlbronz", weight);  
+      if (hyp_class == 6 and nleps >  2 and njets >= 1 and nbtags == 1 and lep1ccpt > 25 and lep2ccpt > 20 and lep3ccpt > 20 and !mllowmetonz2b ) fill_region("ml1b1jonz", weight);  
+      if (hyp_class == 6 and nleps >  2 and njets >= 1 and nbtags >  1 and lep1ccpt > 25 and lep2ccpt > 20 and lep3ccpt > 20 and !mllowmetonz2b ) fill_region("ml2b2jonz", weight);
       
       //if (hyp_class == 3 and nleps >  2 and njets >= 2 and nbtags == 2 and lep1ccpt > 25 and lep2ccpt > 20 and lep3ccpt > 20 and MossfOnZ ) fill_region("ttzbr", weight);
       if (hyp_class == 4 and nleps == 2 and njets >= 2 and nbtags > 0  and lep1ccpt > 25 and lep2ccpt > 20 ) fill_region("osbr", weight);

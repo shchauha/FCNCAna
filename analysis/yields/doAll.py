@@ -43,9 +43,15 @@ basedirs ={
     #2017: "/nfs-7/userdata/namin/tupler_babies/merged/FT/v3.31/output/year_2017/",
     #2018: "/nfs-7/userdata/namin/tupler_babies/merged/FT/v3.31//output/year_2018/",
     #2016: "/nfs-7/userdata/shchauha-2/tupler_babies/merged/FT/v3.24/year_2016/",
+    
     2016: "/nfs-7/userdata/shchauha-2/tupler_babies/merged/FT/v3.31/year_2016_94x/",
     2017: "/nfs-7/userdata/shchauha-2/tupler_babies/merged/FT/v3.31/year_2017/",
     2018: "/nfs-7/userdata/shchauha-2/tupler_babies/merged/FT/v3.31/year_2018/",
+
+    #2016: "/nfs-7/userdata/shchauha-2/tupler_babies/merged/FT/v3.31/year_2016_94x/skim/",
+    #2017: "/nfs-7/userdata/shchauha-2/tupler_babies/merged/FT/v3.31/year_2017/skim/",
+    #2018: "/nfs-7/userdata/shchauha-2/tupler_babies/merged/FT/v3.31/year_2018/skim/",
+
     }
 outputdir = "outputs_v3p31" #
 options = {    
@@ -75,7 +81,7 @@ chs = {
                 basedirs[2016]+"TTWnlo.root",
                 basedirs[2016]+"TTZnlo.root",
                 basedirs[2016]+"TTHtoNonBB.root",
-                ] , options=options[2016]+" doFakes"),
+                ] , options=options[2016]+" doFakes doData"),
         "fakes_mc": make_objs([
                 basedirs[2016]+"TTSLtop.root",
                 basedirs[2016]+"TTSLtopbar.root",
@@ -142,7 +148,7 @@ chs = {
                 basedirs[2017]+"TTWnlo.root",
                 basedirs[2017]+"TTZnlo.root",
                 basedirs[2017]+"TTHtoNonBB.root",
-                ] , options=options[2017]+" doFakes"),
+                ] , options=options[2017]+" doFakes doData"),
         "fakes_mc": make_objs([
                 basedirs[2017]+"TTSLtop.root",
                 basedirs[2017]+"TTSLtopbar.root",
@@ -214,7 +220,7 @@ chs = {
                 basedirs[2018]+"TTWnlo.root",
                 basedirs[2018]+"TTZnlo.root",
                 basedirs[2018]+"TTHtoNonBB.root",
-                ] , options=options[2018]+" doFakes"),
+                ] , options=options[2018]+" doFakes doData"),
         "fakes_mc": make_objs([
                 basedirs[2018]+"TTSLtop.root",
                 basedirs[2018]+"TTSLtopbar.root",
@@ -235,9 +241,9 @@ chs = {
                 basedirs[2018]+"DY_high.root",
                 basedirs[2018]+"DY_low.root",
                 ] ,options=options[2018]+ " doTruthFake"),        
-        "wz": make_objs([
-                basedirs[2018]+"WZ.root",
-                ],options=options[2018]),        
+#        "wz": make_objs([
+#                basedirs[2018]+"WZ.root",
+#                ],options=options[2018]),        
         "xg": make_objs([
                 basedirs[2018]+"TGext.root",
                 basedirs[2018]+"TTGdilep.root",
@@ -280,7 +286,6 @@ chs = {
 # Change chain titles to proc_year so that we output the right root file name
 for year in chs:
     [obj["ch"].SetTitle("{}_{}".format(proc,year)) for proc,obj in chs[year].items()]
-
 
 def run_chain((index,info)):
     ch, options, outputdir = info
