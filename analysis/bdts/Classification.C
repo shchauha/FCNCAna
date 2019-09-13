@@ -24,7 +24,7 @@ int Classification( TString myMethodList = "" )
    
    //TString basedir ="/home/shchauha/2019/Analysis/FCNCAna/analysis/yields/v3.24_training/";
    //TString basedir ="/home/users/shchauha/2019/FCNCAna/analysis/yields/v3.24_training/";
-   TString basedir ="/home/users/shchauha/2019/Sep7/FCNCAna/analysis/yields/outputs_v3p31_Sep7/";
+   TString basedir ="../yields/outputs_v3p31/";
    // Default MVA methods to be trained + tested
    std::map<std::string,int> Use;      
    // Boosted Decision Trees
@@ -63,14 +63,35 @@ int Classification( TString myMethodList = "" )
 
    // Read training and test data
    // (it is also possible to use ASCII format as input -> see TMVA Users Guide)
-   TFile * signal = TFile::Open(basedir+"histos_fcnc_2016.root");
-   TFile * bg1 = TFile::Open(basedir+"histos_wz_2016.root");
-   TFile * bg2 = TFile::Open(basedir+"histos_ttdl_2016.root");
+   //TFile * signal = TFile::Open(basedir+"histos_fcnc_hut_2016.root");
+   TFile * signal = TFile::Open(basedir+"histos_fcnc_hct_2016.root");
+   TFile * bg1 = TFile::Open(basedir+"histos_fakes_mc_2016.root");
+   TFile * bg2 = TFile::Open(basedir+"histos_flips_mc_2016.root");
    TFile * bg3 = TFile::Open(basedir+"histos_tth_2016.root");
-   TFile * bg4 = TFile::Open(basedir+"histos_ttsl_2016.root");
    TFile * bg5 = TFile::Open(basedir+"histos_ttw_2016.root");	 
    TFile * bg6 = TFile::Open(basedir+"histos_ttz_2016.root");
+   TFile * bg4 = TFile::Open(basedir+"histos_xg_2016.root");
+
+
+   //TFile * signal17 = TFile::Open(basedir+"histos_fcnc_hut_2017.root");
+   TFile * signal17 = TFile::Open(basedir+"histos_fcnc_hct_2017.root");
+   TFile * bg117 = TFile::Open(basedir+"histos_fakes_mc_2017.root");
+   TFile * bg217 = TFile::Open(basedir+"histos_flips_mc_2017.root");
+   TFile * bg317 = TFile::Open(basedir+"histos_tth_2017.root");
+   TFile * bg517 = TFile::Open(basedir+"histos_ttw_2017.root");	 
+   TFile * bg617 = TFile::Open(basedir+"histos_ttz_2017.root");
+   TFile * bg417 = TFile::Open(basedir+"histos_xg_2017.root");
+
+   //TFile * signal18 = TFile::Open(basedir+"histos_fcnc_hut_2018.root");
+   TFile * signal18 = TFile::Open(basedir+"histos_fcnc_hct_2018.root");
+   TFile * bg118 = TFile::Open(basedir+"histos_fakes_mc_2018.root");
+   TFile * bg218 = TFile::Open(basedir+"histos_flips_mc_2018.root");
+   TFile * bg318 = TFile::Open(basedir+"histos_tth_2018.root");
+   TFile * bg518 = TFile::Open(basedir+"histos_ttw_2018.root");	 
+   TFile * bg618 = TFile::Open(basedir+"histos_ttz_2018.root");
+   TFile * bg418 = TFile::Open(basedir+"histos_xg_2018.root");
    
+
    // Register the training and test trees
    TTree *signalTree     = (TTree*)signal->Get("t");
    TTree *background1     = (TTree*)bg1->Get("t");
@@ -79,6 +100,23 @@ int Classification( TString myMethodList = "" )
    TTree *background4     = (TTree*)bg4->Get("t");
    TTree *background5     = (TTree*)bg5->Get("t");
    TTree *background6     = (TTree*)bg6->Get("t");
+
+   TTree *signalTree17     = (TTree*)signal->Get("t");
+   TTree *background117     = (TTree*)bg1->Get("t");
+   TTree *background217     = (TTree*)bg2->Get("t");
+   TTree *background317     = (TTree*)bg3->Get("t");
+   TTree *background417     = (TTree*)bg4->Get("t");
+   TTree *background517     = (TTree*)bg5->Get("t");
+   TTree *background617     = (TTree*)bg6->Get("t");
+
+   TTree *signalTree18     = (TTree*)signal->Get("t");
+   TTree *background118     = (TTree*)bg1->Get("t");
+   TTree *background218     = (TTree*)bg2->Get("t");
+   TTree *background318     = (TTree*)bg3->Get("t");
+   TTree *background418     = (TTree*)bg4->Get("t");
+   TTree *background518     = (TTree*)bg5->Get("t");
+   TTree *background618     = (TTree*)bg6->Get("t");
+   
    //TTree *background7     = (TTree*)bg7->Get("SSTree");
 
    // Create a ROOT output file where TMVA will store ntuples, histograms, etc.
@@ -139,16 +177,16 @@ int Classification( TString myMethodList = "" )
    dataloader->AddVariable("mt1");
    dataloader->AddVariable("mt2");
    dataloader->AddVariable("dphil1l2");
-   dataloader->AddVariable("l1miniiso");
-   dataloader->AddVariable("l2miniiso");
-   dataloader->AddVariable("l1dxy");
-   dataloader->AddVariable("l1dz");
-   dataloader->AddVariable("l2dxy");
-   dataloader->AddVariable("l2dz");
-   dataloader->AddVariable("l1ptratio");
-   dataloader->AddVariable("l1ptrel");
-   dataloader->AddVariable("l2ptratio");
-   dataloader->AddVariable("l2ptrel");
+   // dataloader->AddVariable("l1miniiso");
+   // dataloader->AddVariable("l2miniiso");
+   // dataloader->AddVariable("l1dxy");
+   // dataloader->AddVariable("l1dz");
+   // dataloader->AddVariable("l2dxy");
+   // dataloader->AddVariable("l2dz");
+   // dataloader->AddVariable("l1ptratio");
+   // dataloader->AddVariable("l1ptrel");
+   // dataloader->AddVariable("l2ptratio");
+   // dataloader->AddVariable("l2ptrel");
    dataloader->AddVariable("jet3pt");
    dataloader->AddVariable("fwd_jetpt");
    
@@ -170,6 +208,23 @@ int Classification( TString myMethodList = "" )
    dataloader->AddBackgroundTree( background4, backgroundWeight );
    dataloader->AddBackgroundTree( background5, backgroundWeight );
    dataloader->AddBackgroundTree( background6, backgroundWeight );
+
+   dataloader->AddSignalTree    ( signalTree17,     signalWeight );
+   dataloader->AddBackgroundTree( background117, backgroundWeight );
+   dataloader->AddBackgroundTree( background217, backgroundWeight );
+   dataloader->AddBackgroundTree( background317, backgroundWeight );
+   dataloader->AddBackgroundTree( background417, backgroundWeight );
+   dataloader->AddBackgroundTree( background517, backgroundWeight );
+   dataloader->AddBackgroundTree( background617, backgroundWeight );
+
+   dataloader->AddSignalTree    ( signalTree17,     signalWeight );
+   dataloader->AddBackgroundTree( background117, backgroundWeight );
+   dataloader->AddBackgroundTree( background217, backgroundWeight );
+   dataloader->AddBackgroundTree( background317, backgroundWeight );
+   dataloader->AddBackgroundTree( background417, backgroundWeight );
+   dataloader->AddBackgroundTree( background517, backgroundWeight );
+   dataloader->AddBackgroundTree( background617, backgroundWeight );
+
 
    // To give different trees for training and testing, do as follows:
    //

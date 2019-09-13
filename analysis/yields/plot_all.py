@@ -61,6 +61,8 @@ labels = {
     "l2dz"        : "$l^{2}_{dz}$",
     "mossf"       : "MOSSF",            
     "bdt"         :"Event Discriminator",
+    "bdt_hut"     :"Event Discriminator hut",
+    "bdt_hct"     :"Event Discriminator hct",
 
     #"htb"        : r"$H_{T}$(b-jets)",
     #"nlb40"      : r"N-loose b-tags, $p_{T}>40$",
@@ -96,38 +98,31 @@ d_label_colors = {
         }
 
 d_flat_systematics = {
-    "fakes"         : 0.40,
-    "fakes_mc"      : 0.40,
-    "fakes_mc_ml"   : 0.40,
-    "flips"         : 0.2,
-    "flips_mc"      : 0.2,    
-    "ttsl"          : 0.40,
-    "wjets"         : 0.40,
-    "singletop"     : 0.40,
-    "ttdl"          : 0.2,
-    "rares"         : 0.5,
-    "ww"            : 0.3,
-    "ttw"           : 0.3,
-    "ttz"           : 0.3,
-    "wz"            : 0.3,
-    "tth"           : 0.3,
-    "xg"            : 0.5,
-    "ttvv"          : 0.5,
+    "Nonprompt lep."        : 0.4,        
+    "Charge misid."         : 0.3,
+    "Rare"                  : 0.5,
+    "$t\bar{t}W$"           : 0.3,
+    "$t\bar{t}Z$"           : 0.3,
+    "$t\bar{t}h$"           : 0.3,
+    "X+$\gamma$"            : 0.5,
+    "$t\bar{t}W$VV"         : 0.5,
     }
 
 bginfo = {}
 if useddbkg : 
     bginfo = {        
-        "ssbr": { k:d_label_colors[k] for k in [ "ttw", "tth", "ttz", "fakes", "flips", "xg", "ttvv", "rares"] },
-        "mlbr": { k:d_label_colors[k] for k in [ "ttw", "tth", "ttz", "fakes", "xg", "ttvv", "rares" ] },                    
+        "ssbr"          : { k:d_label_colors[k] for k in [ "ttw", "tth", "ttz", "fakes", "flips", "xg", "ttvv", "rares"] },
+        "mlbr"          : { k:d_label_colors[k] for k in [ "ttw", "tth", "ttz", "fakes", "xg", "ttvv", "rares" ] },                    
+        "mllowmetonz2b" : { k:d_label_colors[k] for k in [ "ttw", "tth", "ttz", "fakes", "xg", "ttvv", "rares" ] },                    
         }
 
 if not useddbkg : 
     bginfo = {
-        "ssbr": { k:d_label_colors[k] for k in [ "ttw", "tth", "ttz", "fakes_mc", "flips_mc", "xg", "ttvv", "rares"] },
-        "mlbr": { k:d_label_colors[k] for k in [ "ttw", "tth", "ttz", "fakes_mc_ml", "xg", "ttvv", "rares" ] },            
-        "osbr": { k:d_label_colors[k] for k in [ "ttw", "tth", "ttz", "fakes_mc", "flips_mc", "xg", "ttvv", "rares" ] },
-        "tl"  : { k:d_label_colors[k] for k in [ "ttw", "tth", "ttz", "fakes_mc", "flips_mc", "xg", "ttvv", "rares" ] },      
+        "ssbr"          : { k:d_label_colors[k] for k in [ "ttw", "tth", "ttz", "fakes_mc", "flips_mc", "xg", "ttvv", "rares"] },
+        "mlbr"          : { k:d_label_colors[k] for k in [ "ttw", "tth", "ttz", "fakes_mc_ml", "xg", "ttvv", "rares" ] },            
+        "osbr"          : { k:d_label_colors[k] for k in [ "ttw", "tth", "ttz", "fakes_mc", "flips_mc", "xg", "ttvv", "rares" ] },
+        "tl"            : { k:d_label_colors[k] for k in [ "ttw", "tth", "ttz", "fakes_mc", "flips_mc", "xg", "ttvv", "rares" ] },      
+        "mllowmetonz2b" : { k:d_label_colors[k] for k in [ "ttw", "tth", "ttz", "fakes", "xg", "ttvv", "rares" ] },                    
         }    
 # make these global for multiprocessing since uproot file objects can't be pickled
 files, other_files = {}, {}
@@ -171,7 +166,8 @@ def worker(info):
     # bgs = [bg*1 for bg in bgs]
     
     for bg in bgs:
-        # add flat systematic to stat unc in quadrature                                                                                                                                                                                   
+        # add flat systematic to stat unc in quadrature                      
+        #print bg.get_attr("label")
         bg._errors = np.hypot(bg._counts*d_flat_systematics.get(bg.get_attr("label"),0.),bg._errors)
 
     if plotdata:
@@ -287,8 +283,9 @@ if __name__ == "__main__":
     ## 
     if useddbkg:        
         regions = [
-            "ssbr",
-            "mlbr",            
+            #"ssbr",
+            #"mlbr",         
+            "mllowmetonz2b",
             ]
         
     if not useddbkg:        
@@ -297,12 +294,13 @@ if __name__ == "__main__":
             #"mlbr",
             "osbr",
             "tl",
+            "mllowmetonz2b",
             ]
        
     flavs = ["in"]
     # flavs = ["ee","em","mm","in"]
-    inputdir = "outputs_v3p31/"
-    outputdir = inputdir+"plots"
+    inputdir = "outputs_v3p31_BDT/"
+    outputdir = inputdir+"plots_cr_mc"
 
     make_plots(
             outputdir=outputdir,
@@ -340,4 +338,4 @@ if __name__ == "__main__":
             other_years = [2017,2018],
             )
 
-    os.system("niceplots outputs_v3p31/plots plots_v3.31")
+    #os.system("niceplots outputs_v3p31/plots plots_v3.31")
