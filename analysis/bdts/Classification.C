@@ -10,7 +10,6 @@
 #include "TObjString.h"
 #include "TSystem.h"
 #include "TROOT.h"
-
 #include "TMVA/Factory.h"
 #include "TMVA/DataLoader.h"
 #include "TMVA/Tools.h"
@@ -63,8 +62,8 @@ int Classification( TString myMethodList = "" )
 
    // Read training and test data
    // (it is also possible to use ASCII format as input -> see TMVA Users Guide)
-   //TFile * signal = TFile::Open(basedir+"histos_fcnc_hut_2016.root");
-   TFile * signal = TFile::Open(basedir+"histos_fcnc_hct_2016.root");
+   TFile * signal = TFile::Open(basedir+"histos_fcnc_hut_2016.root");
+   //TFile * signal = TFile::Open(basedir+"histos_fcnc_hct_2016.root");
    TFile * bg1 = TFile::Open(basedir+"histos_fakes_mc_2016.root");
    TFile * bg2 = TFile::Open(basedir+"histos_flips_mc_2016.root");
    TFile * bg3 = TFile::Open(basedir+"histos_tth_2016.root");
@@ -73,8 +72,8 @@ int Classification( TString myMethodList = "" )
    TFile * bg4 = TFile::Open(basedir+"histos_xg_2016.root");
 
 
-   //TFile * signal17 = TFile::Open(basedir+"histos_fcnc_hut_2017.root");
-   TFile * signal17 = TFile::Open(basedir+"histos_fcnc_hct_2017.root");
+   TFile * signal17 = TFile::Open(basedir+"histos_fcnc_hut_2017.root");
+   //TFile * signal17 = TFile::Open(basedir+"histos_fcnc_hct_2017.root");
    TFile * bg117 = TFile::Open(basedir+"histos_fakes_mc_2017.root");
    TFile * bg217 = TFile::Open(basedir+"histos_flips_mc_2017.root");
    TFile * bg317 = TFile::Open(basedir+"histos_tth_2017.root");
@@ -82,8 +81,8 @@ int Classification( TString myMethodList = "" )
    TFile * bg617 = TFile::Open(basedir+"histos_ttz_2017.root");
    TFile * bg417 = TFile::Open(basedir+"histos_xg_2017.root");
 
-   //TFile * signal18 = TFile::Open(basedir+"histos_fcnc_hut_2018.root");
-   TFile * signal18 = TFile::Open(basedir+"histos_fcnc_hct_2018.root");
+   TFile * signal18 = TFile::Open(basedir+"histos_fcnc_hut_2018.root");
+   //TFile * signal18 = TFile::Open(basedir+"histos_fcnc_hct_2018.root");
    TFile * bg118 = TFile::Open(basedir+"histos_fakes_mc_2018.root");
    TFile * bg218 = TFile::Open(basedir+"histos_flips_mc_2018.root");
    TFile * bg318 = TFile::Open(basedir+"histos_tth_2018.root");
@@ -101,26 +100,27 @@ int Classification( TString myMethodList = "" )
    TTree *background5     = (TTree*)bg5->Get("t");
    TTree *background6     = (TTree*)bg6->Get("t");
 
-   TTree *signalTree17     = (TTree*)signal->Get("t");
-   TTree *background117     = (TTree*)bg1->Get("t");
-   TTree *background217     = (TTree*)bg2->Get("t");
-   TTree *background317     = (TTree*)bg3->Get("t");
-   TTree *background417     = (TTree*)bg4->Get("t");
-   TTree *background517     = (TTree*)bg5->Get("t");
-   TTree *background617     = (TTree*)bg6->Get("t");
+   TTree *signalTree17     = (TTree*)signal17->Get("t");
+   TTree *background117     = (TTree*)bg117->Get("t");
+   TTree *background217     = (TTree*)bg217->Get("t");
+   TTree *background317     = (TTree*)bg317->Get("t");
+   TTree *background417     = (TTree*)bg417->Get("t");
+   TTree *background517     = (TTree*)bg517->Get("t");
+   TTree *background617     = (TTree*)bg617->Get("t");
 
-   TTree *signalTree18     = (TTree*)signal->Get("t");
-   TTree *background118     = (TTree*)bg1->Get("t");
-   TTree *background218     = (TTree*)bg2->Get("t");
-   TTree *background318     = (TTree*)bg3->Get("t");
-   TTree *background418     = (TTree*)bg4->Get("t");
-   TTree *background518     = (TTree*)bg5->Get("t");
-   TTree *background618     = (TTree*)bg6->Get("t");
-   
+   TTree *signalTree18     = (TTree*)signal18->Get("t");
+   TTree *background118     = (TTree*)bg118->Get("t");
+   TTree *background218     = (TTree*)bg218->Get("t");
+   TTree *background318     = (TTree*)bg318->Get("t");
+   TTree *background418     = (TTree*)bg418->Get("t");
+   TTree *background518     = (TTree*)bg518->Get("t");
+   TTree *background618     = (TTree*)bg618->Get("t");
+
+
    //TTree *background7     = (TTree*)bg7->Get("SSTree");
 
    // Create a ROOT output file where TMVA will store ntuples, histograms, etc.
-   TString outfileName( "BDT_output_trainig_testing.root" );
+   TString outfileName( "BDT_hut_35var.root" );
    TFile* outputFile = TFile::Open( outfileName, "RECREATE" );
 
    // Create the factory object. Later you can choose the methods
@@ -177,18 +177,20 @@ int Classification( TString myMethodList = "" )
    dataloader->AddVariable("mt1");
    dataloader->AddVariable("mt2");
    dataloader->AddVariable("dphil1l2");
-   // dataloader->AddVariable("l1miniiso");
-   // dataloader->AddVariable("l2miniiso");
-   // dataloader->AddVariable("l1dxy");
-   // dataloader->AddVariable("l1dz");
-   // dataloader->AddVariable("l2dxy");
-   // dataloader->AddVariable("l2dz");
-   // dataloader->AddVariable("l1ptratio");
-   // dataloader->AddVariable("l1ptrel");
-   // dataloader->AddVariable("l2ptratio");
-   // dataloader->AddVariable("l2ptrel");
+   dataloader->AddVariable("l1miniiso");
+   dataloader->AddVariable("l2miniiso");
+   dataloader->AddVariable("l1dxy");
+   dataloader->AddVariable("l1dz");
+   dataloader->AddVariable("l2dxy");
+   dataloader->AddVariable("l2dz");
+   dataloader->AddVariable("l1ptratio");
+   dataloader->AddVariable("l1ptrel");
+   dataloader->AddVariable("l2ptratio");
+   dataloader->AddVariable("l2ptrel");
    dataloader->AddVariable("jet3pt");
    dataloader->AddVariable("fwd_jetpt");
+
+
    
    //dataloader->AddVariable("weight");
    // You can add so-called "Spectator variables", which are not used in the MVA training,
@@ -217,13 +219,13 @@ int Classification( TString myMethodList = "" )
    dataloader->AddBackgroundTree( background517, backgroundWeight );
    dataloader->AddBackgroundTree( background617, backgroundWeight );
 
-   dataloader->AddSignalTree    ( signalTree17,     signalWeight );
-   dataloader->AddBackgroundTree( background117, backgroundWeight );
-   dataloader->AddBackgroundTree( background217, backgroundWeight );
-   dataloader->AddBackgroundTree( background317, backgroundWeight );
-   dataloader->AddBackgroundTree( background417, backgroundWeight );
-   dataloader->AddBackgroundTree( background517, backgroundWeight );
-   dataloader->AddBackgroundTree( background617, backgroundWeight );
+   dataloader->AddSignalTree    ( signalTree18,     signalWeight );
+   dataloader->AddBackgroundTree( background118, backgroundWeight );
+   dataloader->AddBackgroundTree( background218, backgroundWeight );
+   dataloader->AddBackgroundTree( background318, backgroundWeight );
+   dataloader->AddBackgroundTree( background418, backgroundWeight );
+   dataloader->AddBackgroundTree( background518, backgroundWeight );
+   dataloader->AddBackgroundTree( background618, backgroundWeight );
 
 
    // To give different trees for training and testing, do as follows:
@@ -287,15 +289,17 @@ int Classification( TString myMethodList = "" )
    dataloader->SetBackgroundWeightExpression( "weight" );
 
    // Apply additional cuts on the signal and background samples (can be different)
-   TCut mycuts = ""; // for example: TCut mycuts = "abs(var1)<0.5 && abs(var2-0.5)<1";
-   TCut mycutb = ""; // for example: TCut mycutb = "abs(var1)<0.5";
+   TCut mycuts = "l2ptratio > 0"; // for example: TCut mycuts = "abs(var1)<0.5 && abs(var2-0.5)<1";
+   TCut mycutb = "l2ptratio > 0"; // for example: TCut mycutb = "abs(var1)<0.5";
 
    // Tell the dataloader how to use the training and testing events
    //
    // If no numbers of events are given, half of the events in the tree are used
    // for training, and the other half for testing:
    //
-   dataloader->PrepareTrainingAndTestTree( mycuts, "SplitMode=random:!V" );
+   dataloader->PrepareTrainingAndTestTree("l2ptratio > 0 && l2ptratio < 100.", "l2ptratio > 0 && l2ptratio < 100.","SplitMode=random:!V");
+   //dataloader->PrepareTrainingAndTestTree( mycuts, "SplitMode=random:!V" );
+
    //
    // To also specify the number of testing events, use:
    //

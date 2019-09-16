@@ -110,36 +110,51 @@ d_flat_systematics = {
     "$t\bar{t}W$VV"         : 0.5,
     }
 
-bginfo = {}
-if useddbkg : 
-    bginfo = {        
-        "ssbr"          : { k:d_label_colors[k] for k in [ "ttw", "tth", "ttz", "fakes", "flips", "xg", "ttvv", "rares"] },
-        "ss0b2j"        : { k:d_label_colors[k] for k in [ "ttw", "tth", "ttz", "fakes", "flips", "xg", "ttvv", "rares"] },
-        "ss1b2j"        : { k:d_label_colors[k] for k in [ "ttw", "tth", "ttz", "fakes", "flips", "xg", "ttvv", "rares"] },
-        "ss2b2j"        : { k:d_label_colors[k] for k in [ "ttw", "tth", "ttz", "fakes", "flips", "xg", "ttvv", "rares"] },
-        "mlbr"          : { k:d_label_colors[k] for k in [ "ttw", "tth", "ttz", "fakes", "xg", "ttvv", "rares" ] },                    
-        "ml1b1j"        : { k:d_label_colors[k] for k in [ "ttw", "tth", "ttz", "fakes", "xg", "ttvv", "rares" ] },                    
-        "ml2b2j"        : { k:d_label_colors[k] for k in [ "ttw", "tth", "ttz", "fakes", "xg", "ttvv", "rares" ] },                    
-        "mlbrinc"       : { k:d_label_colors[k] for k in [ "ttw", "tth", "ttz", "fakes", "xg", "ttvv", "rares" ] },                    
+bginfodata = {}
+bginfomc = {}
+bginfoall = {}
 
-        
-        "mllowmetonz2b" : { k:d_label_colors[k] for k in [ "ttw", "tth", "ttz", "fakes", "xg", "ttvv", "rares" ] },                    
-        }
+bginfoall= {        
+    "ssbr"          : { k:d_label_colors[k] for k in [ "ttw", "tth", "ttz", "fakes", "flips", "fakes_mc", "flips_mc", "xg", "ttvv", "rares"] },
+    "ss0b2j"        : { k:d_label_colors[k] for k in [ "ttw", "tth", "ttz", "fakes", "flips", "fakes_mc", "flips_mc", "xg", "ttvv", "rares"] },
+    "ss1b2j"        : { k:d_label_colors[k] for k in [ "ttw", "tth", "ttz", "fakes", "flips", "fakes_mc", "flips_mc", "xg", "ttvv", "rares"] },
+    "ss2b2j"        : { k:d_label_colors[k] for k in [ "ttw", "tth", "ttz", "fakes", "flips", "fakes_mc", "flips_mc", "xg", "ttvv", "rares"] },
+    "mlbr"          : { k:d_label_colors[k] for k in [ "ttw", "tth", "ttz", "fakes", "fakes_mc_ml", "xg", "ttvv", "rares" ] },                    
+    "ml1b1j"        : { k:d_label_colors[k] for k in [ "ttw", "tth", "ttz", "fakes", "fakes_mc_ml", "xg", "ttvv", "rares" ] },                    
+    "ml2b2j"        : { k:d_label_colors[k] for k in [ "ttw", "tth", "ttz", "fakes", "fakes_mc_ml", "xg", "ttvv", "rares" ] },                    
+    "mlbrinc"       : { k:d_label_colors[k] for k in [ "ttw", "tth", "ttz", "fakes", "fakes_mc_ml", "xg", "ttvv", "rares" ] },                    
+    
+    "mllowmetonz2b" : { k:d_label_colors[k] for k in [ "ttw", "tth", "ttz", "fakes", "fakes_mc_ml", "xg", "ttvv", "rares" ] },                    
+    }
 
-if not useddbkg : 
-    bginfo = {
-        "ssbr"          : { k:d_label_colors[k] for k in [ "ttw", "tth", "ttz", "fakes_mc", "flips_mc", "xg", "ttvv", "rares"] },
-        "ss0b2j"        : { k:d_label_colors[k] for k in [ "ttw", "tth", "ttz", "fakes_mc", "flips_mc", "xg", "ttvv", "rares"] },
-        "ss1b2j"        : { k:d_label_colors[k] for k in [ "ttw", "tth", "ttz", "fakes_mc", "flips_mc", "xg", "ttvv", "rares"] },
-        "ss2b2j"        : { k:d_label_colors[k] for k in [ "ttw", "tth", "ttz", "fakes_mc", "flips_mc", "xg", "ttvv", "rares"] },
-        "mlbr"          : { k:d_label_colors[k] for k in [ "ttw", "tth", "ttz", "fakes_mc_ml", "xg", "ttvv", "rares" ] },        
-        "ml1b1j"        : { k:d_label_colors[k] for k in [ "ttw", "tth", "ttz", "fakes_mc_ml", "xg", "ttvv", "rares" ] },            
-        "ml2b2j"        : { k:d_label_colors[k] for k in [ "ttw", "tth", "ttz", "fakes_mc_ml", "xg", "ttvv", "rares" ] },            
-        "mlbrinc"       : { k:d_label_colors[k] for k in [ "ttw", "tth", "ttz", "fakes_mc_ml", "xg", "ttvv", "rares" ] },            
-        "osbr"          : { k:d_label_colors[k] for k in [ "ttw", "tth", "ttz", "fakes_mc", "flips_mc", "xg", "ttvv", "rares" ] },
-        "tl"            : { k:d_label_colors[k] for k in [ "ttw", "tth", "ttz", "fakes_mc", "flips_mc", "xg", "ttvv", "rares" ] },      
-        "mllowmetonz2b" : { k:d_label_colors[k] for k in [ "ttw", "tth", "ttz", "fakes", "xg", "ttvv", "rares" ] },                    
-        }    
+
+
+bginfodata = {        
+    "ssbr"          : { k:d_label_colors[k] for k in [ "ttw", "tth", "ttz", "fakes", "flips", "xg", "ttvv", "rares"] },
+    "ss0b2j"        : { k:d_label_colors[k] for k in [ "ttw", "tth", "ttz", "fakes", "flips", "xg", "ttvv", "rares"] },
+    "ss1b2j"        : { k:d_label_colors[k] for k in [ "ttw", "tth", "ttz", "fakes", "flips", "xg", "ttvv", "rares"] },
+    "ss2b2j"        : { k:d_label_colors[k] for k in [ "ttw", "tth", "ttz", "fakes", "flips", "xg", "ttvv", "rares"] },
+    "mlbr"          : { k:d_label_colors[k] for k in [ "ttw", "tth", "ttz", "fakes", "xg", "ttvv", "rares" ] },                    
+    "ml1b1j"        : { k:d_label_colors[k] for k in [ "ttw", "tth", "ttz", "fakes", "xg", "ttvv", "rares" ] },                    
+    "ml2b2j"        : { k:d_label_colors[k] for k in [ "ttw", "tth", "ttz", "fakes", "xg", "ttvv", "rares" ] },                    
+    "mlbrinc"       : { k:d_label_colors[k] for k in [ "ttw", "tth", "ttz", "fakes", "xg", "ttvv", "rares" ] },                    
+    
+    "mllowmetonz2b" : { k:d_label_colors[k] for k in [ "ttw", "tth", "ttz", "fakes", "xg", "ttvv", "rares" ] },                    
+    }
+
+bginfomc = {
+    "ssbr"          : { k:d_label_colors[k] for k in [ "ttw", "tth", "ttz", "fakes_mc", "flips_mc", "xg", "ttvv", "rares"] },
+    "ss0b2j"        : { k:d_label_colors[k] for k in [ "ttw", "tth", "ttz", "fakes_mc", "flips_mc", "xg", "ttvv", "rares"] },
+    "ss1b2j"        : { k:d_label_colors[k] for k in [ "ttw", "tth", "ttz", "fakes_mc", "flips_mc", "xg", "ttvv", "rares"] },
+    "ss2b2j"        : { k:d_label_colors[k] for k in [ "ttw", "tth", "ttz", "fakes_mc", "flips_mc", "xg", "ttvv", "rares"] },
+    "mlbr"          : { k:d_label_colors[k] for k in [ "ttw", "tth", "ttz", "fakes_mc_ml", "xg", "ttvv", "rares" ] },        
+    "ml1b1j"        : { k:d_label_colors[k] for k in [ "ttw", "tth", "ttz", "fakes_mc_ml", "xg", "ttvv", "rares" ] },            
+    "ml2b2j"        : { k:d_label_colors[k] for k in [ "ttw", "tth", "ttz", "fakes_mc_ml", "xg", "ttvv", "rares" ] },            
+    "mlbrinc"       : { k:d_label_colors[k] for k in [ "ttw", "tth", "ttz", "fakes_mc_ml", "xg", "ttvv", "rares" ] },            
+    "osbr"          : { k:d_label_colors[k] for k in [ "ttw", "tth", "ttz", "fakes_mc", "flips_mc", "xg", "ttvv", "rares" ] },
+    "tl"            : { k:d_label_colors[k] for k in [ "ttw", "tth", "ttz", "fakes_mc", "flips_mc", "xg", "ttvv", "rares" ] },      
+    "mllowmetonz2b" : { k:d_label_colors[k] for k in [ "ttw", "tth", "ttz", "fakes", "xg", "ttvv", "rares" ] },                    
+    }    
 # make these global for multiprocessing since uproot file objects can't be pickled
 files, other_files = {}, {}
 
@@ -154,33 +169,49 @@ def worker(info):
     if other_files:
         bgs = [
             sum([Hist1D(files[proc][hname],label=label,color=color)] + [Hist1D(other_files[y][proc][hname],label=label,color=color) for y in other_files.keys()])
-            for proc,(label,color) in sorted(bginfo[region].items())
+            for proc,(label,color) in sorted(bginfodata[region].items())
             ]
         data = sum([Hist1D(files["data"][hname])] + [Hist1D(other_files[y]["data"][hname]) for y in other_files.keys()])
-        
         sigs = [
-            sum([Hist1D(files["fcnc_hut"][hname],label="hut", color = "#9D7ABF" )] + [Hist1D(other_files[y]["fcnc_hut"][hname],label="hut", color = "#9D7ABF") for y in other_files.keys()]),
-            sum([Hist1D(files["fcnc_hct"][hname],label="hct", color = "#8154AD" )] + [Hist1D(other_files[y]["fcnc_hct"][hname],label="hct", color = "#8154AD") for y in other_files.keys()])
-            ]        
+            sum([Hist1D(files[proc][hname],label=label,color=color)] + [Hist1D(other_files[y][proc][hname],label=label,color=color) for y in other_files.keys()])
+            for proc,(label,color) in sorted(bginfomc[region].items())
+            ]
+
+#        sigs = [
+#            sum([Hist1D(files["fcnc_hut"][hname],label="hut", color = "#9D7ABF" )] + [Hist1D(other_files[y]["fcnc_hut"][hname],label="hut", color = "#9D7ABF") for y in other_files.keys()]),
+#            sum([Hist1D(files["fcnc_hct"][hname],label="hct", color = "#8154AD" )] + [Hist1D(other_files[y]["fcnc_hct"][hname],label="hct", color = "#8154AD") for y in other_files.keys()])
+#            ]        
         
+
     else:
-        bgs = [Hist1D(files[proc][hname], label=label,color=color) for proc,(label,color) in sorted(bginfo[region].items())]
+        bgs = [Hist1D(files[proc][hname], label=label,color=color) for proc,(label,color) in sorted(bginfodata[region].items())]
         data = Hist1D(files["data"][hname])
-        sigs = [Hist1D(files["fcnc_hut"][hname],label="hut", color = "#9D7ABF"), Hist1D(files["fcnc_hct"][hname],label="hct", color = "#8154AD" ) ]           
+        sigs = [Hist1D(files[proc][hname], label=label,color=color) for proc,(label,color) in sorted(bginfomc[region].items())]
+        #sigs = [Hist1D(files["fcnc_hut"][hname],label="hut", color = "#9D7ABF"), Hist1D(files["fcnc_hct"][hname],label="hct", color = "#8154AD" ) ]           
         
     #print sigs
     data.set_attr("label", "Data [{}]".format(int(data.get_integral())))
-    sigs[0].set_attr("label", "hut [{:.1f}]".format(sigs[0].get_integral()))
-    sigs[1].set_attr("label", "hct [{:.1f}]".format(sigs[1].get_integral()))
-    #sum(sigs).set_attr("color", [1.0, 0.4, 1.0])
-    
+    #    sigs[1].set_attr("label", "hct [{:.1f}]".format(sigs[1].get_integral()))
+    num = []
+    den = []
+    for bg in bgs:
+        if bg.get_attr("label") == "Nonprompt lep." or bg.get_attr("label") == "Charge misid.":
+            num.append(bg)
+
+    for sig in sigs:
+        #print sig.get_attr("label")
+        if sig.get_attr("label") == "Nonprompt lep." or sig.get_attr("label") == "Charge misid.":        
+            den.append(sig)            
+    #sigs = [sum(sigs)]
+    sigs[0].set_attr("label", "Bkgd (MC) [{:.1f}]".format(sum(sigs).get_integral()))    
+    #sum(sigs).set_attr("color", [1.0, 0.4, 1.0])    
     if data.get_integral() < 1e-6: return
     if abs(sum(bgs).get_integral()) < 1e-6: return
 
     do_bkg_syst = True
     
     bgs = sorted(bgs, key=lambda bg: bg.get_integral())
-    sf = data.get_integral()/sum(bgs).get_integral()
+    sf = sum(bgs).get_integral()/sum(sigs).get_integral()
     #bgs = [bg*sf for bg in bgs]
     # bgs = [bg*1 for bg in bgs]
     
@@ -189,8 +220,8 @@ def worker(info):
         #print bg.get_attr("label")
         bg._errors = np.hypot(bg._counts*d_flat_systematics.get(bg.get_attr("label"),0.),bg._errors)
 
-    if plotdata:
-        title += " data/MC={:.2f}".format(sf)
+        
+    title += " data/MC={:.2f}".format(sf)
 
     if other_files:
         fname = "{}/run2_{}_{}_{}.pdf".format(outputdir,region,var,flav)
@@ -200,7 +231,8 @@ def worker(info):
     if plotdata :
         plot_stack(bgs=bgs, 
                data=data, 
-               sigs = sigs,
+               sigs = [sum(sigs)],
+               ratio = sum(num).divide(sum(den)),                                  
                title=title,                
                xlabel=xlabel, 
                filename=fname,
@@ -216,7 +248,8 @@ def worker(info):
         fname_log = fname.replace(".pdf","_log.pdf").replace(".png","_log.png")
         plot_stack(bgs=bgs, 
                data=data, 
-               sigs = sigs, 
+               sigs = [sum(sigs)], 
+               ratio = sum(num).divide(sum(den)),                                  
                title=title,                
                xlabel=xlabel, 
                filename=fname_log,
@@ -229,12 +262,13 @@ def worker(info):
                # ratio_range=[0.5,1.5],
                )
 
-
+    #print len(den)    
     if not plotdata:
         plot_stack(bgs=bgs, 
                    #data=data, 
-                   sigs = sigs,
-                   ratio = sigs[0].divide(sum(bgs)),
+                   sigs = [sum(sigs)],
+                   ratio = sum(num).divide(sum(den)),                                  
+                   #ratio = (num[0]+num[1]).divide(den[0]+den[1]),
                    title=title, 
                    xlabel=xlabel, 
                    filename=fname,
@@ -244,15 +278,16 @@ def worker(info):
                    lumi = lumi,
                    ratio_range=[0.0,2.0],
                    mpl_title_params=dict(fontsize=(8 if len(str(lumi))>=5 else 9)),
-                   mpl_ratio_params={"label":"hut/Bkgd"},
+                   mpl_ratio_params={"label":"Data/MC"},
                    # ratio_range=[0.5,1.5],
                    )
 
         fname_log = fname.replace(".pdf","_log.pdf").replace(".png","_log.png")
         plot_stack(bgs=bgs, 
                #data=data, 
-               sigs = sigs, 
-               ratio = sigs[0].divide(sum(bgs)),
+               sigs = [sum(sigs)], 
+               ratio = sum(num).divide(sum(den)),               
+               #ratio = (num[0]+num[1]).divide(den[0]+den[1]),
                title=title, 
                xlabel=xlabel, 
                filename=fname_log,
@@ -262,7 +297,9 @@ def worker(info):
                lumi = lumi,
                ratio_range=[0.0,2.0],
                mpl_title_params=dict(fontsize=(8 if len(str(lumi))>=5 else 9)),
-               mpl_ratio_params={"label":"hut/Bkgd"},
+               mpl_ratio_params={"label":"Data/MC"},
+               #mpl_ratio_params={"label":"DDBkgd/MCBkgd"},
+
                # ratio_range=[0.5,1.5],
                )
 
@@ -276,10 +313,10 @@ def make_plots(outputdir="plots", inputdir="outputs", year=2016, lumi="35.9", ot
 
     os.system("mkdir -p {}/".format(outputdir))
 
-    files = { proc:uproot.open("{}/histos_{}_{}.root".format(inputdir,proc,year)) for proc in (list(set(sum(map(lambda x:x.keys(),bginfo.values()),[])))+["data"]+["fcnc_hut"]+["fcnc_hct"]) }
+    files = { proc:uproot.open("{}/histos_{}_{}.root".format(inputdir,proc,year)) for proc in (list(set(sum(map(lambda x:x.keys(),bginfoall.values()),[])))+["data"]+["fcnc_hut"]+["fcnc_hct"]) }
     other_files = {}
     for y in other_years:
-        other_files[y] = { proc:uproot.open("{}/histos_{}_{}.root".format(inputdir,proc,y)) for proc in (list(set(sum(map(lambda x:x.keys(),bginfo.values()),[])))+["data"]+["fcnc_hut"]+["fcnc_hct"]) }
+        other_files[y] = { proc:uproot.open("{}/histos_{}_{}.root".format(inputdir,proc,y)) for proc in (list(set(sum(map(lambda x:x.keys(),bginfoall.values()),[])))+["data"]+["fcnc_hut"]+["fcnc_hct"]) }
         
     #print files
     # for region in ["htnb1mc","htnb1","os","osloose","br","crw","crz","tt_isr_reweight_check"]:
@@ -311,7 +348,7 @@ if __name__ == "__main__":
             "ml2b2j",
             "ml1b1j",
             "mlbrinc",
-
+            #
             ]
         
     if not useddbkg:        
@@ -333,7 +370,7 @@ if __name__ == "__main__":
     flavs = ["in"]
     # flavs = ["ee","em","mm","in"]
     inputdir = "outputs_v3p31_BDT/"
-    outputdir = inputdir+"plots_sr_data"
+    outputdir = inputdir+"plots_sr_datamc"
 
     make_plots(
             outputdir=outputdir,
@@ -371,4 +408,4 @@ if __name__ == "__main__":
             other_years = [2017,2018],
             )
 
-    os.system("niceplots outputs_v3p31_BDT/plots_sr_data plots_v3.31_sr_data")
+    os.system("niceplots outputs_v3p31_BDT/plots_sr_datamc plots_v3.31_sr_datamc")
