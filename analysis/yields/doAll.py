@@ -52,7 +52,11 @@ basedirs ={
     #2018: "/nfs-7/userdata/shchauha-2/tupler_babies/merged/FT/v3.31/year_2018/skim/",
 
     }
-outputdir = "outputs_v3p31_BDT" #
+#outputdir = "outputs_v3p31_BDT" #
+#outputdir = "outputs_v3p31_loose" #
+#outputdir = "outputs_v3p31_loose_BDT" #
+#outputdir = "outputs_v3p31_BDT_NoAngleNoIso" #
+outputdir = "outputs_v3p31_BDT_NoAngleNoIso_Flavor" #
 options = {    
     # for SS
     2016: "  doSS Data2016 new2016FRBins ReadBDT quiet ",

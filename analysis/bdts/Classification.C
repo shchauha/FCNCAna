@@ -23,6 +23,8 @@ int Classification( TString myMethodList = "" )
    
    //TString basedir ="/home/shchauha/2019/Analysis/FCNCAna/analysis/yields/v3.24_training/";
    //TString basedir ="/home/users/shchauha/2019/FCNCAna/analysis/yields/v3.24_training/";
+   //TString basedir ="../yields/outputs_v3p31/";
+   //TString basedir ="../yields/outputs_v3p31_loose/";
    TString basedir ="../yields/outputs_v3p31/";
    // Default MVA methods to be trained + tested
    std::map<std::string,int> Use;      
@@ -62,8 +64,9 @@ int Classification( TString myMethodList = "" )
 
    // Read training and test data
    // (it is also possible to use ASCII format as input -> see TMVA Users Guide)
-   TFile * signal = TFile::Open(basedir+"histos_fcnc_hut_2016.root");
-   //TFile * signal = TFile::Open(basedir+"histos_fcnc_hct_2016.root");
+
+   //TFile * signal = TFile::Open(basedir+"histos_fcnc_hut_2016.root");
+   TFile * signal = TFile::Open(basedir+"histos_fcnc_hct_2016.root");
    TFile * bg1 = TFile::Open(basedir+"histos_fakes_mc_2016.root");
    TFile * bg2 = TFile::Open(basedir+"histos_flips_mc_2016.root");
    TFile * bg3 = TFile::Open(basedir+"histos_tth_2016.root");
@@ -72,8 +75,8 @@ int Classification( TString myMethodList = "" )
    TFile * bg4 = TFile::Open(basedir+"histos_xg_2016.root");
 
 
-   TFile * signal17 = TFile::Open(basedir+"histos_fcnc_hut_2017.root");
-   //TFile * signal17 = TFile::Open(basedir+"histos_fcnc_hct_2017.root");
+   //TFile * signal17 = TFile::Open(basedir+"histos_fcnc_hut_2017.root");
+   TFile * signal17 = TFile::Open(basedir+"histos_fcnc_hct_2017.root");
    TFile * bg117 = TFile::Open(basedir+"histos_fakes_mc_2017.root");
    TFile * bg217 = TFile::Open(basedir+"histos_flips_mc_2017.root");
    TFile * bg317 = TFile::Open(basedir+"histos_tth_2017.root");
@@ -81,8 +84,8 @@ int Classification( TString myMethodList = "" )
    TFile * bg617 = TFile::Open(basedir+"histos_ttz_2017.root");
    TFile * bg417 = TFile::Open(basedir+"histos_xg_2017.root");
 
-   TFile * signal18 = TFile::Open(basedir+"histos_fcnc_hut_2018.root");
-   //TFile * signal18 = TFile::Open(basedir+"histos_fcnc_hct_2018.root");
+   //TFile * signal18 = TFile::Open(basedir+"histos_fcnc_hut_2018.root");
+   TFile * signal18 = TFile::Open(basedir+"histos_fcnc_hct_2018.root");
    TFile * bg118 = TFile::Open(basedir+"histos_fakes_mc_2018.root");
    TFile * bg218 = TFile::Open(basedir+"histos_flips_mc_2018.root");
    TFile * bg318 = TFile::Open(basedir+"histos_tth_2018.root");
@@ -120,7 +123,10 @@ int Classification( TString myMethodList = "" )
    //TTree *background7     = (TTree*)bg7->Get("SSTree");
 
    // Create a ROOT output file where TMVA will store ntuples, histograms, etc.
-   TString outfileName( "BDT_hut_35var.root" );
+   //TString outfileName( "BDT_hut_35var.root" );
+   //TString outfileName( "BDT_hut_35var_loose.root" );
+   //TString outfileName( "BDT_hut_NoAngleNoIso.root" );
+   TString outfileName( "BDT_hct_NoAngleNoIso.root" );
    TFile* outputFile = TFile::Open( outfileName, "RECREATE" );
 
    // Create the factory object. Later you can choose the methods
@@ -142,7 +148,7 @@ int Classification( TString myMethodList = "" )
    //TMVA::Factory *factory = new TMVA::Factory( "Classification", outputFile,
    //                                            "!V:!Silent:Color:DrawProgressBar:Transformations=I;D;G,D:AnalysisType=Classification" );
 
-   TMVA::DataLoader *dataloader=new TMVA::DataLoader("dataset");
+   TMVA::DataLoader *dataloader=new TMVA::DataLoader("dataset_hct_NoAngleNoIso");
    // If you wish to modify default settings
    // (please check "src/Config.h" to see all available global options)
    //
@@ -167,26 +173,26 @@ int Classification( TString myMethodList = "" )
    dataloader->AddVariable("jet1pt");
    dataloader->AddVariable("jet2pt");
    dataloader->AddVariable("btag1pt");
-   dataloader->AddVariable("drl1l2");
-   dataloader->AddVariable("mindrl1j");
-   dataloader->AddVariable("mindrl2j");
-   dataloader->AddVariable("mindrl1bt");
-   dataloader->AddVariable("mindrl2bt");
-   dataloader->AddVariable("dphil1met");
-   dataloader->AddVariable("dphil2met");
+   //dataloader->AddVariable("drl1l2");
+   //dataloader->AddVariable("mindrl1j");
+   //dataloader->AddVariable("mindrl2j");
+   //dataloader->AddVariable("mindrl1bt");
+   //dataloader->AddVariable("mindrl2bt");
+   //dataloader->AddVariable("dphil1met");
+   //dataloader->AddVariable("dphil2met");
    dataloader->AddVariable("mt1");
    dataloader->AddVariable("mt2");
-   dataloader->AddVariable("dphil1l2");
-   dataloader->AddVariable("l1miniiso");
-   dataloader->AddVariable("l2miniiso");
-   dataloader->AddVariable("l1dxy");
-   dataloader->AddVariable("l1dz");
-   dataloader->AddVariable("l2dxy");
-   dataloader->AddVariable("l2dz");
-   dataloader->AddVariable("l1ptratio");
-   dataloader->AddVariable("l1ptrel");
-   dataloader->AddVariable("l2ptratio");
-   dataloader->AddVariable("l2ptrel");
+   //dataloader->AddVariable("dphil1l2");
+   // dataloader->AddVariable("l1miniiso");
+   // dataloader->AddVariable("l2miniiso");
+   // dataloader->AddVariable("l1dxy");
+   // dataloader->AddVariable("l1dz");
+   // dataloader->AddVariable("l2dxy");
+   // dataloader->AddVariable("l2dz");
+   // dataloader->AddVariable("l1ptratio");
+   // dataloader->AddVariable("l1ptrel");
+   // dataloader->AddVariable("l2ptratio");
+   // dataloader->AddVariable("l2ptrel");
    dataloader->AddVariable("jet3pt");
    dataloader->AddVariable("fwd_jetpt");
 

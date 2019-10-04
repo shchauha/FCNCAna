@@ -13,10 +13,10 @@ from matplottery.plotter import plot_stack
 from matplottery.utils import Hist1D, MET_LATEX
 np.set_printoptions(linewidth=200)
 
-plotdata = False
-#plotdata = True
-useddbkg = True
-#useddbkg = False
+#plotdata = False
+plotdata = True
+#useddbkg = True
+useddbkg = False
 labels = {
     "ht"          : "$H_{T}$",
     "met"         : "$p_{T}^{miss}$",
@@ -303,14 +303,14 @@ if __name__ == "__main__":
     if useddbkg:        
         regions = [
             "ssbr",
-            "ss0b2j",
-            "ss1b2j",
-            "ss2b2j",
-            "mlbr",         
+            #"ss0b2j",
+            #"ss1b2j",
+            #"ss2b2j",
+            #"mlbr",         
             #"mllowmetonz2b",
-            "ml2b2j",
-            "ml1b1j",
-            "mlbrinc",
+            #"ml2b2j",
+            #"ml1b1j",
+            #"mlbrinc",
 
             ]
         
@@ -327,13 +327,15 @@ if __name__ == "__main__":
             #"mlbrinc",
             "osbr",
             "tl",
-            "mllowmetonz2b",
+            #"mllowmetonz2b",
             ]
        
-    flavs = ["in"]
+    flavs = ["in","ee","em","mm"]
     # flavs = ["ee","em","mm","in"]
-    inputdir = "outputs_v3p31_BDT/"
-    outputdir = inputdir+"plots_sr_data"
+    #inputdir = "outputs_v3p31_BDT/"
+    #inputdir = "outputs_v3p31_loose_BDT/"
+    inputdir = "outputs_v3p31_BDT_NoAngleNoIso_Flavor/"
+    outputdir = inputdir+"plots_cr_mc"
 
     make_plots(
             outputdir=outputdir,
@@ -367,8 +369,8 @@ if __name__ == "__main__":
             inputdir=inputdir,
             regions = regions, flavs = flavs,
             year=2016, 
-            lumi="137.2",
+            lumi="137",
             other_years = [2017,2018],
             )
 
-    os.system("niceplots outputs_v3p31_BDT/plots_sr_data plots_v3.31_sr_data")
+    os.system("niceplots outputs_v3p31_BDT_NoAngleNoIso_Flavor/plots_cr_mc NoAngleNoIso_Flavor_cr_mc")

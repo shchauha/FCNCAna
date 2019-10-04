@@ -1,0 +1,9 @@
+*.pyc
+*.o
+*.d
+*.so
+*.pdf
+*.png
+*.root
+CMSSW*
+*~

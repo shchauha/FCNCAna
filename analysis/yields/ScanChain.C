@@ -44,12 +44,19 @@ struct HistCol2D {
 };
 struct HistCol {
   map<string, TH1D> in;
+  map<string, TH1D> ee;
+  map<string, TH1D> em;
+  map<string, TH1D> mm;
 
   HistCol(vector<string> regions, const string& name, int nbins, const float* bins, vector<HistCol*>* registry=nullptr) {
     for (string region : regions) {
       string base_name = region + "_" + name;
       string base_title = region + " " + name;
       in.emplace(region, TH1D((base_name + "_in").c_str(), (base_title + " in").c_str(), nbins, bins));
+      ee.emplace(region, TH1D((base_name + "_ee").c_str(), (base_title + " ee").c_str(), nbins, bins));
+      em.emplace(region, TH1D((base_name + "_em").c_str(), (base_title + " em").c_str(), nbins, bins));
+      mm.emplace(region, TH1D((base_name + "_mm").c_str(), (base_title + " mm").c_str(), nbins, bins));
+
     }
     if (registry != nullptr)
       registry->push_back(this);
@@ -60,6 +67,9 @@ struct HistCol {
       string base_name = region + "_" + name;
       string base_title = region + " " + name;
       in.emplace(region, TH1D((base_name + "_in").c_str(), (base_title + " in").c_str(), nbins, low, high));
+      ee.emplace(region, TH1D((base_name + "_ee").c_str(), (base_title + " ee").c_str(), nbins, low, high));
+      em.emplace(region, TH1D((base_name + "_em").c_str(), (base_title + " em").c_str(), nbins, low, high));
+      mm.emplace(region, TH1D((base_name + "_mm").c_str(), (base_title + " mm").c_str(), nbins, low, high));
     }
     if (registry != nullptr)
       registry->push_back(this);
@@ -67,10 +77,26 @@ struct HistCol {
 
   void Fill(const string& region, int id1, int id2, float val, float weight) {
     in[region].Fill(val, weight);
+    
+    if (abs(id1) == 11 and abs(id2) == 11) {
+      ee[region].Fill(val, weight);
+    } else if (abs(id1) == 13 and abs(id2) == 13) {
+      mm[region].Fill(val, weight);
+    } else if ((abs(id1) == 11 and abs(id2) == 13) or
+	       (abs(id1) == 13 and abs(id2) == 11)) {
+      em[region].Fill(val, weight);
+    } else {
+      cout << "These ids are garbage: (" << id1 << ", " << id2 << ")\n";
+    }    
+    
   }
 
   void Write() {
     for (auto p : in) p.second.Write();
+    for (auto p : ee) p.second.Write();
+    for (auto p : em) p.second.Write();
+    for (auto p : mm) p.second.Write();
+
   }
 };
 
@@ -339,48 +365,49 @@ int ScanChain(TChain *ch, TString options="", TString outputdir="outputs"){
 
   vector<string> regions =
     {			    
-     "sshh", 
-     "ssbr",
-     "ss0b2j",
-     "ss1b2j",
-     "ss2b2j",
-     "mlbr",
-     "ml1b1j",
-     "ml2b2j",
-     "mlbronz",
-     "ml1b1jonz",
-     "ml2b2jonz",
-     "mlbrinc",
-     "ml1b1jinc",
-     "ml2b2jinc",
-     "osbr",
-     "tl",
-
-     //"br",
-     //"susytl",
-     //"hhtl",     
-     //"lowmetonzor0b",
-     "mllowmetonz2b",
-     // "ssbr2",
-     // "ss1b2j2",
-     // "ss2b2j2",
-     // "ss1b2jbtagM",
-     // "ss2b2jbtagM",
-     // "ss1b2jbtag25",
-     // "ss2b2jbtag25",
-     // "ss1b2jbtag25M",
-     // "ss2b2jbtag25M",
-     // "ss1b2jjet40",
-     // "ss2b2jjet40",
-     // "ss1b2jjet40btagM",
-     // "ss2b2jjet40btagM",
-     // "ss1b2jjet40btag25",
-     // "ss2b2jjet40btag25",
-     // "ss1b2jjet40btag25M",
-     // "ss2b2jjet40btag25M",    
-     // //"ssonz",
-     // //"ss1b2j_s",
-     // //"ss1b2j_s_met50",
+      //"sshh", 
+      "ssbr",
+      "ss0b2j",
+      "ss1b2j",
+      "ss2b2j",
+      "mlbr",
+      "ml1b1j",
+      "ml2b2j",
+      // "mlbronz",
+      // "ml1b1jonz",
+      // "ml2b2jonz",
+      // "mlbrinc",
+      // "ml1b1jinc",
+      // "ml2b2jinc",
+      "osbr",
+      "tl",
+      
+      //"br",
+      //"susytl",
+      //"hhtl",     
+      //"lowmetonzor0b",
+      //"mllowmetonz2b",
+      
+      // "ssbr2",
+      // "ss1b2j2",
+      // "ss2b2j2",
+      // "ss1b2jbtagM",
+      // "ss2b2jbtagM",
+      // "ss1b2jbtag25",
+      // "ss2b2jbtag25",
+      // "ss1b2jbtag25M",
+      // "ss2b2jbtag25M",
+      // "ss1b2jjet40",
+      // "ss2b2jjet40",
+      // "ss1b2jjet40btagM",
+      // "ss2b2jjet40btagM",
+      // "ss1b2jjet40btag25",
+      // "ss2b2jjet40btag25",
+      // "ss1b2jjet40btag25M",
+      // "ss2b2jjet40btag25M",    
+      // //"ssonz",
+      // //"ss1b2j_s",
+      // //"ss1b2j_s_met50",
     
       
     };
@@ -632,7 +659,7 @@ int ScanChain(TChain *ch, TString options="", TString outputdir="outputs"){
   reader->AddVariable("fwd_jetpt", &tree_fwd_jetpt );
 
   if(ReadBDT)reader->BookMVA("BDTG method","../misc/bdt_xml/Classification_BDTG1000t2.5%n2d.weights.xml");
-
+  //if(ReadBDT)reader->BookMVA("BDTG method","../bdts/dataset_hut_35var_loose/weights/Classification_BDTG1000t2.5%n2d.weights.xml");
 
   TMVA::Reader *reader_hut = new TMVA::Reader( "!Color:!Silent" );
   reader_hut->AddVariable("lep1pt", &tree_lep1pt );
@@ -648,16 +675,16 @@ int ScanChain(TChain *ch, TString options="", TString outputdir="outputs"){
   reader_hut->AddVariable("jet1pt", &tree_jet1pt );
   reader_hut->AddVariable("jet2pt", &tree_jet2pt );
   reader_hut->AddVariable("btag1pt", &tree_btag1pt );
-  reader_hut->AddVariable("drl1l2", &tree_drl1l2 );
-  reader_hut->AddVariable("mindrl1j", &tree_mindrl1j );
-  reader_hut->AddVariable("mindrl2j", &tree_mindrl2j );
-  reader_hut->AddVariable("mindrl1bt", &tree_mindrl1bt );
-  reader_hut->AddVariable("mindrl2bt", &tree_mindrl2bt );
-  reader_hut->AddVariable("dphil1met", &tree_dphil1met );
-  reader_hut->AddVariable("dphil2met", &tree_dphil2met );
+  //reader_hut->AddVariable("drl1l2", &tree_drl1l2 );
+  //reader_hut->AddVariable("mindrl1j", &tree_mindrl1j );
+  //reader_hut->AddVariable("mindrl2j", &tree_mindrl2j );
+  //reader_hut->AddVariable("mindrl1bt", &tree_mindrl1bt );
+  //reader_hut->AddVariable("mindrl2bt", &tree_mindrl2bt );
+  //reader_hut->AddVariable("dphil1met", &tree_dphil1met );
+  //reader_hut->AddVariable("dphil2met", &tree_dphil2met );
   reader_hut->AddVariable("mt1", &tree_mt1 );
   reader_hut->AddVariable("mt2", &tree_mt2 );
-  reader_hut->AddVariable("dphil1l2", &tree_dphil1l2 );
+  //reader_hut->AddVariable("dphil1l2", &tree_dphil1l2 );
   // reader_hut->AddVariable("l1miniiso", &tree_l1miniiso );
   // reader_hut->AddVariable("l2miniiso", &tree_l2miniiso );
   // reader_hut->AddVariable("l1dxy", &tree_l1dxy );
@@ -671,7 +698,8 @@ int ScanChain(TChain *ch, TString options="", TString outputdir="outputs"){
   reader_hut->AddVariable("jet3pt", &tree_jet3pt );
   reader_hut->AddVariable("fwd_jetpt", &tree_fwd_jetpt );
 
-  if(ReadBDT)reader_hut->BookMVA("BDTG method","../misc/bdt_xml/Classification_BDTG1000t2.5%n2d.weights_hut.xml");
+  //if(ReadBDT)reader_hut->BookMVA("BDTG method","../misc/bdt_xml/Classification_BDTG1000t2.5%n2d.weights_hut.xml");
+  if(ReadBDT)reader_hut->BookMVA("BDTG method","../bdts/dataset_hut_NoAngleNoIso/weights/Classification_BDTG1000t2.5%n2d.weights.xml");
 
   TMVA::Reader *reader_hct = new TMVA::Reader( "!Color:!Silent" );
   reader_hct->AddVariable("lep1pt", &tree_lep1pt );
@@ -687,16 +715,16 @@ int ScanChain(TChain *ch, TString options="", TString outputdir="outputs"){
   reader_hct->AddVariable("jet1pt", &tree_jet1pt );
   reader_hct->AddVariable("jet2pt", &tree_jet2pt );
   reader_hct->AddVariable("btag1pt", &tree_btag1pt );
-  reader_hct->AddVariable("drl1l2", &tree_drl1l2 );
-  reader_hct->AddVariable("mindrl1j", &tree_mindrl1j );
-  reader_hct->AddVariable("mindrl2j", &tree_mindrl2j );
-  reader_hct->AddVariable("mindrl1bt", &tree_mindrl1bt );
-  reader_hct->AddVariable("mindrl2bt", &tree_mindrl2bt );
-  reader_hct->AddVariable("dphil1met", &tree_dphil1met );
-  reader_hct->AddVariable("dphil2met", &tree_dphil2met );
+  // reader_hct->AddVariable("drl1l2", &tree_drl1l2 );
+  // reader_hct->AddVariable("mindrl1j", &tree_mindrl1j );
+  // reader_hct->AddVariable("mindrl2j", &tree_mindrl2j );
+  // reader_hct->AddVariable("mindrl1bt", &tree_mindrl1bt );
+  // reader_hct->AddVariable("mindrl2bt", &tree_mindrl2bt );
+  // reader_hct->AddVariable("dphil1met", &tree_dphil1met );
+  // reader_hct->AddVariable("dphil2met", &tree_dphil2met );
   reader_hct->AddVariable("mt1", &tree_mt1 );
   reader_hct->AddVariable("mt2", &tree_mt2 );
-  reader_hct->AddVariable("dphil1l2", &tree_dphil1l2 );
+  // reader_hct->AddVariable("dphil1l2", &tree_dphil1l2 );
   // reader_hct->AddVariable("l1miniiso", &tree_l1miniiso );
   // reader_hct->AddVariable("l2miniiso", &tree_l2miniiso );
   // reader_hct->AddVariable("l1dxy", &tree_l1dxy );
@@ -710,7 +738,8 @@ int ScanChain(TChain *ch, TString options="", TString outputdir="outputs"){
   reader_hct->AddVariable("jet3pt", &tree_jet3pt );
   reader_hct->AddVariable("fwd_jetpt", &tree_fwd_jetpt );
 
-  if(ReadBDT)reader_hct->BookMVA("BDTG method","../misc/bdt_xml/Classification_BDTG1000t2.5%n2d.weights_hct.xml");  
+  //if(ReadBDT)reader_hct->BookMVA("BDTG method","../misc/bdt_xml/Classification_BDTG1000t2.5%n2d.weights_hct.xml");  
+  if(ReadBDT)reader_hct->BookMVA("BDTG method","../bdts/dataset_hct_NoAngleNoIso/weights/Classification_BDTG1000t2.5%n2d.weights.xml");
 
   TFile *currentFile = 0;
   TObjArray *listOfFiles = ch->GetListOfFiles();
@@ -1144,7 +1173,8 @@ int ScanChain(TChain *ch, TString options="", TString outputdir="outputs"){
       bool MossfOnZ = fabs(MOSSF(lep)-91.2)<15.;
       bool mllowmetonz2b = met<50. and nleps >2 and hyp_class == 6 and nbtags >= 2 and  lep1good and lep2good and lep3good and MossfOnZ;   
       
-      if (hyp_class == 3 and nleps == 2 and njets >= 2 and nbtags > 0 and lep1ccpt > 25 and lep2ccpt > 20 ){ 
+      //if  ((hyp_class == 1 or hyp_class == 2 or hyp_class == 3 ) and nleps == 2 and njets >= 2 and nbtags > 0 and lep1ccpt > 25 and lep2ccpt > 20 ){ 
+      if  ( hyp_class == 3 and nleps == 2 and njets >= 2 and nbtags > 0 and lep1ccpt > 25 and lep2ccpt > 20 ){ 
 	fill_region("ssbr", weight); 
 	//fill the tree variables
 	tree_lep1pt = lep1pt;

@@ -203,7 +203,8 @@ def worker(info):
         if sig.get_attr("label") == "Nonprompt lep." or sig.get_attr("label") == "Charge misid.":        
             den.append(sig)            
     #sigs = [sum(sigs)]
-    sigs[0].set_attr("label", "Bkgd (MC) [{:.1f}]".format(sum(sigs).get_integral()))    
+    sigs[0].set_attr("label", "Bkgd (MC) [{:.1f}]".format(sum(sigs).get_integral()))        
+    sigs[0].set_attr("color", "#8154AD")    
     #sum(sigs).set_attr("color", [1.0, 0.4, 1.0])    
     if data.get_integral() < 1e-6: return
     if abs(sum(bgs).get_integral()) < 1e-6: return
@@ -212,6 +213,7 @@ def worker(info):
     
     bgs = sorted(bgs, key=lambda bg: bg.get_integral())
     sf = sum(bgs).get_integral()/sum(sigs).get_integral()
+    sf2 = sum(num).get_integral()/sum(den).get_integral()
     #bgs = [bg*sf for bg in bgs]
     # bgs = [bg*1 for bg in bgs]
     
@@ -221,7 +223,7 @@ def worker(info):
         bg._errors = np.hypot(bg._counts*d_flat_systematics.get(bg.get_attr("label"),0.),bg._errors)
 
         
-    title += " data/MC={:.2f}".format(sf)
+    title += " data/MC={:.2f}".format(sf2)
 
     if other_files:
         fname = "{}/run2_{}_{}_{}.pdf".format(outputdir,region,var,flav)
@@ -370,7 +372,7 @@ if __name__ == "__main__":
     flavs = ["in"]
     # flavs = ["ee","em","mm","in"]
     inputdir = "outputs_v3p31_BDT/"
-    outputdir = inputdir+"plots_sr_datamc"
+    outputdir = inputdir+"plots_sr_datamc2"
 
     make_plots(
             outputdir=outputdir,

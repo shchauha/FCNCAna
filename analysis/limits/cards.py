@@ -34,25 +34,28 @@ def BinError(hist, bin):
             error = 0.0001        
     return error
 
-outdir = "CNC"
+outdir = "v3.31_BDT_NoAngleNoIso"
 os.system("mkdir -p {}".format(outdir))
 def createDatcards(varname="Variable", signalname="Signal", srname="SR", year="2016", debug=False) :
     #basedir = "/home/shchauha/2019/Analysis/FCNCAna/analysis/yields/v3.24/"
     #basedir = "/home/users/shchauha/2019/FCNCAna/analysis/yields/v3.24_test/"
-    bginput = [basedir+"histos_fcnc_"+year+".root",
-               basedir+"histos_ttdl_"+year+".root",
-               basedir+"histos_ttsl_"+year+".root",
+    bginput = [basedir+"histos_"+signalname+"_"+year+".root",
+               #basedir+"histos_flips_mc_"+year+".root",
+               basedir+"histos_flips_"+year+".root",
+               #basedir+"histos_fakes_mc_"+year+".root",
+               #basedir+"histos_fakes_mc_ml_"+year+".root",
+               basedir+"histos_fakes_"+year+".root",
                basedir+"histos_tth_"+year+".root",
                basedir+"histos_ttw_"+year+".root",
                basedir+"histos_ttz_"+year+".root",
-               basedir+"histos_wz_"+year+".root",
-               #basedir+"histos_dy.root"        
-    ]
-    sginput = [basedir+"histos_fcnc_"+year+".root"]
-    datainput = [basedir+"histos_fcnc_"+year+".root"]
+               basedir+"histos_rares_"+year+".root",
 
-    fd = TFile(basedir+"histos_fcnc_"+year+".root","read")
-    fs = TFile(basedir+"histos_fcnc_"+year+".root","read")
+    ]
+    sginput = [basedir+"histos_"+signalname+"_"+year+".root"]
+    datainput = [basedir+"histos_"+signalname+"_"+year+".root"]
+
+    fd = TFile(basedir+"histos_"+signalname+"_"+year+".root","read")
+    fs = TFile(basedir+"histos_"+signalname+"_"+year+".root","read")
     hdata = fd.Get(varname).Clone()
     hs = fs.Get(varname).Clone()
     
@@ -128,12 +131,12 @@ def createDatcards(varname="Variable", signalname="Signal", srname="SR", year="2
             print processn,"  -  "*(i), processweight,"  -  "*(len(bgname)-i-1)
 
 
-        print "ttdl_SYST lnN   -   1.30  -    -    -    -    -   "
-        print "ttsl_SYST lnN   -    -   1.40  -    -    -    -  "    
+        print "flips_SYST lnN   -   1.30  -    -    -    -    -   "
+        print "fakes_SYST lnN   -    -   1.40  -    -    -    -  "    
         print "tth_SYST lnN   -   -  - 1.30    -    -    -     "
         print "ttw_SYST lnN   -   -    -  -  1.30  -    -   "
         print "ttz_SYST lnN   -   -    -  - -   1.30     -  "
-        print "wz_SYST lnN   -    -    -  -  - - 1.30    "
+        print "rares_SYST lnN   -    -    -  -  - - 1.50    "
         #print "DY_high_SYST lnN   -    -  -  -    -    - -   1.20  "    
     
         sys.stdout = orig_stdout
