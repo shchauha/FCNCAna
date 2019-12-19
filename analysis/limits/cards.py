@@ -34,7 +34,7 @@ def BinError(hist, bin):
             error = 0.0001        
     return error
 
-outdir = "v3.31_BDT_NoAngleNoIso"
+outdir = "outputs_v3p31_BDT2D"
 os.system("mkdir -p {}".format(outdir))
 def createDatcards(varname="Variable", signalname="Signal", srname="SR", year="2016", debug=False) :
     #basedir = "/home/shchauha/2019/Analysis/FCNCAna/analysis/yields/v3.24/"

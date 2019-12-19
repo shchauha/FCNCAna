@@ -2,7 +2,7 @@ cards.py-> scripte to produce datacards.
 
 Run it as 
 
->>python cards.py /home/users/shchauha/2019/FCNCAna/analysis/yields/v3.24_test/ ss1b2j_njets_in fcnc ss1b2j 0
+>>python cards.py /home/users/shchauha/2019/FCNCAna/analysis/yields/v3.24_test/ ss1b2j_njets_in fcnc ss1b2j 2016
 
 
 
@@ -12,6 +12,24 @@ Combine the cards:
 
 >>combineCards.py inputCards*txt > combinedcard.txt
 
+
+Follow this:
+https://twiki.cern.ch/twiki/bin/view/CMS/HiggsWG/HCombExercise
+
+Observed: 
+combine -M AsymptoticLimits 2017_ssbrhut.txt -n 2017_ssbrhut
+
+expected (apriori)
+combine -M AsymptoticLimits 2017_ssbrhut.txt -n 2017_ssbrhut --run blind
+
+expected (post):
+
+combine -M AsymptoticLimits 2017_ssbrhut.txt -n 2017_ssbrhut --run expected
+
+
+****************************************************
+
+old commands: 
 
 Run the limits: 
 

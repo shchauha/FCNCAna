@@ -44,19 +44,20 @@ basedirs ={
     #2018: "/nfs-7/userdata/namin/tupler_babies/merged/FT/v3.31//output/year_2018/",
     #2016: "/nfs-7/userdata/shchauha-2/tupler_babies/merged/FT/v3.24/year_2016/",
     
-    2016: "/nfs-7/userdata/shchauha-2/tupler_babies/merged/FT/v3.31/year_2016_94x/",
-    2017: "/nfs-7/userdata/shchauha-2/tupler_babies/merged/FT/v3.31/year_2017/",
-    2018: "/nfs-7/userdata/shchauha-2/tupler_babies/merged/FT/v3.31/year_2018/",
-    #2016: "/nfs-7/userdata/shchauha-2/tupler_babies/merged/FT/v3.31/year_2016_94x/skim/",
-    #2017: "/nfs-7/userdata/shchauha-2/tupler_babies/merged/FT/v3.31/year_2017/skim/",
-    #2018: "/nfs-7/userdata/shchauha-2/tupler_babies/merged/FT/v3.31/year_2018/skim/",
+    #2016: "/nfs-7/userdata/shchauha-2/tupler_babies/merged/FT/v3.31/year_2016_94x/",
+    #2017: "/nfs-7/userdata/shchauha-2/tupler_babies/merged/FT/v3.31/year_2017/",
+    #2018: "/nfs-7/userdata/shchauha-2/tupler_babies/merged/FT/v3.31/year_2018/",
+    2016: "/nfs-7/userdata/shchauha-2/tupler_babies/merged/FT/v3.31/year_2016_94x/skim/",
+    2017: "/nfs-7/userdata/shchauha-2/tupler_babies/merged/FT/v3.31/year_2017/skim/",
+    2018: "/nfs-7/userdata/shchauha-2/tupler_babies/merged/FT/v3.31/year_2018/skim/",
 
     }
 #outputdir = "outputs_v3p31_BDT" #
 #outputdir = "outputs_v3p31_loose" #
 #outputdir = "outputs_v3p31_loose_BDT" #
 #outputdir = "outputs_v3p31_BDT_NoAngleNoIso" #
-outputdir = "outputs_v3p31_BDT_NoAngleNoIso_Flavor" #
+#outputdir = "outputs_v3p31_BDT_NoAngleNoIso_Flavor" #
+outputdir = "outputs_v3p31_BDT2D_uaf1" #
 options = {    
     # for SS
     2016: "  doSS Data2016 new2016FRBins ReadBDT quiet ",

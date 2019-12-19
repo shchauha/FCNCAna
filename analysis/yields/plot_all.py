@@ -13,10 +13,10 @@ from matplottery.plotter import plot_stack
 from matplottery.utils import Hist1D, MET_LATEX
 np.set_printoptions(linewidth=200)
 
-#plotdata = False
-plotdata = True
-#useddbkg = True
-useddbkg = False
+plotdata = False
+#plotdata = True
+useddbkg = True
+#useddbkg = False
 labels = {
     "ht"          : "$H_{T}$",
     "met"         : "$p_{T}^{miss}$",
@@ -65,6 +65,11 @@ labels = {
     "bdt"         :"Event Discriminator",
     "bdt_hut"     :"Event Discriminator hut",
     "bdt_hct"     :"Event Discriminator hct",
+    
+    "bdt_hut_ttbar" :"Event Discriminator hut ttbar",
+    "bdt_hut_ttv"   :"Event Discriminator hut ttv",
+    "bdt_hct_ttbar" :"Event Discriminator hct ttbar",
+    "bdt_hct_ttv"   :"Event Discriminator hct ttv",
 
     #"htb"        : r"$H_{T}$(b-jets)",
     #"nlb40"      : r"N-loose b-tags, $p_{T}>40$",
@@ -334,8 +339,8 @@ if __name__ == "__main__":
     # flavs = ["ee","em","mm","in"]
     #inputdir = "outputs_v3p31_BDT/"
     #inputdir = "outputs_v3p31_loose_BDT/"
-    inputdir = "outputs_v3p31_BDT_NoAngleNoIso_Flavor/"
-    outputdir = inputdir+"plots_cr_mc"
+    inputdir = "outputs_v3p31_BDT2D/"
+    outputdir = inputdir+"plots_sr"
 
     make_plots(
             outputdir=outputdir,
@@ -373,4 +378,4 @@ if __name__ == "__main__":
             other_years = [2017,2018],
             )
 
-    os.system("niceplots outputs_v3p31_BDT_NoAngleNoIso_Flavor/plots_cr_mc NoAngleNoIso_Flavor_cr_mc")
+    os.system("niceplots outputs_v3p31_BDT2D/plots_sr outputs_v3p31_BDT2D_sr")
