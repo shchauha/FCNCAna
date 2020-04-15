@@ -273,7 +273,7 @@ def worker(info):
 
 
     # os.system("ic {}".format(fname))
-    #write_table(data,bgs,outname=fname.replace(".pdf",".txt"))
+    write_table(data,bgs,outname=fname.replace(".pdf",".txt"))
     return fname
 
 def make_plots(outputdir="plots", inputdir="outputs", year=2016, lumi="35.9", other_years=[], regions=[], flavs=["ee","em","mm","in"]):
@@ -281,10 +281,10 @@ def make_plots(outputdir="plots", inputdir="outputs", year=2016, lumi="35.9", ot
 
     os.system("mkdir -p {}/".format(outputdir))
 
-    files = { proc:uproot.open("{}/histos_{}_{}.root".format(inputdir,proc,year)) for proc in (list(set(sum(map(lambda x:x.keys(),bginfo.values()),[])))+["data"]+["fcnc_hut"]+["fcnc_hct"]) }
+    files = { proc:uproot.open("{}histos_{}_{}.root".format(inputdir,proc,year)) for proc in (list(set(sum(map(lambda x:x.keys(),bginfo.values()),[])))+["data"]+["fcnc_hut"]+["fcnc_hct"]) }
     other_files = {}
     for y in other_years:
-        other_files[y] = { proc:uproot.open("{}/histos_{}_{}.root".format(inputdir,proc,y)) for proc in (list(set(sum(map(lambda x:x.keys(),bginfo.values()),[])))+["data"]+["fcnc_hut"]+["fcnc_hct"]) }
+        other_files[y] = { proc:uproot.open("{}histos_{}_{}.root".format(inputdir,proc,y)) for proc in (list(set(sum(map(lambda x:x.keys(),bginfo.values()),[])))+["data"]+["fcnc_hut"]+["fcnc_hct"]) }
         
     #print files
     # for region in ["htnb1mc","htnb1","os","osloose","br","crw","crz","tt_isr_reweight_check"]:

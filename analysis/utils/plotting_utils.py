@@ -19,7 +19,8 @@ def write_table(data, bgs, outname=None, signal=None, extra_hists=[],precision=2
     if outname:
         sep = "+-"
     binpairs = zip(data.edges[:-1],data.edges[1:])
-    tab.set_theme_basic()
+    #tab.set_theme_basic()
+    tab.set_theme_latex()
     for ibin,binrow in enumerate(binpairs):
         row = [("[%s]"%binedge_fmt).format(binrow[0],binrow[1])]
         if ibin < len(binlabels):
