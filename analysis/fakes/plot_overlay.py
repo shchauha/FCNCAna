@@ -306,9 +306,9 @@ if __name__ == "__main__":
     #flavs = ["in","ee","em","mm"]
     flavs = ["in"]
     
-    inputdir = "outputs_v3p31_apr24/"
+    inputdir = "outputs_v3p31_apr27/"
 
-    outputdir = inputdir+"plots_in"
+    outputdir = inputdir+"plots_in_iLLfalse"
 
     #print regions
 

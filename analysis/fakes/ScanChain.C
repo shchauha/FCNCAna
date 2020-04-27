@@ -392,6 +392,10 @@ int ScanChain(TChain *ch, TString options="", TString outputdir="outputs"){
       "ssbr",
       "ssbrfakeel",
       "ssbrfakemu",
+      "tl",
+      "tlel",
+      "tlmu"
+      
     };
 
   vector<HistCol*> registry;
@@ -1019,7 +1023,8 @@ int ScanChain(TChain *ch, TString options="", TString outputdir="outputs"){
 	weight *=ss::decayWSF();	
       }
 
-      weight  = 1.0; // 
+      weight  = 1.0; //
+      if (nleps > 2) continue;
       int faketype = 0;
       //truth fakes
       if(!ss::is_real_data() and doTruthFake ){	
@@ -1027,18 +1032,13 @@ int ScanChain(TChain *ch, TString options="", TString outputdir="outputs"){
 	// if (!isData && ss::lep2_motherID()==2) continue;
 	// if (!isData && !( (ss::lep1_motherID()==1 && ss::lep2_motherID()==1) || (ss::lep1_motherID()==-3 || ss::lep2_motherID()==-3)) ) continue;
 	if (ss::lep1_motherID()==-3 || ss::lep2_motherID()==-3)  continue;
-	int nbadlegs = (ss::lep1_motherID() <= 0) + (ss::lep2_motherID() <= 0);
-	if (nleps > 2) nbadlegs += (ss::lep3_motherID() <= 0);
+	int nbadlegs = (ss::lep1_motherID() < 0) + (ss::lep2_motherID() < 0);
 	if (nbadlegs == 0) continue;
-	if (nbadlegs == 2) continue;
-	if (nbadlegs == 3) continue;
-	
-	if (ss::lep1_motherID() <= 0 and abs(lep1id) == 11) faketype = 1;
-	if (ss::lep1_motherID() <= 0 and abs(lep1id) == 13) faketype = 2;
-	if (ss::lep2_motherID() <= 0 and abs(lep2id) == 11) faketype = 1;
-	if (ss::lep2_motherID() <= 0 and abs(lep2id) == 13) faketype = 2; 
-	if (ss::lep3_motherID() <= 0 and abs(lep3id) == 11) faketype = 1;
-	if (ss::lep3_motherID() <= 0 and abs(lep3id) == 13) faketype = 2;
+	if (nbadlegs == 2) continue;		
+	int nprompts = (ss::lep1_isPrompt() > 0) + (ss::lep2_isPrompt() > 0);
+        if (nprompts != 1) continue;
+        if (ss::lep1_motherID() <= 0) faketype = (abs(lep1id) == 11) ? 1 : 2 ;
+        if (ss::lep2_motherID() <= 0) faketype = (abs(lep2id) == 11) ? 1 : 2 ;
 
 	//cout<<"found fake event with type "<<faketype<<endl;
       }
@@ -1052,22 +1052,22 @@ int ScanChain(TChain *ch, TString options="", TString outputdir="outputs"){
 	  bool lep3_lowpt_veto = lep3pt < (abs(lep3id) == 11 ? 15 : 10);
 	  int nfakes = 0;
 	  if (ss::lep3_fo() and !ss::lep3_tight() and !lep3_lowpt_veto and lep1good and lep2good && lep3pt>min_pt_fake) {  // lep3 fake
-	    float fr = fakeRate(year, lep3id, lep3ccpt, lep3eta, ht, analysis, new2016FRBins, !minPtFake18);
-	    if(useMCrates)float fr = qcdMCFakeRate(year, lep3id, lep3ccpt, lep3eta, ht, analysis, new2016FRBins, !minPtFake18);
+	    float fr = fakeRate(year, lep3id, lep3ccpt, lep3eta, ht, analysis, new2016FRBins, false);
+	    if(useMCrates)float fr = qcdMCFakeRate(year, lep3id, lep3ccpt, lep3eta, ht, analysis, new2016FRBins, false);
 	    class6Fake = true;
 	    nfakes++;
 	    weight *= fr / (1-fr);
 	  }
 	  if (ss::lep2_fo() and !ss::lep2_tight() and !lep2_lowpt_veto and lep1good and lep3good && lep2pt>min_pt_fake) {  // lep2 fake
-	    float fr = fakeRate(year, lep2id, lep2ccpt, lep2eta, ht, analysis, new2016FRBins, !minPtFake18);
-	    if(useMCrates)float fr = qcdMCFakeRate(year, lep2id, lep2ccpt, lep2eta, ht, analysis, new2016FRBins, !minPtFake18);
+	    float fr = fakeRate(year, lep2id, lep2ccpt, lep2eta, ht, analysis, new2016FRBins, false);
+	    if(useMCrates)float fr = qcdMCFakeRate(year, lep2id, lep2ccpt, lep2eta, ht, analysis, new2016FRBins, false);
 	    class6Fake = true;
 	    nfakes++;
 	    weight *= fr / (1-fr);
 	  }
 	  if (ss::lep1_fo() and !ss::lep1_tight() and !lep1_lowpt_veto and lep2good and lep3good && lep1pt>min_pt_fake) {  // lep1 fake
-	    float fr = fakeRate(year, lep1id, lep1ccpt, lep1eta, ht, analysis, new2016FRBins, !minPtFake18);
-	    if(useMCrates)float fr = qcdMCFakeRate(year, lep1id, lep1ccpt, lep1eta, ht, analysis, new2016FRBins, !minPtFake18);
+	    float fr = fakeRate(year, lep1id, lep1ccpt, lep1eta, ht, analysis, new2016FRBins, false);
+	    if(useMCrates)float fr = qcdMCFakeRate(year, lep1id, lep1ccpt, lep1eta, ht, analysis, new2016FRBins, false);
 	    class6Fake = true;
 	    nfakes++;
 	    weight *= fr / (1-fr);
@@ -1079,14 +1079,14 @@ int ScanChain(TChain *ch, TString options="", TString outputdir="outputs"){
 	} else if (hyp_class == 1 or hyp_class == 2) {
 	  bool foundGoodLoose = false;
 	  if (ss::lep1_passes_id()==0 && lep1pt>min_pt_fake) {
-	    float fr = fakeRate(year, lep1id, lep1ccpt, lep1eta, ht, analysis, new2016FRBins, !minPtFake18);
-	    if(useMCrates)float fr = qcdMCFakeRate(year, lep1id, lep1ccpt, lep1eta, ht, analysis, new2016FRBins, !minPtFake18);
+	    float fr = fakeRate(year, lep1id, lep1ccpt, lep1eta, ht, analysis, new2016FRBins, false);
+	    if(useMCrates)float fr = qcdMCFakeRate(year, lep1id, lep1ccpt, lep1eta, ht, analysis, new2016FRBins, false);
 	    weight *= fr/(1.-fr);
 	    foundGoodLoose = true;
 	  }
 	  if (ss::lep2_passes_id()==0 && lep2pt>min_pt_fake) {
-	    float fr = fakeRate(year, lep2id, lep2ccpt, lep2eta, ht, analysis, new2016FRBins, !minPtFake18);
-	    if(useMCrates)float fr = qcdMCFakeRate(year, lep2id, lep2ccpt, lep2eta, ht, analysis, new2016FRBins, !minPtFake18);
+	    float fr = fakeRate(year, lep2id, lep2ccpt, lep2eta, ht, analysis, new2016FRBins, false);
+	    if(useMCrates)float fr = qcdMCFakeRate(year, lep2id, lep2ccpt, lep2eta, ht, analysis, new2016FRBins, false);
 	    weight *= fr/(1.-fr);
 	    foundGoodLoose = true;
 	  }
@@ -1110,12 +1110,12 @@ int ScanChain(TChain *ch, TString options="", TString outputdir="outputs"){
       // 	if (hyp_class == 1 or hyp_class == 2) {
       // 	  bool foundGoodLoose = false;
       // 	  if (ss::lep1_passes_id()==0 ) {
-      // 	    float fr = fakeRate(year, lep1id, lep1ccpt, lep1eta, ht, analysis, new2016FRBins, !minPtFake18);
+      // 	    float fr = fakeRate(year, lep1id, lep1ccpt, lep1eta, ht, analysis, new2016FRBins, false);
       // 	    weight *= fr/(1.-fr);
       // 	    foundGoodLoose = true;
       // 	  }
       // 	  if (ss::lep2_passes_id()==0 ) {
-      // 	    float fr = fakeRate(year, lep2id, lep2ccpt, lep2eta, ht, analysis, new2016FRBins, !minPtFake18);
+      // 	    float fr = fakeRate(year, lep2id, lep2ccpt, lep2eta, ht, analysis, new2016FRBins, false);
       // 	    weight *= fr/(1.-fr);
       // 	    foundGoodLoose = true;
       // 	  }
@@ -1493,11 +1493,12 @@ int ScanChain(TChain *ch, TString options="", TString outputdir="outputs"){
       
       // if (hyp_class == 6 and nleps >  2 and njets >= 1 and nbtags >  0 and lep1ccpt > 25 and lep2ccpt > 20 and lep3ccpt > 20 and !mllowmetonz2b ) fill_region("mlbronz", weight);  
       // if (hyp_class == 6 and nleps >  2 and njets >= 1 and nbtags == 1 and lep1ccpt > 25 and lep2ccpt > 20 and lep3ccpt > 20 and !mllowmetonz2b ) fill_region("ml1b1jonz", weight);  
-      // if (hyp_class == 6 and nleps >  2 and njets >= 1 and nbtags >  1 and lep1ccpt > 25 and lep2ccpt > 20 and lep3ccpt > 20 and !mllowmetonz2b ) fill_region("ml2b2jonz", weight);
-      
+      // if (hyp_class == 6 and nleps >  2 and njets >= 1 and nbtags >  1 and lep1ccpt > 25 and lep2ccpt > 20 and lep3ccpt > 20 and !mllowmetonz2b ) fill_region("ml2b2jonz", weight);      
       //if (hyp_class == 3 and nleps >  2 and njets >= 2 and nbtags == 2 and lep1ccpt > 25 and lep2ccpt > 20 and lep3ccpt > 20 and MossfOnZ ) fill_region("ttzbr", weight);
       if (hyp_class == 4 and nleps == 2 and njets >= 2 and nbtags > 0  and lep1ccpt > 25 and lep2ccpt > 20 ) fill_region("osbr", weight);
       if (hyp_class == 2 and nleps == 2 and njets >= 2 and nbtags > 0  and lep1ccpt > 25 and lep2ccpt > 20 ) fill_region("tl", weight);       
+      if (hyp_class == 2 and nleps == 2 and njets >= 2 and nbtags > 0  and lep1ccpt > 25 and lep2ccpt > 20 and faketype == 1 ) fill_region("tlel", weight);       
+      if (hyp_class == 2 and nleps == 2 and njets >= 2 and nbtags > 0  and lep1ccpt > 25 and lep2ccpt > 20 and faketype == 2 ) fill_region("tlmu", weight);       
       
     }//event loop
     //delete tree;
