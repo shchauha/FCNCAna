@@ -960,7 +960,9 @@ int ScanChain(TChain *ch, TString options="", TString outputdir="outputs"){
       lep2ptratio = ss::lep2_ptratio();
       //nleps = ss::nleps();
       int id_sum = abs(lep1id) + abs(lep2id) + abs(lep3id);
-      float nele = (id_sum == 39 or id_sum == 26) ? 0 : (id_sum == 37 or id_sum == 24) ? 1 : (id_sum == 35 or id_sum == 22) ? 2 : (id_sum == 33) ? 3 : -1;
+      int id_sum_2d = abs(lep1id) + abs(lep2id);
+      //float nele = (id_sum == 39 or id_sum == 26) ? 0 : (id_sum == 37 or id_sum == 24) ? 1 : (id_sum == 35 or id_sum == 22) ? 2 : (id_sum == 33) ? 3 : -1;
+      int nele = (id_sum_2d == 26) ? 0 : (id_sum_2d == 24) ? 1 :(id_sum_2d == 22)? 2 : -1;
       njets40 = 0; float ht40 = 0; 
       if(njets>0)for(int i =0; i< njets;i++){
 	  if(ss::jets()[i].pt()>40){
@@ -976,6 +978,7 @@ int ScanChain(TChain *ch, TString options="", TString outputdir="outputs"){
 	}
       
       nleps = (lep3good) ? ((ss::lep4_passes_id() and (ss::lep4_p4().pt() > (abs(ss::lep4_id())==11 ? 15 : 10))) ? 4 : 3) : 2;      
+      //nleps = 
       vector<lepton> lep;
       lepton temp;
       temp.v = ss::lep1_p4(); temp.id = ss::lep1_id(); temp.isgood = lep1good;
@@ -1025,6 +1028,7 @@ int ScanChain(TChain *ch, TString options="", TString outputdir="outputs"){
 
       weight  = 1.0; //
       if (nleps > 2) continue;
+      if (hyp_class == 6) continue;
       int faketype = 0;
       //truth fakes
       if(!ss::is_real_data() and doTruthFake ){	
@@ -1039,11 +1043,11 @@ int ScanChain(TChain *ch, TString options="", TString outputdir="outputs"){
         if (nprompts != 1) continue;
         if (ss::lep1_motherID() <= 0) faketype = (abs(lep1id) == 11) ? 1 : 2 ;
         if (ss::lep2_motherID() <= 0) faketype = (abs(lep2id) == 11) ? 1 : 2 ;
-
-	//cout<<"found fake event with type "<<faketype<<endl;
+	cout<<"found fake event with type "<<faketype<<" nele "<<nele<<" hyp "<<hyp_class<<" nlep "<<nleps<<endl;
       }
-      bool useMCrates = true;
 
+
+      bool useMCrates = true;
       bool class6Fake = false;
       if (doFakes) {
 	if (hyp_class == 6) {
@@ -1051,9 +1055,10 @@ int ScanChain(TChain *ch, TString options="", TString outputdir="outputs"){
 	  bool lep2_lowpt_veto = lep2pt < (abs(lep2id) == 11 ? 15 : 10);
 	  bool lep3_lowpt_veto = lep3pt < (abs(lep3id) == 11 ? 15 : 10);
 	  int nfakes = 0;
+
 	  if (ss::lep3_fo() and !ss::lep3_tight() and !lep3_lowpt_veto and lep1good and lep2good && lep3pt>min_pt_fake) {  // lep3 fake
 	    float fr = fakeRate(year, lep3id, lep3ccpt, lep3eta, ht, analysis, new2016FRBins, false);
-	    if(useMCrates)float fr = qcdMCFakeRate(year, lep3id, lep3ccpt, lep3eta, ht, analysis, new2016FRBins, false);
+	    if(useMCrates)float fr = qcdMCFakeRate(year, lep3id, lep3ccpt, lep3eta, ht, analysis, new2016FRBins, false);	   
 	    class6Fake = true;
 	    nfakes++;
 	    weight *= fr / (1-fr);
@@ -1061,6 +1066,7 @@ int ScanChain(TChain *ch, TString options="", TString outputdir="outputs"){
 	  if (ss::lep2_fo() and !ss::lep2_tight() and !lep2_lowpt_veto and lep1good and lep3good && lep2pt>min_pt_fake) {  // lep2 fake
 	    float fr = fakeRate(year, lep2id, lep2ccpt, lep2eta, ht, analysis, new2016FRBins, false);
 	    if(useMCrates)float fr = qcdMCFakeRate(year, lep2id, lep2ccpt, lep2eta, ht, analysis, new2016FRBins, false);
+	    
 	    class6Fake = true;
 	    nfakes++;
 	    weight *= fr / (1-fr);
@@ -1068,6 +1074,7 @@ int ScanChain(TChain *ch, TString options="", TString outputdir="outputs"){
 	  if (ss::lep1_fo() and !ss::lep1_tight() and !lep1_lowpt_veto and lep2good and lep3good && lep1pt>min_pt_fake) {  // lep1 fake
 	    float fr = fakeRate(year, lep1id, lep1ccpt, lep1eta, ht, analysis, new2016FRBins, false);
 	    if(useMCrates)float fr = qcdMCFakeRate(year, lep1id, lep1ccpt, lep1eta, ht, analysis, new2016FRBins, false);
+
 	    class6Fake = true;
 	    nfakes++;
 	    weight *= fr / (1-fr);
@@ -1080,13 +1087,15 @@ int ScanChain(TChain *ch, TString options="", TString outputdir="outputs"){
 	  bool foundGoodLoose = false;
 	  if (ss::lep1_passes_id()==0 && lep1pt>min_pt_fake) {
 	    float fr = fakeRate(year, lep1id, lep1ccpt, lep1eta, ht, analysis, new2016FRBins, false);
-	    if(useMCrates)float fr = qcdMCFakeRate(year, lep1id, lep1ccpt, lep1eta, ht, analysis, new2016FRBins, false);
+	    if(useMCrates)fr = qcdMCFakeRate(year, lep1id, lep1ccpt, lep1eta, ht, analysis, new2016FRBins, true, false);
+	    cout<<"year "<<year<<" lepid "<<lep1id<<" pt "<<lep1ccpt<<" eta "<<lep1eta<<" nele "<<nele<<" fr "<<fr<<endl;
 	    weight *= fr/(1.-fr);
 	    foundGoodLoose = true;
 	  }
 	  if (ss::lep2_passes_id()==0 && lep2pt>min_pt_fake) {
 	    float fr = fakeRate(year, lep2id, lep2ccpt, lep2eta, ht, analysis, new2016FRBins, false);
-	    if(useMCrates)float fr = qcdMCFakeRate(year, lep2id, lep2ccpt, lep2eta, ht, analysis, new2016FRBins, false);
+	    if(useMCrates) fr = qcdMCFakeRate(year, lep2id, lep2ccpt, lep2eta, ht, analysis, new2016FRBins, true, false);
+	    cout<<"year "<<year<<" lepid "<<lep2id<<" pt "<<lep2ccpt<<" eta "<<lep2eta<<" nele "<<nele<<" fr "<<fr<<endl;
 	    weight *= fr/(1.-fr);
 	    foundGoodLoose = true;
 	  }

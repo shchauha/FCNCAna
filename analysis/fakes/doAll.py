@@ -49,7 +49,9 @@ basedirs ={
 #outputdir = "outputs_v3p31_SR_FCNC_Jan8_MLtraining" #
 #outputdir = "outputs_v3p31_ttz" #
 #outputdir = "outputs_v3p31_fake_closure"
-outputdir = "outputs_v3p31_apr27"
+#outputdir = "outputs_v3p31_apr27"
+#outputdir = "outputs_v3p31_may5"
+outputdir = "outputs_v3p31_may6"
  
 options = {    
     # for SS

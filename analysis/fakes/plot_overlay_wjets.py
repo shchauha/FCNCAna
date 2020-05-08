@@ -63,6 +63,8 @@ labels = {
     "l2dz"        : "$l^{2}_{dz}$",
     "mossf"       : "MOSSF",            
 
+
+
 #    "bdt"         :"Event Discriminator",
 #    "bdt_hut"     :"Event Discriminator hut",
 #    "bdt_hct"     :"Event Discriminator hct",
@@ -79,14 +81,16 @@ labels = {
 }
 
 sig1 = "truthfakes_wjets"
+
+#sig2 = "fakes_ttsl"
 #sig2 = "fakes_mc"
 
 d_label_colors = {
             "dy":                      (r"DY+jets",             [0.4, 0.6, 1.0]),
             "fakes":                   (r"Nonprompt lep.",      [0.85, 0.85, 0.85]),
             "fakes_exp":               (r"Prediction",          [0.85, 0.85, 0.85]),
-            "fakes_wjets":               (r"Prediction",          [0.85, 0.85, 0.85]),
-    
+            "fakes_ttsl":              (r"Prediction",          [0.85, 0.85, 0.85]),
+            "fakes_wjets":             (r"Prediction",          [0.85, 0.85, 0.85]),
             "fakes_mc":                (r"Nonprompt lep.",      [0.85, 0.85, 0.85]),
             "fakes_mc_ml":             (r"Nonprompt lep.",      [0.85, 0.85, 0.85]),
             "ttsl":                    (r"ttsl",                [0.85, 0.85, 0.85]),
@@ -123,35 +127,15 @@ d_flat_systematics = {
     "$t\bar{t}W$VV"         : 0.5,
     }
 
-bginfo = {}
-if useddbkg : 
-    bginfo = {        
-        #"BR"            : { k:d_label_colors[k] for k in [ "ttw", "tth", "ttz", "fakes", "flips", "xg", "ttvv", "rares"] },
-        #"ssbr"          : { k:d_label_colors[k] for k in [ "ttw", "tth", "ttz", "fakes", "flips", "xg", "ttvv", "rares"] },
-        "ssbr"          : { k:d_label_colors[k] for k in [ "fakes_wjets"] },
-        "mlbr"          : { k:d_label_colors[k] for k in [ "fakes_wjets"] },
-        }
-
-if not useddbkg : 
-    bginfo = {
-        "BR"            : { k:d_label_colors[k] for k in [ "ttw", "tth", "ttz", "fakes_mc", "flips_mc", "xg", "ttvv", "rares"] },
-        "ssbr"          : { k:d_label_colors[k] for k in [ "ttw", "tth", "ttz", "fakes_mc", "flips_mc", "xg", "ttvv", "rares"] },
-        "ss0b2j"        : { k:d_label_colors[k] for k in [ "ttw", "tth", "ttz", "fakes_mc", "flips_mc", "xg", "ttvv", "rares"] },
-        "ss1b2j"        : { k:d_label_colors[k] for k in [ "ttw", "tth", "ttz", "fakes_mc", "flips_mc", "xg", "ttvv", "rares"] },
-        "ss2b2j"        : { k:d_label_colors[k] for k in [ "ttw", "tth", "ttz", "fakes_mc", "flips_mc", "xg", "ttvv", "rares"] },
-        "mlbr"          : { k:d_label_colors[k] for k in [ "ttw", "tth", "ttz", "fakes_mc_ml", "xg", "ttvv", "rares" ] },        
-        "mlbronz"       : { k:d_label_colors[k] for k in [ "ttw", "tth", "ttz", "fakes_mc_ml", "xg", "ttvv", "rares" ] },        
-        "mllowmetonz2b" : { k:d_label_colors[k] for k in [ "ttw", "tth", "ttz", "fakes_mc_ml", "xg", "ttvv", "rares" ] },        
-        "ml1b1j"        : { k:d_label_colors[k] for k in [ "ttw", "tth", "ttz", "fakes_mc_ml", "xg", "ttvv", "rares" ] },            
-        "ml2b2j"        : { k:d_label_colors[k] for k in [ "ttw", "tth", "ttz", "fakes_mc_ml", "xg", "ttvv", "rares" ] },            
-        "mlbrinc"       : { k:d_label_colors[k] for k in [ "ttw", "tth", "ttz", "fakes_mc_ml", "xg", "ttvv", "rares" ] },            
-        "osbr"          : { k:d_label_colors[k] for k in [ "ttw", "tth", "ttz", "fakes_mc", "flips_mc", "xg", "ttvv", "rares" ] },
-        "tl"            : { k:d_label_colors[k] for k in [ "ttw", "tth", "ttz", "fakes_mc", "flips_mc", "xg", "ttvv", "rares" ] },      
-        "mllowmetonz2b" : { k:d_label_colors[k] for k in [ "ttw", "tth", "ttz", "fakes", "xg", "ttvv", "rares" ] },                    
-        }    
+bginfo = {        
+    "ssbr"          : { k:d_label_colors[k] for k in [ "fakes_wjets" ] },
+    "ssbrfakeel"    : { k:d_label_colors[k] for k in [ "fakes_wjets" ] },
+    "ssbrfakemu"    : { k:d_label_colors[k] for k in [ "fakes_wjets" ] },    
+}
+ 
 # make these global for multiprocessing since uproot file objects can't be pickled
 files, other_files = {}, {}
-
+#print bginfo
 def worker(info):
     global files, other_files
 
@@ -169,7 +153,7 @@ def worker(info):
         
         sigs = [
             sum([Hist1D(files[sig1][hname],label="Fakes", color = "#9D7ABF" )] + [Hist1D(other_files[y][sig1][hname],label="Fakes", color = "#9D7ABF") for y in other_files.keys()]),
-            #sum([Hist1D(files[sig2][hname],label="hct", color = "#8154AD" )] + [Hist1D(other_files[y][sig2][hname],label="hct", color = "#8154AD") for y in other_files.keys()])
+            
             ]        
         
     else:
@@ -177,15 +161,19 @@ def worker(info):
         data = Hist1D(files["data"][hname])
         sigs = [Hist1D(files[sig1][hname],label="Fakes", color = "#9D7ABF") ]           
         
-    #print sigs
+
     data.set_attr("label", "Data [{}]".format(int(data.get_integral())))
     sigs[0].set_attr("label", "Fakes [{:.1f}]".format(sigs[0].get_integral()))
     #sigs[1].set_attr("label", "hct [{:.1f}]".format(sigs[1].get_integral()))
     #sum(sigs).set_attr("color", [1.0, 0.4, 1.0])
     
-    if data.get_integral() < 1e-6: return
+    #print "S1"
+    #print "data ",data.get_integral()
+    #print "bgs ", abs(sum(bgs).get_integral())
+    #if data.get_integral() < 1e-6: return
     if abs(sum(bgs).get_integral()) < 1e-6: return
 
+    #print "S2"
     do_bkg_syst = True
     
     bgs = sorted(bgs, key=lambda bg: bg.get_integral())
@@ -193,6 +181,7 @@ def worker(info):
     #bgs = [bg*sf for bg in bgs]
     # bgs = [bg*1 for bg in bgs]
     
+
     for bg in bgs:
         # add flat systematic to stat unc in quadrature                      
         #print bg.get_attr("label")
@@ -205,7 +194,8 @@ def worker(info):
         fname = "{}/run2_{}_{}_{}.pdf".format(outputdir,region,var,flav)
     else:
         fname = "{}/year{}_{}_{}_{}.pdf".format(outputdir,year,region,var,flav)
-        
+    
+    #print "S3"
     if plotdata :
         plot_stack(bgs=bgs, 
                data=data, 
@@ -304,84 +294,58 @@ def make_plots(outputdir="plots", inputdir="outputs", year=2016, lumi="35.9", ot
 
 if __name__ == "__main__":
     ## 
-    if useddbkg:        
-        regions = [
-            #"BR",
-            "ssbr",
-            #"ss0b2j",
-            #"ss1b2j",
-            #"ss2b2j",
-            #"mlbr",
-            #"mlbronz",
-            #"mllowmetonz2b",
-            #"ml2b2j",
-            #"ml1b1j",
-            #"mlbrinc",
-
-            ]
+    #if useddbkg:        
+    regions = [
         
-    if not useddbkg:        
-        regions = [
-            #"BR",
-            #"ssbr",
-            #"ss0b2j",
-            #"ss1b2j",
-            #"ss2b2j",
-            "mlbr",         
-            "mlbronz",
-            "mllowmetonz2b",
-            #"ml2b2j",
-            #"ml1b1j",
-            #"mlbrinc",
-            #"osbr",
-            #"tl",
-            #"mllowmetonz2b",
-            ]
-       
+        "ssbr",
+        "ssbrfakeel",
+        "ssbrfakemu"
+        
+    ]
+               
     #flavs = ["in","ee","em","mm"]
     flavs = ["in"]
-    # flavs = ["ee","em","mm","in"]
-    #inputdir = "outputs_v3p31_BDT/"
-    #inputdir = "outputs_v3p31_loose_BDT/"
-    #inputdir = "outputs_v3p31_ttz/"
-    inputdir = "outputs_v3p31_fake_closure/"
-
+    
+    #inputdir = "outputs_v3p31_apr27/"
+    inputdir = "outputs_v3p31_may6/"
     outputdir = inputdir+"plots_wjets"
 
-    make_plots(
-            outputdir=outputdir,
-            inputdir=inputdir,
-            regions = regions, flavs = flavs,
-            year=2016,
-            lumi="35.9",
-            )
+    #print regions
 
+    make_plots(
+        outputdir=outputdir,
+        inputdir=inputdir,
+        regions = regions, flavs = flavs,
+        year=2016,
+        lumi="35.9",
+    )
+    
     # 2017 alone
     make_plots(
-            outputdir=outputdir,
-            inputdir=inputdir,
-            regions = regions, flavs = flavs,
-            year=2017,
-            lumi="41.5",
-            )
+        outputdir=outputdir,
+        inputdir=inputdir,
+        regions = regions, flavs = flavs,
+        year=2017,
+        lumi="41.5",
+    )
 
     # 2018 alone
     make_plots(
-            outputdir=outputdir,
-            inputdir=inputdir,
-            regions = regions, flavs = flavs,
-            year=2018,
-           lumi="59.7",
-            )
+        outputdir=outputdir,
+        inputdir=inputdir,
+        regions = regions, flavs = flavs,
+        year=2018,
+        lumi="59.7",
+    )
 
     # # 2016 + 2018 + 2017
     make_plots(
-            outputdir=outputdir,
-           inputdir=inputdir,
-            regions = regions, flavs = flavs,
-            year=2016, 
-            lumi="137",
-            other_years = [2017,2018],
-            )
-
+        outputdir=outputdir,
+        inputdir=inputdir,
+        regions = regions, flavs = flavs,
+        year=2016, 
+        lumi="137",
+        other_years = [2017,2018],
+    )
+    
     #os.system("outputs_v3p31_SR_FCNC_Jan8/sr_plot v3p31_sr_plot_Jan8 ")
