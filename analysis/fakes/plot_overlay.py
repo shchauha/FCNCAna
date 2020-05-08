@@ -117,7 +117,7 @@ d_label_colors = {
 
 d_flat_systematics = {
     "Nonprompt lep."        : 0.4,        
-    "Prediction"            : 0.4,        
+    "Prediction"            : 0.0,        
     "Charge misid."         : 0.3,
     "Rare"                  : 0.5,
     "$t\bar{t}W$"           : 0.3,
@@ -152,18 +152,18 @@ def worker(info):
         data = sum([Hist1D(files["data"][hname])] + [Hist1D(other_files[y]["data"][hname]) for y in other_files.keys()])
         
         sigs = [
-            sum([Hist1D(files[sig1][hname],label="Fakes", color = "#9D7ABF" )] + [Hist1D(other_files[y][sig1][hname],label="Fakes", color = "#9D7ABF") for y in other_files.keys()]),
+            sum([Hist1D(files[sig1][hname],label="MC Fakes", color = "black" )] + [Hist1D(other_files[y][sig1][hname],label="MC Fakes", color = "black") for y in other_files.keys()]),
             
             ]        
         
     else:
         bgs = [Hist1D(files[proc][hname], label=label,color=color) for proc,(label,color) in sorted(bginfo[region].items())]
         data = Hist1D(files["data"][hname])
-        sigs = [Hist1D(files[sig1][hname],label="Fakes", color = "#9D7ABF") ]           
+        sigs = [Hist1D(files[sig1][hname],label="MC Fakes", color = "black") ]           
         
 
     data.set_attr("label", "Data [{}]".format(int(data.get_integral())))
-    sigs[0].set_attr("label", "Fakes [{:.1f}]".format(sigs[0].get_integral()))
+    sigs[0].set_attr("label", " MC Fakes [{:.1f}]".format(sigs[0].get_integral()))
     #sigs[1].set_attr("label", "hct [{:.1f}]".format(sigs[1].get_integral()))
     #sum(sigs).set_attr("color", [1.0, 0.4, 1.0])
     
@@ -173,11 +173,12 @@ def worker(info):
     #if data.get_integral() < 1e-6: return
     if abs(sum(bgs).get_integral()) < 1e-6: return
 
-    #print "S2"
+
     do_bkg_syst = True
     
     bgs = sorted(bgs, key=lambda bg: bg.get_integral())
-    sf = data.get_integral()/sum(bgs).get_integral()
+    #sf = data.get_integral()/sum(bgs).get_integral()
+    sf = sigs[0].get_integral()/sum(bgs).get_integral()
     #bgs = [bg*sf for bg in bgs]
     # bgs = [bg*1 for bg in bgs]
     
@@ -187,21 +188,21 @@ def worker(info):
         #print bg.get_attr("label")
         bg._errors = np.hypot(bg._counts*d_flat_systematics.get(bg.get_attr("label"),0.),bg._errors)
 
-    if plotdata:
-        title += " data/MC={:.2f}".format(sf)
+        
+    title += " MC/Pred.={:.2f}".format(sf)
 
     if other_files:
         fname = "{}/run2_{}_{}_{}.pdf".format(outputdir,region,var,flav)
     else:
         fname = "{}/year{}_{}_{}_{}.pdf".format(outputdir,year,region,var,flav)
     
-    #print "S3"
-    if plotdata :
-        plot_stack(bgs=bgs, 
-               data=data, 
-               sigs = sigs,
-               title=title,                
+    plot_stack(bgs=bgs, 
+               data=sigs[0], 
+               #sigs = sigs,
+               ratio = sigs[0].divide(sum(bgs)),
+               title=title, 
                xlabel=xlabel, 
+               ylabel="Entries", 
                filename=fname,
                cms_type = "Preliminary",
                # do_log=True,
@@ -209,49 +210,18 @@ def worker(info):
                lumi = lumi,
                ratio_range=[0.0,2.0],
                mpl_title_params=dict(fontsize=(8 if len(str(lumi))>=5 else 9)),
+               mpl_ratio_params={"label":"MC/Pred."},
                # ratio_range=[0.5,1.5],
-               )
+           )
 
-        fname_log = fname.replace(".pdf","_log.pdf").replace(".png","_log.png")
-        plot_stack(bgs=bgs, 
-               data=data, 
-               sigs = sigs, 
-               title=title,                
-               xlabel=xlabel, 
-               filename=fname_log,
-               cms_type = "Preliminary",
-               do_log=True,
-               do_bkg_syst=do_bkg_syst,
-               lumi = lumi,
-               ratio_range=[0.0,2.0],
-               mpl_title_params=dict(fontsize=(8 if len(str(lumi))>=5 else 9)),
-               # ratio_range=[0.5,1.5],
-               )
-    if not plotdata:
-        plot_stack(bgs=bgs, 
-                   #data=data, 
-                   sigs = sigs,
-                   ratio = sigs[0].divide(sum(bgs)),
-                   title=title, 
-                   xlabel=xlabel, 
-                   filename=fname,
-                   cms_type = "Preliminary",
-                   # do_log=True,
-                   do_bkg_syst=do_bkg_syst,
-                   lumi = lumi,
-                   ratio_range=[0.0,2.0],
-                   mpl_title_params=dict(fontsize=(8 if len(str(lumi))>=5 else 9)),
-                   mpl_ratio_params={"label":"hut/Bkgd"},
-                   # ratio_range=[0.5,1.5],
-                   )
-
-        fname_log = fname.replace(".pdf","_log.pdf").replace(".png","_log.png")
-        plot_stack(bgs=bgs, 
-               #data=data, 
-               sigs = sigs, 
+    fname_log = fname.replace(".pdf","_log.pdf").replace(".png","_log.png")
+    plot_stack(bgs=bgs, 
+               data=sigs[0], 
+               #sigs = sigs, 
                ratio = sigs[0].divide(sum(bgs)),
                title=title, 
                xlabel=xlabel, 
+               ylabel="Entries", 
                filename=fname_log,
                cms_type = "Preliminary",
                do_log=True,
@@ -259,9 +229,9 @@ def worker(info):
                lumi = lumi,
                ratio_range=[0.0,2.0],
                mpl_title_params=dict(fontsize=(8 if len(str(lumi))>=5 else 9)),
-               mpl_ratio_params={"label":"hut/Bkgd"},
+               mpl_ratio_params={"label":"MC/Pred."},
                # ratio_range=[0.5,1.5],
-               )
+    )
     # os.system("ic {}".format(fname))
     #write_table(data,bgs,signal=sigs,show_errors=False,outname=fname.replace(".pdf",".txt"))
     return fname
@@ -308,7 +278,7 @@ if __name__ == "__main__":
     
     #inputdir = "outputs_v3p31_apr27/"
     inputdir = "outputs_v3p31_may6/"
-    outputdir = inputdir+"plots"
+    outputdir = inputdir+"plots_stat"
 
     #print regions
 
