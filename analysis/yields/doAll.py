@@ -63,9 +63,9 @@ options = {
     #2016: "  doSS Data2016 new2016FRBins ReadBDT quiet ",
     #2017: "  doSS Data2017 ReadBDT quiet ",
     #2018: "  doSS Data2018 ReadBDT quiet ",
-    2016: "  doSS Data2016 new2016FRBins quiet ",
-    2017: "  doSS Data2017 quiet ",
-    2018: "  doSS Data2018 quiet ",
+    2016: "  doSS Data2016 new2016FRBins quiet",
+    2017: "  doSS Data2017 quiet",
+    2018: "  doSS Data2018 quiet",
     }
 
 def make_objs(fpatts=[],options="",treename="t"):
