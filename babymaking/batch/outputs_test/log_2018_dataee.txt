@@ -1,0 +1,28 @@
+Warning in <TClassTable::Add>: class ROOT::Math::LorentzVector<ROOT::Math::PxPyPzE4D<float> > already in TClassTable
+Warning in <TClassTable::Add>: class ROOT::Math::PxPyPzE4D<float> already in TClassTable
+>>> Hostname is uaf-1.t2.ucsd.edu
+>>> Args: 
+     filenames:   
+         /hadoop/cms/store/group/snt/run2_data2018//EGamma_Run2018B-17Sep2018-v1_MINIAOD_CMS4_V10-02-04//merged_ntuple_142.root
+     outname:     outputs_test//test_2018_dataee.root
+     nevents_max: 50000
+>>> Figured out that the year is 2018.
+Warning in <TTree::Bronch>: Using split mode on a class: TString with a custom Streamer
+>>> Using xrootd
+>>> Adding 1 file(s): root://redirector.t2.ucsd.edu//store/group/snt/run2_data2018//EGamma_Run2018B-17Sep2018-v1_MINIAOD_CMS4_V10-02-04//merged_ntuple_142.root
+Warning in <TClass::Init>: no dictionary for class ROOT::TIOFeatures is available
+>>> Events in TChain: 280791
+Begin processing entry 5000 at 1589582375 (1.362 kHz).
+Begin processing entry 10000 at 1589582378 (2.129 kHz).
+Begin processing entry 15000 at 1589582378 (7.599 kHz).
+Begin processing entry 20000 at 1589582380 (3.336 kHz).
+Begin processing entry 25000 at 1589582381 (3.931 kHz).
+Begin processing entry 30000 at 1589582382 (7.163 kHz).
+Begin processing entry 35000 at 1589582383 (4.476 kHz).
+Begin processing entry 40000 at 1589582384 (6.12 kHz).
+Begin processing entry 45000 at 1589582384 (13.298 kHz).
+Begin processing entry 50000 at 1589582385 (4.789 kHz).
+>>> File done
+Processed 50001 events in 13.505999565 seconds @ 3.702 kHz
+Stored 983 events in the output tree.
+Number of input events in tree is 280791 but we processed 50001, so something went wrong and the return code will not be 0.

@@ -1,0 +1,20 @@
+Warning in <TClassTable::Add>: class ROOT::Math::LorentzVector<ROOT::Math::PxPyPzE4D<float> > already in TClassTable
+Warning in <TClassTable::Add>: class ROOT::Math::PxPyPzE4D<float> already in TClassTable
+>>> Need a list of files!
+FTAnalysis babymaker
+Usage:
+  ./main.exe [OPTION...] [optional args]
+
+  -h, --help            Print help
+  -v, --verbose         Enable verbosity
+      --notfastsim      Don't treat this as fastsim even if it is
+      --ignorescale1fb  Ignore the scale1fb.txt file
+      --ignorebadfiles  Ignore/skip files with I/O errors
+      --skipos          Skip OS events for MC
+      --xrootd          Use xrootd by force
+  -o, --output arg      Output name (default: output.root)
+  -n, --nevents arg     Number of events (default: -1)
+  -y, --year arg        Processing year (default: -1)
+      --eventsel arg    Select particular event by number (default: 0)
+  -f, --files arg       Files or file patterns
+

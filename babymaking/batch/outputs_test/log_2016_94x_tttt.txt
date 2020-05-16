@@ -1,0 +1,29 @@
+Warning in <TClassTable::Add>: class ROOT::Math::LorentzVector<ROOT::Math::PxPyPzE4D<float> > already in TClassTable
+Warning in <TClassTable::Add>: class ROOT::Math::PxPyPzE4D<float> already in TClassTable
+>>> Hostname is uaf-1.t2.ucsd.edu
+>>> Args: 
+     filenames:   
+         /hadoop/cms/store/group/snt/run2_mc2016_94x//TTTT_TuneCUETP8M2T4_13TeV-amcatnlo-pythia8_RunIISummer16MiniAODv3-PUMoriond17_94X_mcRun2_asymptotic_v3-v1_MINIAODSIM_CMS4_V10-02-05//merged_ntuple_5.root
+     outname:     outputs_test//test_2016_94x_tttt.root
+     nevents_max: 50000
+>>> Figured out that the year is 2016.
+Warning in <TTree::Bronch>: Using split mode on a class: TString with a custom Streamer
+>>> Using xrootd
+>>> Adding 1 file(s): root://redirector.t2.ucsd.edu//store/group/snt/run2_mc2016_94x//TTTT_TuneCUETP8M2T4_13TeV-amcatnlo-pythia8_RunIISummer16MiniAODv3-PUMoriond17_94X_mcRun2_asymptotic_v3-v1_MINIAODSIM_CMS4_V10-02-05//merged_ntuple_5.root
+Warning in <TClass::Init>: no dictionary for class ROOT::TIOFeatures is available
+>>> [!] This sample has the new gen_LHE_* branches, so using them
+>>> Events in TChain: 290500
+Begin processing entry 5000 at 1589582363 (0.831 kHz).
+Begin processing entry 10000 at 1589582368 (0.987 kHz).
+Begin processing entry 15000 at 1589582374 (0.956 kHz).
+Begin processing entry 20000 at 1589582378 (1.218 kHz).
+Error in <TNetXNGFile::ReadBuffer>: [ERROR] Server responded with an error: [3005] Unable to read /store/group/snt/run2_mc2016_94x/TTTT_TuneCUETP8M2T4_13TeV-amcatnlo-pythia8_RunIISummer16MiniAODv3-PUMoriond17_94X_mcRun2_asymptotic_v3-v1_MINIAODSIM_CMS4_V10-02-05/merged_ntuple_5.root; unknown error 255
+
+Error in <TBranchElement::GetBasket>: File: root://redirector.t2.ucsd.edu//store/group/snt/run2_mc2016_94x/TTTT_TuneCUETP8M2T4_13TeV-amcatnlo-pythia8_RunIISummer16MiniAODv3-PUMoriond17_94X_mcRun2_asymptotic_v3-v1_MINIAODSIM_CMS4_V10-02-05/merged_ntuple_5.root at byte:426430745, branch:ints_hypDilepMaker_hyptype_CMS3.obj, entry:21654, badread=4, nerrors=1, basketnumber=9
+Got an I/O error!
+I/O failure reading hyp_type: iostream error
+Error in <TNetXNGFile::ReadBuffer>: [ERROR] Server responded with an error: [3005] Unable to read /store/group/snt/run2_mc2016_94x/TTTT_TuneCUETP8M2T4_13TeV-amcatnlo-pythia8_RunIISummer16MiniAODv3-PUMoriond17_94X_mcRun2_asymptotic_v3-v1_MINIAODSIM_CMS4_V10-02-05/merged_ntuple_5.root; unknown error 255
+
+Error in <TBranchElement::GetBasket>: File: root://redirector.t2.ucsd.edu//store/group/snt/run2_mc2016_94x/TTTT_TuneCUETP8M2T4_13TeV-amcatnlo-pythia8_RunIISummer16MiniAODv3-PUMoriond17_94X_mcRun2_asymptotic_v3-v1_MINIAODSIM_CMS4_V10-02-05/merged_ntuple_5.root at byte:427066607, branch:int_eventMaker_evtisRealData_CMS3.obj, entry:21654, badread=4, nerrors=2, basketnumber=9
+terminate called after throwing an instance of 'std::ios_base::failure[abi:cxx11]'
+  what():  I/O failure reading evt_isRealData: iostream error

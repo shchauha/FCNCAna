@@ -1,0 +1,27 @@
+/hadoop/cms/store/group/snt/run2_mc2017//TTWJetsToLNu_TuneCP5_PSweights_13TeV-amcatnloFXFX-madspin-pythia8_RunIIFall17MiniAODv2-PU2017_12Apr2018_new_pmx_94X_mc2017_realistic_v14-v1_MINIAODSIM_CMS4_V10-02-05//merged_ntuple_20.root
+Running ./main.exe /hadoop/cms/store/group/snt/run2_mc2017//TTTT_hhat_0p08_TuneCP5_PSweights_13TeV-madgraph-pythia8_RunIIFall17MiniAODv2-PU2017_12Apr2018_94X_mc2017_realistic_v14-v1_MINIAODSIM_CMS4_V10-02-05//merged_ntuple_1.root -o outputs_test//test_2017_tttt.root -n 50000 >& outputs_test//log_2017_tttt.txt
+Running ./main.exe /hadoop/cms/store/group/snt/run2_mc2016_94x//TTTT_TuneCUETP8M2T4_13TeV-amcatnlo-pythia8_RunIISummer16MiniAODv3-PUMoriond17_94X_mcRun2_asymptotic_v3-v1_MINIAODSIM_CMS4_V10-02-05//merged_ntuple_5.root -o outputs_test//test_2016_94x_tttt.root -n 50000 >& outputs_test//log_2016_94x_tttt.txt
+Running ./main.exe -o outputs_test//test_2017_smst1tttt.root -n 50000 >& outputs_test//log_2017_smst1tttt.txt
+Running ./main.exe -o outputs_test//test_2018_tttt.root -n 50000 >& outputs_test//log_2018_tttt.txt
+Running ./main.exe /hadoop/cms/store/group/snt/run2_mc2017//TTWJetsToLNu_TuneCP5_PSweights_13TeV-amcatnloFXFX-madspin-pythia8_RunIIFall17MiniAODv2-PU2017_12Apr2018_new_pmx_94X_mc2017_realistic_v14-v1_MINIAODSIM_CMS4_V10-02-05//merged_ntuple_20.root -o outputs_test//test_2017_ttw.root -n 50000 >& outputs_test//log_2017_ttw.txt
+Running ./main.exe /hadoop/cms/store/group/snt/run2_data2017//DoubleMuon_Run2017D-31Mar2018-v1_MINIAOD_CMS4_V10-02-05//merged_ntuple_104.root -o outputs_test//test_2017_datamm.root -n 50000 >& outputs_test//log_2017_datamm.txt
+Running ./main.exe /hadoop/cms/store/group/snt/run2_mc2016_94x//SMS-T1tttt_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_RunIISummer16MiniAODv3-PUSummer16v3Fast_94X_mcRun2_asymptotic_v3-v1_MINIAODSIM_CMS4_V10-02-05//merged_ntuple_113.root -o outputs_test//test_2016_94x_smst1tttt.root -n 50000 >& outputs_test//log_2016_94x_smst1tttt.txt
+Running ./main.exe /hadoop/cms/store/group/snt/run2_data2017//DoubleEG_Run2017D-31Mar2018-v1_MINIAOD_CMS4_V10-02-05//merged_ntuple_97.root -o outputs_test//test_2017_dataee.root -n 50000 >& outputs_test//log_2017_dataee.txt
+Running ./main.exe /hadoop/cms/store/group/snt/run2_data2016_94x//DoubleMuon_Run2016E-17Jul2018-v1_MINIAOD_CMS4_V10-02-05//merged_ntuple_84.root -o outputs_test//test_2016_94x_datamm.root -n 50000 >& outputs_test//log_2016_94x_datamm.txt
+Running ./main.exe /hadoop/cms/store/group/snt/run2_data2018//DoubleMuon_Run2018B-17Sep2018-v1_MINIAOD_CMS4_V10-02-04//merged_ntuple_92.root -o outputs_test//test_2018_datamm.root -n 50000 >& outputs_test//log_2018_datamm.txt
+Running ./main.exe /hadoop/cms/store/group/snt/run2_data2016_94x//DoubleEG_Run2016E-17Jul2018-v1_MINIAOD_CMS4_V10-02-05//merged_ntuple_20.root -o outputs_test//test_2016_94x_dataee.root -n 50000 >& outputs_test//log_2016_94x_dataee.txt
+Running ./main.exe /hadoop/cms/store/group/snt/run2_mc2018//SMS-T1tttt_TuneCP2_13TeV-madgraphMLM-pythia8_RunIIAutumn18MiniAOD-PUFall18Fast_102X_upgrade2018_realistic_v15-v2_MINIAODSIM_CMS4_V10-02-08//merged_ntuple_7.root -o outputs_test//test_2018_smst1tttt.root -n 50000 >& outputs_test//log_2018_smst1tttt.txt
+Running ./main.exe /hadoop/cms/store/group/snt/run2_data2018//EGamma_Run2018B-17Sep2018-v1_MINIAOD_CMS4_V10-02-04//merged_ntuple_142.root -o outputs_test//test_2018_dataee.root -n 50000 >& outputs_test//log_2018_dataee.txt
+[91mx[0m[91mx[0m outputs_test//log_2017_ttw.txt
+[92mo[0m[92mo[0m outputs_test//log_2017_dataee.txt
+[92mo[0m[92mo[0m outputs_test//log_2017_datamm.txt
+[92mo[0m[92mo[0m outputs_test//log_2017_smst1tttt.txt
+[92mo[0m[92mo[0m outputs_test//log_2017_tttt.txt
+[92mo[0m[92mo[0m outputs_test//log_2016_94x_datamm.txt
+[92mo[0m[92mo[0m outputs_test//log_2016_94x_dataee.txt
+[92mo[0m[92mo[0m outputs_test//log_2018_dataee.txt
+[92mo[0m[92mo[0m outputs_test//log_2018_datamm.txt
+[91mx[0m[91mx[0m outputs_test//log_2016_94x_tttt.txt
+[92mo[0m[92mo[0m outputs_test//log_2016_94x_smst1tttt.txt
+[92mo[0m[92mo[0m outputs_test//log_2018_tttt.txt
+[92mo[0m[92mo[0m outputs_test//log_2018_smst1tttt.txt
