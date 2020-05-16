@@ -1,0 +1,30 @@
+Warning in <TClassTable::Add>: class ROOT::Math::LorentzVector<ROOT::Math::PxPyPzE4D<float> > already in TClassTable
+Warning in <TClassTable::Add>: class ROOT::Math::PxPyPzE4D<float> already in TClassTable
+>>> Hostname is uaf-1.t2.ucsd.edu
+>>> Args: 
+     filenames:   
+         /hadoop/cms/store/group/snt/run2_mc2017//TTTT_hhat_0p08_TuneCP5_PSweights_13TeV-madgraph-pythia8_RunIIFall17MiniAODv2-PU2017_12Apr2018_94X_mc2017_realistic_v14-v1_MINIAODSIM_CMS4_V10-02-05//merged_ntuple_1.root
+     outname:     outputs_test//test_2017_tttt.root
+     nevents_max: 50000
+>>> Figured out that the year is 2017.
+Warning in <TTree::Bronch>: Using split mode on a class: TString with a custom Streamer
+>>> [!] This is a TTTT sample and PSweights exist, so reading them
+>>> Using xrootd
+>>> Adding 1 file(s): root://redirector.t2.ucsd.edu//store/group/snt/run2_mc2017//TTTT_hhat_0p08_TuneCP5_PSweights_13TeV-madgraph-pythia8_RunIIFall17MiniAODv2-PU2017_12Apr2018_94X_mc2017_realistic_v14-v1_MINIAODSIM_CMS4_V10-02-05//merged_ntuple_1.root
+Warning in <TClass::Init>: no dictionary for class ROOT::TIOFeatures is available
+>>> [!] This sample has the new gen_LHE_* branches, so using them
+>>> Events in TChain: 75000
+Begin processing entry 5000 at 1589582253 (0.618 kHz).
+Begin processing entry 10000 at 1589582259 (0.783 kHz).
+Begin processing entry 15000 at 1589582267 (0.63 kHz).
+Begin processing entry 20000 at 1589582276 (0.551 kHz).
+Begin processing entry 25000 at 1589582283 (0.786 kHz).
+Begin processing entry 30000 at 1589582289 (0.772 kHz).
+Begin processing entry 35000 at 1589582296 (0.74 kHz).
+Begin processing entry 40000 at 1589582302 (0.779 kHz).
+Begin processing entry 45000 at 1589582308 (0.84 kHz).
+Begin processing entry 50000 at 1589582315 (0.735 kHz).
+>>> File done
+Processed 50001 events in 70.304000854 seconds @ 0.711 kHz
+Stored 14231 events in the output tree.
+Number of input events in tree is 75000 but we processed 50001, so something went wrong and the return code will not be 0.
