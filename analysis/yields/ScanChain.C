@@ -212,7 +212,6 @@ int ScanChain(TChain *ch, TString options="", TString outputdir="outputs"){
     bool doHEMBefore = options.Contains("doHEMBefore");
     bool doHEMAfter = options.Contains("doHEMAfter");
     bool noLeptonPtCut = options.Contains("noLeptonPtCut");
-    bool doTruthFake = options.Contains("doTruthFake");
     bool useNewMET = options.Contains("useNewMET");
     bool quiet = options.Contains("quiet");
     bool minPtFake18 = options.Contains("minPtFake18");
@@ -520,7 +519,7 @@ int ScanChain(TChain *ch, TString options="", TString outputdir="outputs"){
     out_tree->Branch("fwd_jetpt", &tree_fwd_jetpt );
     out_tree->Branch("weight", &tree_weight);
 
-
+/*
     TMVA::Reader *reader = new TMVA::Reader( "!Color:!Silent" );
     reader->AddVariable("lep1pt", &tree_lep1pt );
     reader->AddVariable("lep2pt", &tree_lep2pt );
@@ -560,6 +559,7 @@ int ScanChain(TChain *ch, TString options="", TString outputdir="outputs"){
 
     if(ReadBDT)reader->BookMVA("BDTG method","../misc/bdt_xml/Classification_BDTG1000t2.5%n2d.weights.xml");
     //if(ReadBDT)reader->BookMVA("BDTG method","../bdts/dataset_hut_35var_loose/weights/Classification_BDTG1000t2.5%n2d.weights.xml");
+    */
     //
     TMVA::Reader *reader_hut = new TMVA::Reader( "!Color:!Silent" );
     reader_hut->AddVariable("lep1pt", &tree_lep1pt );
