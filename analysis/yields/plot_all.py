@@ -342,12 +342,14 @@ if __name__ == "__main__":
     inputdir = "outputs_v3p31_BDT2D/"
     outputdir = inputdir+"plots_sr"
 
+    # 2016 alone
     make_plots(
             outputdir=outputdir,
             inputdir=inputdir,
-            regions = regions, flavs = flavs,
             year=2016,
             lumi="35.9",
+            regions = regions, 
+            flavs = flavs
             )
 
     # 2017 alone

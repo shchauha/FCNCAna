@@ -98,7 +98,7 @@ struct HistCol {
         for (auto p : mm) p.second.Write();
 
     }
-}
+};
 
 float calcDeltaPhi(float phi1, float phi2){
     float dPhi = phi1 - phi2;
@@ -519,45 +519,45 @@ int ScanChain(TChain *ch, TString options="", TString outputdir="outputs"){
     out_tree->Branch("fwd_jetpt", &tree_fwd_jetpt );
     out_tree->Branch("weight", &tree_weight);
 
-/*
-    TMVA::Reader *reader = new TMVA::Reader( "!Color:!Silent" );
-    reader->AddVariable("lep1pt", &tree_lep1pt );
-    reader->AddVariable("lep2pt", &tree_lep2pt );
-    reader->AddVariable("lep1eta", &tree_lep1eta );
-    reader->AddVariable("lep2eta", &tree_lep2eta );
-    reader->AddVariable("njets", &tree_njets );
-    reader->AddVariable("nbtags", &tree_nbtags );
-    reader->AddVariable("met", &tree_met );
-    reader->AddVariable("ht", &tree_ht );
-    reader->AddVariable("mll", &tree_mll );
-    reader->AddVariable("nele", &tree_nele );
-    reader->AddVariable("jet1pt", &tree_jet1pt );
-    reader->AddVariable("jet2pt", &tree_jet2pt );
-    reader->AddVariable("btag1pt", &tree_btag1pt );
-    reader->AddVariable("drl1l2", &tree_drl1l2 );
-    reader->AddVariable("mindrl1j", &tree_mindrl1j );
-    reader->AddVariable("mindrl2j", &tree_mindrl2j );
-    reader->AddVariable("mindrl1bt", &tree_mindrl1bt );
-    reader->AddVariable("mindrl2bt", &tree_mindrl2bt );
-    reader->AddVariable("dphil1met", &tree_dphil1met );
-    reader->AddVariable("dphil2met", &tree_dphil2met );
-    reader->AddVariable("mt1", &tree_mt1 );
-    reader->AddVariable("mt2", &tree_mt2 );
-    reader->AddVariable("dphil1l2", &tree_dphil1l2 );
-    reader->AddVariable("l1miniiso", &tree_l1miniiso );
-    reader->AddVariable("l2miniiso", &tree_l2miniiso );
-    reader->AddVariable("l1dxy", &tree_l1dxy );
-    reader->AddVariable("l1dz", &tree_l1dz );
-    reader->AddVariable("l2dxy", &tree_l2dxy );
-    reader->AddVariable("l2dz", &tree_l2dz );
-    reader->AddVariable("l1ptratio", &tree_l1ptratio );
-    reader->AddVariable("l1ptrel", &tree_l1ptrel );
-    reader->AddVariable("l2ptratio", &tree_l2ptratio );
-    reader->AddVariable("l2ptrel", &tree_l2ptrel );
-    reader->AddVariable("jet3pt", &tree_jet3pt );
-    reader->AddVariable("fwd_jetpt", &tree_fwd_jetpt );
+    /*
+       TMVA::Reader *reader = new TMVA::Reader( "!Color:!Silent" );
+       reader->AddVariable("lep1pt", &tree_lep1pt );
+       reader->AddVariable("lep2pt", &tree_lep2pt );
+       reader->AddVariable("lep1eta", &tree_lep1eta );
+       reader->AddVariable("lep2eta", &tree_lep2eta );
+       reader->AddVariable("njets", &tree_njets );
+       reader->AddVariable("nbtags", &tree_nbtags );
+       reader->AddVariable("met", &tree_met );
+       reader->AddVariable("ht", &tree_ht );
+       reader->AddVariable("mll", &tree_mll );
+       reader->AddVariable("nele", &tree_nele );
+       reader->AddVariable("jet1pt", &tree_jet1pt );
+       reader->AddVariable("jet2pt", &tree_jet2pt );
+       reader->AddVariable("btag1pt", &tree_btag1pt );
+       reader->AddVariable("drl1l2", &tree_drl1l2 );
+       reader->AddVariable("mindrl1j", &tree_mindrl1j );
+       reader->AddVariable("mindrl2j", &tree_mindrl2j );
+       reader->AddVariable("mindrl1bt", &tree_mindrl1bt );
+       reader->AddVariable("mindrl2bt", &tree_mindrl2bt );
+       reader->AddVariable("dphil1met", &tree_dphil1met );
+       reader->AddVariable("dphil2met", &tree_dphil2met );
+       reader->AddVariable("mt1", &tree_mt1 );
+       reader->AddVariable("mt2", &tree_mt2 );
+       reader->AddVariable("dphil1l2", &tree_dphil1l2 );
+       reader->AddVariable("l1miniiso", &tree_l1miniiso );
+       reader->AddVariable("l2miniiso", &tree_l2miniiso );
+       reader->AddVariable("l1dxy", &tree_l1dxy );
+       reader->AddVariable("l1dz", &tree_l1dz );
+       reader->AddVariable("l2dxy", &tree_l2dxy );
+       reader->AddVariable("l2dz", &tree_l2dz );
+       reader->AddVariable("l1ptratio", &tree_l1ptratio );
+       reader->AddVariable("l1ptrel", &tree_l1ptrel );
+       reader->AddVariable("l2ptratio", &tree_l2ptratio );
+       reader->AddVariable("l2ptrel", &tree_l2ptrel );
+       reader->AddVariable("jet3pt", &tree_jet3pt );
+       reader->AddVariable("fwd_jetpt", &tree_fwd_jetpt );
 
-    if(ReadBDT)reader->BookMVA("BDTG method","../misc/bdt_xml/Classification_BDTG1000t2.5%n2d.weights.xml");
+       if(ReadBDT)reader->BookMVA("BDTG method","../misc/bdt_xml/Classification_BDTG1000t2.5%n2d.weights.xml");
     //if(ReadBDT)reader->BookMVA("BDTG method","../bdts/dataset_hut_35var_loose/weights/Classification_BDTG1000t2.5%n2d.weights.xml");
     */
     //
@@ -869,9 +869,9 @@ int ScanChain(TChain *ch, TString options="", TString outputdir="outputs"){
             int hyp_class = ss::hyp_class();      
             if (!ss::is_real_data()) {
                 weight *= getTruePUw(year, ss::trueNumInt()[0]);
-                if (lep1good) weight *= leptonScaleFactor(year, lep1id, lep1ccpt, lep1eta, ht);
-                if (lep2good) weight *= leptonScaleFactor(year, lep2id, lep2ccpt, lep2eta, ht);
-                if (lep3good) weight *= leptonScaleFactor(year, lep3id, lep3ccpt, lep3eta, ht);
+                if (lep1good) weight *= leptonScaleFactor(year, lep1id, lep1ccpt, lep1eta, ht, FTANA);
+                if (lep2good) weight *= leptonScaleFactor(year, lep2id, lep2ccpt, lep2eta, ht, FTANA);
+                if (lep3good) weight *= leptonScaleFactor(year, lep3id, lep3ccpt, lep3eta, ht, FTANA);
 
                 if (!lep3good) {
                     weight *= triggerScaleFactor(year, lep1id, lep2id, lep1pt, lep2pt, lep1eta, lep2eta, ht, analysis, 0);
@@ -948,11 +948,11 @@ int ScanChain(TChain *ch, TString options="", TString outputdir="outputs"){
                 else continue;
                 float flipFact = 0.;
                 if (abs(lep1id) == 11) {
-                    float flr = flipRate(year, lep1pt, lep1eta);
+                    float flr = flipRate(year, lep1pt, lep1eta, FTANA);
                     flipFact += (flr/(1-flr));
                 }
                 if (abs(lep2id) == 11) {
-                    float flr = flipRate(year, lep2pt, lep2eta);
+                    float flr = flipRate(year, lep2pt, lep2eta, FTANA);
                     flipFact += (flr/(1-flr));
                 }
                 weight *= flipFact;
@@ -1091,7 +1091,7 @@ int ScanChain(TChain *ch, TString options="", TString outputdir="outputs"){
                 }
                 do_fill(h_nvtx,   ss::nGoodVertices());
                 //do_fill(h_sr,   SR);
-                if(ReadBDT) do_fill(h_bdt,  reader->EvaluateMVA("BDTG method"));
+                //if(ReadBDT) do_fill(h_bdt,  reader->EvaluateMVA("BDTG method"));
                 if(ReadBDT) do_fill(h_bdt_hut,  reader_hut->EvaluateMVA("BDTG method"));
                 if(ReadBDT) do_fill(h_bdt_hct,  reader_hct->EvaluateMVA("BDTG method"));
 
@@ -1127,17 +1127,17 @@ int ScanChain(TChain *ch, TString options="", TString outputdir="outputs"){
                 do_fill(h_nele,  (abs(lep1id)==11 and abs(lep2id)==11) ? 2 : (abs(lep1id)==11 or abs(lep2id)==11) ? 1 : 0  );
             };
 
-/*
-            bool BR_lite = ht > 300  and njets >= 2 and  nbtags >= 2 and met >= 50;
-            bool BR = BR_lite and hyp_class == 3;
-            if (BR) fill_region("br", weight);
-            if (hyp_class == 2) fill_region("susytl", weight);
-            if (hyp_class == 2 and lep1ccpt > 25 and lep2ccpt > 25) fill_region("hhtl", weight);            	    
-            if (hyp_class == 3 and nleps == 2 and njets >= 2 and met > 50 and lep1ccpt > 25 and lep2ccpt > 25 ) {
-                //if (hyp_class == 3 and nleps == 2 and njets40 >= 2 and met > 50 and lep1ccpt > 25 and lep2ccpt > 25 ) {	      	
-                fill_region("sshh", weight);
+            /*
+               bool BR_lite = ht > 300  and njets >= 2 and  nbtags >= 2 and met >= 50;
+               bool BR = BR_lite and hyp_class == 3;
+               if (BR) fill_region("br", weight);
+               if (hyp_class == 2) fill_region("susytl", weight);
+               if (hyp_class == 2 and lep1ccpt > 25 and lep2ccpt > 25) fill_region("hhtl", weight);            	    
+               if (hyp_class == 3 and nleps == 2 and njets >= 2 and met > 50 and lep1ccpt > 25 and lep2ccpt > 25 ) {
+            //if (hyp_class == 3 and nleps == 2 and njets40 >= 2 and met > 50 and lep1ccpt > 25 and lep2ccpt > 25 ) {	      	
+            fill_region("sshh", weight);
             }
-*/
+            */
             bool OnZ = fabs(m12-91.2) <15.;            
             bool LowMetOnZor0b = (met<50&&OnZ)||nbtags==0;
             bool MossfOnZ = fabs(MOSSF(lep)-91.2)<15.;
@@ -1235,17 +1235,17 @@ int ScanChain(TChain *ch, TString options="", TString outputdir="outputs"){
             if (hyp_class == 4 and nleps == 2 and njets >= 2 and nbtags > 0  and lep1ccpt > 25 and lep2ccpt > 20 ) fill_region("osbr", weight);
             if (hyp_class == 2 and nleps == 2 and njets >= 2 and nbtags > 0  and lep1ccpt > 25 and lep2ccpt > 20 ) fill_region("tl", weight); 
 
-            }//event loop
-            //delete tree;
-            delete file;
-            }//file loop
+        }//event loop
+        //delete tree;
+        delete file;
+        }//file loop
 
-            f1->cd();
-            for (HistCol* coll : registry) coll->Write();
-            for (HistCol2D* coll : registry2D) coll->Write();
-            out_tree->Write();
-            f1->Close();
-            if (!quiet) cout << "\n Done!" << endl;
-            return 0;
+        f1->cd();
+        for (HistCol* coll : registry) coll->Write();
+        for (HistCol2D* coll : registry2D) coll->Write();
+        out_tree->Write();
+        f1->Close();
+        if (!quiet) cout << "\n Done!" << endl;
+        return 0;
         }
 
