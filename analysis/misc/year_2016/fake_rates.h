@@ -879,8 +879,7 @@ float muonQCDMCFakeRateError_IsoTrigs_legacy(float pt, float eta) {
 
 
 float fakeRate(int id, float pt, float eta, float ht, ana_t ana, bool isLL) { 
-  // SS uses iso for 2016; FT still uses nonisoHT trigs for ht>300 in 2016
-  isLL = false;
+    // SS uses iso for 2016; FT still uses nonisoHT trigs for ht>300 in 2016
   if (ht>300. and ana != SSANA) {
     if (abs(id)==11) return electronFakeRate(pt,eta);
     else if (abs(id)==13) return muonFakeRate(pt,eta);
