@@ -869,9 +869,9 @@ int ScanChain(TChain *ch, TString options="", TString outputdir="outputs"){
             int hyp_class = ss::hyp_class();      
             if (!ss::is_real_data()) {
                 weight *= getTruePUw(year, ss::trueNumInt()[0]);
-                if (lep1good) weight *= leptonScaleFactor(year, lep1id, lep1ccpt, lep1eta, ht, FTANA);
-                if (lep2good) weight *= leptonScaleFactor(year, lep2id, lep2ccpt, lep2eta, ht, FTANA);
-                if (lep3good) weight *= leptonScaleFactor(year, lep3id, lep3ccpt, lep3eta, ht, FTANA);
+                if (lep1good) weight *= leptonScaleFactor(year, lep1id, lep1ccpt, lep1eta, ht);
+                if (lep2good) weight *= leptonScaleFactor(year, lep2id, lep2ccpt, lep2eta, ht);
+                if (lep3good) weight *= leptonScaleFactor(year, lep3id, lep3ccpt, lep3eta, ht);
 
                 if (!lep3good) {
                     weight *= triggerScaleFactor(year, lep1id, lep2id, lep1pt, lep2pt, lep1eta, lep2eta, ht, analysis, 0);
@@ -948,11 +948,11 @@ int ScanChain(TChain *ch, TString options="", TString outputdir="outputs"){
                 else continue;
                 float flipFact = 0.;
                 if (abs(lep1id) == 11) {
-                    float flr = flipRate(year, lep1pt, lep1eta, FTANA);
+                    float flr = flipRate(year, lep1pt, lep1eta);
                     flipFact += (flr/(1-flr));
                 }
                 if (abs(lep2id) == 11) {
-                    float flr = flipRate(year, lep2pt, lep2eta, FTANA);
+                    float flr = flipRate(year, lep2pt, lep2eta);
                     flipFact += (flr/(1-flr));
                 }
                 weight *= flipFact;
