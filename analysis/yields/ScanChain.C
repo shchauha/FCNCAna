@@ -100,6 +100,46 @@ struct HistCol {
     }
 };
 
+int signal_region_fcnc(int nlep, int njets, int nbtags){
+
+  if (nlep == 2){
+    if(nbtags==1){
+      if(njets==2) return 1;
+      if(njets==3) return 2;
+      if(njets>=4) return 3;
+      else return 0;
+    }
+
+    if(nbtags>=2){
+      if(njets==2) return 4;
+      if(njets==3) return 5;
+      if(njets>=4) return 6;
+      else return 0;
+
+    }
+  }
+  ////                                                                                                                                                                                                                                        
+  if (nlep > 2){
+    if(nbtags==1){
+      if(njets==1) return 7;
+      if(njets==2) return 8;
+      if(njets==3) return 9;
+      if(njets>=4) return 10;
+      else return 0;
+    }
+
+    if(nbtags>=2){
+      if(njets==1) return 11;
+      if(njets==2) return 12;
+      if(njets==3) return 13;
+      if(njets>=4) return 14;
+      else return 0;
+    }
+  }
+
+  else return 0;
+}
+
 float calcDeltaPhi(float phi1, float phi2){
     float dPhi = phi1 - phi2;
     while (dPhi  >  TMath::Pi()) dPhi -= 2*TMath::Pi();
@@ -291,16 +331,17 @@ int ScanChain(TChain *ch, TString options="", TString outputdir="outputs"){
     if (!quiet) cout << "Working on " << proc << endl;
 
     vector<string> regions =
-    {			    
-        "ssbr",
-        "ss0b2j",
-        "ss1b2j",
-        "ss2b2j",
-        "mlbr",
-        "ml1b1j",
-        "ml2b2j",
-        "osbr",
-        "tl",
+    {	
+      "sr",
+      "ssbr",
+      "ss0b2j",
+      "ss1b2j",
+      "ss2b2j",
+      "mlbr",
+      "ml1b1j",
+      "ml2b2j",
+      "osbr",
+      "tl",
     };
 
     vector<HistCol*> registry;
@@ -382,6 +423,7 @@ int ScanChain(TChain *ch, TString options="", TString outputdir="outputs"){
     HistCol h_ptbt4         (regions, "ptbt4"           , 50, 0   , 500 ,  &registry);
     HistCol h_nforwardjets20(regions, "nforwardjets20"  , 10, 0 , 10 ,     &registry);
     HistCol h_sr            (regions, "sr"              , 60, -0.5, 59.5,  &registry);
+    HistCol h_sr_fcnc       (regions, "sr_fcnc"         , 20, -0.5, 19.5,  &registry);
     HistCol h_bdt           (regions, "bdt"             , 10 , -1., 1.,    &registry);
     HistCol h_bdt_hut       (regions, "bdt_hut"         , 10 , -1., 1.,    &registry);
     HistCol h_bdt_hut_ttbar (regions, "bdt_hut_ttbar"   , 10 , -1., 1.,    &registry);
@@ -435,6 +477,7 @@ int ScanChain(TChain *ch, TString options="", TString outputdir="outputs"){
     float jet1phi;
 
     int SR;
+    int sr_fcnc;
     float weight;    
     int nEventsTotal = 0;
     int nEventsChain = ch->GetEntries();
@@ -856,6 +899,7 @@ int ScanChain(TChain *ch, TString options="", TString outputdir="outputs"){
             float mtnonz = ss::mtmin();
             //SR = signal_region(ss::njets(), ss::nbtags(), ss::met(), ss::ht(), ss::mtmin(), lep1id, lep2id, lep1ccpt, lep2ccpt, lep3ccpt, nleps);
             //SR = signal_region(njets40, nbtags25M, ss::met(), ht40 , ss::mtmin(), lep1id, lep2id, lep1ccpt, lep2ccpt, lep3ccpt, nleps); 
+	    sr_fcnc = signal_region_fcnc(nleps, ss::njets(), ss::nbtags());
             ht = ss::ht();
             nisrmatch = ss::nisrMatch();      	    
             /* hyp_class
@@ -1091,6 +1135,8 @@ int ScanChain(TChain *ch, TString options="", TString outputdir="outputs"){
                 }
                 do_fill(h_nvtx,   ss::nGoodVertices());
                 //do_fill(h_sr,   SR);
+		do_fill(h_sr_fcnc,   sr_fcnc);
+
                 //if(ReadBDT) do_fill(h_bdt,  reader->EvaluateMVA("BDTG method"));
                 if(ReadBDT) do_fill(h_bdt_hut,  reader_hut->EvaluateMVA("BDTG method"));
                 if(ReadBDT) do_fill(h_bdt_hct,  reader_hct->EvaluateMVA("BDTG method"));
@@ -1145,6 +1191,8 @@ int ScanChain(TChain *ch, TString options="", TString outputdir="outputs"){
             //if  ((hyp_class == 1 or hyp_class == 2 or hyp_class == 3 ) and nleps == 2 and njets >= 2 and nbtags > 0 and lep1ccpt > 25 and lep2ccpt > 20 ){ 
             if  ( hyp_class == 3 and nleps == 2 and njets >= 2 and nbtags > 0 and lep1ccpt > 25 and lep2ccpt > 20 ){ 
                 fill_region("ssbr", weight); 
+                fill_region("sr", weight); 
+
                 //fill the tree variables
                 tree_lep1pt = lep1pt;
                 tree_lep2pt = lep2pt;
@@ -1217,7 +1265,11 @@ int ScanChain(TChain *ch, TString options="", TString outputdir="outputs"){
             if (hyp_class == 3 and nleps == 2 and njets >= 2 and nbtags == 1   and lep1ccpt > 25 and lep2ccpt > 20 and !LowMetOnZor0b ) fill_region("ss1b2j2", weight); 
             if (hyp_class == 3 and nleps == 2 and njets >= 2 and nbtags  > 1   and lep1ccpt > 25 and lep2ccpt > 20 and !LowMetOnZor0b ) fill_region("ss2b2j2", weight);      
 
-            if (hyp_class == 3 and nleps >  2 and njets >= 1 and nbtags >  0 and lep1ccpt > 25 and lep2ccpt > 20 and lep3ccpt > 20 ) fill_region("mlbr", weight);  
+            if (hyp_class == 3 and nleps >  2 and njets >= 1 and nbtags >  0 and lep1ccpt > 25 and lep2ccpt > 20 and lep3ccpt > 20 ){ 
+	      fill_region("mlbr", weight);  
+	      fill_region("sr", weight); 
+	    }
+
             if (hyp_class == 3 and nleps >  2 and njets >= 1 and nbtags == 1 and lep1ccpt > 25 and lep2ccpt > 20 and lep3ccpt > 20 ) fill_region("ml1b1j", weight);  
             if (hyp_class == 3 and nleps >  2 and njets >= 1 and nbtags >  1 and lep1ccpt > 25 and lep2ccpt > 20 and lep3ccpt > 20 ) fill_region("ml2b2j", weight);
 

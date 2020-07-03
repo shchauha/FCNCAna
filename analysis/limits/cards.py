@@ -34,8 +34,7 @@ def BinError(hist, bin):
             error = 0.0001        
     return error
 
-outdir = "outputs_v3p31_BDT2D"
-os.system("mkdir -p {}".format(outdir))
+
 def createDatcards(varname="Variable", signalname="Signal", srname="SR", year="2016", debug=False) :
     #basedir = "/home/shchauha/2019/Analysis/FCNCAna/analysis/yields/v3.24/"
     #basedir = "/home/users/shchauha/2019/FCNCAna/analysis/yields/v3.24_test/"
@@ -49,12 +48,15 @@ def createDatcards(varname="Variable", signalname="Signal", srname="SR", year="2
                basedir+"histos_ttw_"+year+".root",
                basedir+"histos_ttz_"+year+".root",
                basedir+"histos_rares_"+year+".root",
+               basedir+"histos_xg_"+year+".root",
+               basedir+"histos_ttvv_"+year+".root",
+               
 
     ]
     sginput = [basedir+"histos_"+signalname+"_"+year+".root"]
     datainput = [basedir+"histos_"+signalname+"_"+year+".root"]
 
-    fd = TFile(basedir+"histos_"+signalname+"_"+year+".root","read")
+    fd = TFile(basedir+"histos_"+signalname+"_"+year+".root","read") # fix this to read actual data
     fs = TFile(basedir+"histos_"+signalname+"_"+year+".root","read")
     hdata = fd.Get(varname).Clone()
     hs = fs.Get(varname).Clone()
@@ -67,16 +69,16 @@ def createDatcards(varname="Variable", signalname="Signal", srname="SR", year="2
     bgname =[] 
     #hbg = []
 
-    flatsystematics=[
-        ("WZNORM"    ,0.30,               "wz"),
-        ("TTWNORM"   ,0.30,               "ttw"),
-        ("TTZNORM"   ,0.30,               "ttz"),
-        ("TTHNORM"   ,0.30,               "tth"),
-        ("nonprompt" , 0.30,              "nonprompt"),
-        ("chargeflip", 0.30,              "chargeflip"),
-        ("IDISO"     , 0.06,              signalname,"ttw","ttz","tth"), 
-        ("LUMI"      ,0.024,              signalname,"ttw","ttz","tth"),
-    ]
+#    flatsystematics=[
+#        ("WZNORM"    ,0.30,               "wz"),
+#        ("TTWNORM"   ,0.30,               "ttw"),
+#        ("TTZNORM"   ,0.30,               "ttz"),
+#        ("TTHNORM"   ,0.30,               "tth"),
+#        ("nonprompt" , 0.30,              "nonprompt"),
+#        ("chargeflip", 0.30,              "chargeflip"),
+#        ("IDISO"     , 0.06,              signalname,"ttw","ttz","tth"), 
+#        ("LUMI"      ,0.024,              signalname,"ttw","ttz","tth"),
+#    ]
     
     for i in range(len(bginput)):
         bgname.append(bginput[i].replace("_"+year+".root","").replace(basedir+"histos_",""))
@@ -94,7 +96,7 @@ def createDatcards(varname="Variable", signalname="Signal", srname="SR", year="2
     
         print "imax ",1
         print "jmax ",len(bginput)-1
-        print "kmax ",13
+        print "kmax ",17
 
         print "bin "+ustr
         print "observation",    0
@@ -131,12 +133,15 @@ def createDatcards(varname="Variable", signalname="Signal", srname="SR", year="2
             print processn,"  -  "*(i), processweight,"  -  "*(len(bgname)-i-1)
 
 
-        print "flips_SYST lnN   -   1.30  -    -    -    -    -   "
-        print "fakes_SYST lnN   -    -   1.40  -    -    -    -  "    
-        print "tth_SYST lnN   -   -  - 1.30    -    -    -     "
-        print "ttw_SYST lnN   -   -    -  -  1.30  -    -   "
-        print "ttz_SYST lnN   -   -    -  - -   1.30     -  "
-        print "rares_SYST lnN   -    -    -  -  - - 1.50    "
+        print "flips_SYST lnN   -   1.30  -    -    -    -    - - -  "
+        print "fakes_SYST lnN   -    -   1.40  -    -    -    - - - "    
+        print "tth_SYST lnN   -   -  - 1.30    -    -    - - -    "
+        print "ttw_SYST lnN   -   -    -  -  1.30  -    - - -  "
+        print "ttz_SYST lnN   -   -    -  - -   1.30     - - - "
+        print "rares_SYST lnN   -    -    -  -  - - 1.50 - -   "
+        print "xg_SYST lnN   -    -    -  -  - - - 1.50 -    "
+        print "ttvv_SYST lnN   -    -    -  -  - - - - 1.50    "
+
         #print "DY_high_SYST lnN   -    -  -  -    -    - -   1.20  "    
     
         sys.stdout = orig_stdout
@@ -151,11 +156,9 @@ if __name__ == '__main__':
     year             = sys.argv[5]
     #debugoff         = int(sys.argv[5])
     
-    #debug=True
-    
-    #if debugoff==1 : debug=False
-    debug=False
-
+    debug=False    
+    outdir = basedir+"Cards"
+    os.system("mkdir -p {}".format(outdir))
     if debug : print "\npython dataCardProducer.py basedir Variable  Signal SRname year debugOff \n"
     createDatcards(varname, signalname, srname, year, debug)
     exit(0)

@@ -71,6 +71,7 @@ labels = {
     "bdt_hct_ttbar" :"Event Discriminator hct ttbar",
     "bdt_hct_ttv"   :"Event Discriminator hct ttv",
 
+    "sr_fcnc"       :"SR #",
     #"htb"        : r"$H_{T}$(b-jets)",
     #"nlb40"      : r"N-loose b-tags, $p_{T}>40$",
     #"ntb40"      : r"N-tight b-tags, $p_{T}>40$",
@@ -118,6 +119,7 @@ d_flat_systematics = {
 bginfo = {}
 if useddbkg : 
     bginfo = {        
+        "sr"            : { k:d_label_colors[k] for k in [ "ttw", "tth", "ttz", "fakes", "flips", "xg", "ttvv", "rares"] },
         "ssbr"          : { k:d_label_colors[k] for k in [ "ttw", "tth", "ttz", "fakes", "flips", "xg", "ttvv", "rares"] },
         "ss0b2j"        : { k:d_label_colors[k] for k in [ "ttw", "tth", "ttz", "fakes", "flips", "xg", "ttvv", "rares"] },
         "ss1b2j"        : { k:d_label_colors[k] for k in [ "ttw", "tth", "ttz", "fakes", "flips", "xg", "ttvv", "rares"] },
@@ -133,6 +135,7 @@ if useddbkg :
 
 if not useddbkg : 
     bginfo = {
+        "sr"            : { k:d_label_colors[k] for k in [ "ttw", "tth", "ttz", "fakes", "flips", "xg", "ttvv", "rares"] },
         "ssbr"          : { k:d_label_colors[k] for k in [ "ttw", "tth", "ttz", "fakes_mc", "flips_mc", "xg", "ttvv", "rares"] },
         "ss0b2j"        : { k:d_label_colors[k] for k in [ "ttw", "tth", "ttz", "fakes_mc", "flips_mc", "xg", "ttvv", "rares"] },
         "ss1b2j"        : { k:d_label_colors[k] for k in [ "ttw", "tth", "ttz", "fakes_mc", "flips_mc", "xg", "ttvv", "rares"] },
@@ -273,7 +276,7 @@ def worker(info):
 
 
     # os.system("ic {}".format(fname))
-    write_table(data,bgs,outname=fname.replace(".pdf",".txt"))
+    #write_table(data,bgs,outname=fname.replace(".pdf",".txt"))
     return fname
 
 def make_plots(outputdir="plots", inputdir="outputs", year=2016, lumi="35.9", other_years=[], regions=[], flavs=["ee","em","mm","in"]):
@@ -291,6 +294,7 @@ def make_plots(outputdir="plots", inputdir="outputs", year=2016, lumi="35.9", ot
     # regions = ["htnb1mc","htnb1","htnb1mcmu","htnb1mu","os","os_noht","osloose","br","crw","crz"]
     regions = regions or ["ssbr","mlbr"]
     flavs = flavs or ["ee","em","mm","in"]
+    #flavs = flavs or ["in"]
     varss = labels.keys()
     infos = [[outputdir,year,lumi]+list(x) for x in itertools.product(regions,flavs,varss)]
 
@@ -307,11 +311,12 @@ if __name__ == "__main__":
     ## 
     if useddbkg:        
         regions = [
+            "sr",
             "ssbr",
             #"ss0b2j",
             #"ss1b2j",
             #"ss2b2j",
-            #"mlbr",         
+            "mlbr",         
             #"mllowmetonz2b",
             #"ml2b2j",
             #"ml1b1j",
@@ -335,12 +340,12 @@ if __name__ == "__main__":
             #"mllowmetonz2b",
             ]
        
-    flavs = ["in","ee","em","mm"]
-    # flavs = ["ee","em","mm","in"]
+    #flavs = ["in","ee","em","mm"]
+    flavs = ["in"]
     #inputdir = "outputs_v3p31_BDT/"
     #inputdir = "outputs_v3p31_loose_BDT/"
-    inputdir = "outputs_v3p31_BDT2D/"
-    outputdir = inputdir+"plots_sr"
+    inputdir = "outputs_v3p31/"
+    outputdir = inputdir+"plots"
 
     # 2016 alone
     make_plots(
@@ -380,4 +385,4 @@ if __name__ == "__main__":
             other_years = [2017,2018],
             )
 
-    os.system("niceplots outputs_v3p31_BDT2D/plots_sr outputs_v3p31_BDT2D_sr")
+#    os.system("niceplots outputs_v3p31_BDT2D/plots_sr outputs_v3p31_BDT2D_sr")

@@ -4,8 +4,6 @@ Run it as
 
 >>python cards.py /home/users/shchauha/2019/FCNCAna/analysis/yields/v3.24_test/ ss1b2j_njets_in fcnc ss1b2j 2016
 
-
-
 Combine the cards: 
 
 >>cd $FCNCAna/common/CMSSW_9_4_9/src/HiggsAnalysis/CombinedLimit

@@ -57,7 +57,7 @@ basedirs ={
 #outputdir = "outputs_v3p31_loose_BDT" #
 #outputdir = "outputs_v3p31_BDT_NoAngleNoIso" #
 #outputdir = "outputs_v3p31_BDT_NoAngleNoIso_Flavor" #
-outputdir = "outputs_v3p31_BDT2D" #
+outputdir = "outputs_v3p31" #
 options = {    
     # for SS
     #2016: "  doSS Data2016 new2016FRBins ReadBDT quiet ",
